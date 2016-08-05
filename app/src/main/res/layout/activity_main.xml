@@ -1,0 +1,124 @@
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    android:orientation="horizontal"
+    tools:context=".MainActivity" >
+
+    <LinearLayout
+        android:id="@+id/Chart"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="15"
+        android:background="#FF000000"/>
+    
+
+    <RelativeLayout
+        android:id="@+id/LL2"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="85"
+        android:orientation="vertical"
+        android:background="#FF000000">
+
+
+        <TextView
+        android:id="@+id/tvBluetooth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text= "@string/bluetooth_label"
+        android:textSize="15sp"
+        android:textColor="@color/white"/>
+
+    <Button
+        android:id="@+id/bConnect"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:text="@string/bluetooth_connect"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        android:layout_below="@id/tvBluetooth"/>
+
+    <Button
+        android:id="@+id/bDisconnect"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:text="@string/bluetooth_disconnect"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        android:layout_below="@id/bConnect"/>
+
+    <TextView
+        android:id="@+id/tvControl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/chart_control_label"
+        android:textSize="15sp"
+        android:textColor="@color/white"
+        android:layout_below="@id/bDisconnect"/>
+
+    <ToggleButton
+        android:id="@+id/tbStream"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:checked="false"
+        android:textOff="Start Stream"
+        android:textOn="Start Stream"
+        android:textColor="@color/white"
+        android:layout_below="@id/tvControl"/>
+
+        <LinearLayout
+            android:id="@+id/LLX"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="100"
+            android:layout_below="@id/tbStream">
+
+            <Button
+                android:id="@+id/bXminus"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="50"
+                android:text="@string/chart_zoom_minus"
+                android:textSize="12sp"
+                android:textColor="@color/white"/>
+
+            <Button
+                android:id="@+id/bXplus"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="50"
+                android:text="@string/chart_zoom_plus"
+                android:textSize="12sp"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvDataStorage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_datastorage"
+            android:textSize="15sp"
+            android:textColor="@color/white"
+            android:layout_below="@id/LLX"/>
+
+        <ToggleButton
+            android:id="@+id/tbSaveData"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:checked="false"
+            android:textOff="@string/textoff_savedata"
+            android:textOn="@string/texton_savedata"
+            android:textColor="@color/white"
+            android:layout_below="@id/tvDataStorage"/>
+
+
+    </RelativeLayout>
+
+
+
+
+</LinearLayout >

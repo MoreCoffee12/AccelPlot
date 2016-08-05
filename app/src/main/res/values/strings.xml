@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">AccelPlot</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="bluetooth_label">Bluetooth</string>
+    <string name="bluetooth_connect">Connect</string>
+    <string name="bluetooth_disconnect">Disconnect</string>
+    <string name="label_control">Controls</string>
+    <string name="scroll_x_on">Lock X</string>
+    <string name="scroll_x_off">Scroll X</string>
+
+    <string name="label_datastorage">Data Storage</string>
+    <string name="textoff_savedata">Save Data</string>
+    <string name="texton_savedata">Stop Saving</string>
+
+    <string name="chart_control_label">Control</string>
+    <string name="chart_zoom_minus">-</string>
+    <string name="chart_zoom_plus">+</string>
+
+</resources>
