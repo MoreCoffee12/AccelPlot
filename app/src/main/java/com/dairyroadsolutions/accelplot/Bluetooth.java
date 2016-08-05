@@ -65,6 +65,8 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 	public static int iFileSampleCount = 262144;
     public static final float[] fX_Accel = new float[iFileSampleCount];
     public static final float[] fY_Accel = new float[iFileSampleCount];
+    public static final float[] fZ_Accel = new float[iFileSampleCount];
+    public static final float[] fX_Gyro = new float[iFileSampleCount];
 	public static int idxBuff = 0;
 
 	// Output buffer
@@ -319,6 +321,32 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 			dInStream = new DataInputStream(tmpIn);
 		}
 
+        /**
+         * Masks the bytes and return integer value
+         * @param btLow     Low byte
+         * @param btHigh    High byte
+         * @return          Integer value
+         */
+        private int iGetValue(byte btLow, byte btHigh)
+        {
+
+            int iHigh;
+            iHigh = (btHigh & 0x1F);
+            return ((int)(btLow & 0xFF )+(iHigh<<8));
+
+        }
+
+        /**
+         * Extract the address from the high byte
+         * @param btHigh    High byte
+         * @return          Integer value of the address
+         */
+        private int iGetAddr(byte btHigh)
+        {
+            return (btHigh >> 5 ) & 0x07;
+
+        }
+
 		public void run()
 		{
 			Thread.currentThread().setPriority(MAX_PRIORITY);
@@ -330,10 +358,6 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 			int iErrorCount;
             int iTemp;
             double dTemp;
-			Integer iECG;
-			Integer iRED;
-			Integer iIR;
-			Integer ibatLevD;
 
             // Filter coefficient arrays
             double dA[] =  new double[FilterHelper.MAXKERNELSIZE];
@@ -364,26 +388,34 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
 					// Parse through the bytes and validate
 					if(  bStreamData ){
-						iLow = (buffer[0] & 0xFF );
-						iHigh = (buffer[1] & 0xFF);
-						iAddr[0] = (iHigh >> 6 ) & 0x03;
+
+                        // X_Accel, address 0x0000
+						iAddr[0] =  iGetAddr(buffer[1]);
 						// The hypothesis is that the data is valid, this will be checked
 						// at each step and set to false if any of the tests fail
 						iErrorCount = iAddr[0];
-						iHigh = iHigh & 0x0F;
-						iHigh = (iHigh<<8);
-						fX_Accel[idxBuff] = (float)(iLow+iHigh);
+						fX_Accel[idxBuff] = (float)(iGetValue(buffer[0], buffer[1]));
 
-						iLow = (buffer[2] & 0xFF );
-						iHigh = (buffer[3] & 0xFF);
-						iAddr[1] = (iHigh >> 6 ) & 0x03;
-						if( iAddr[1] != 0x01){
-							++iErrorCount;
-						}
-						iHigh = iHigh & 0x0F;
-						iHigh = (iHigh<<8);
-						fY_Accel[idxBuff] = (float)(iLow+iHigh);
+                        // Y_Accel, address 0x0001
+                        iAddr[1] =  iGetAddr(buffer[3]);
+                        if( iAddr[1] != 0x01){
+                            ++iErrorCount;
+                        }
+                        fY_Accel[idxBuff] = (float)(iGetValue(buffer[2], buffer[3]));
 
+                        // Z_Accel, address 0x0002
+                        iAddr[2] =  iGetAddr(buffer[5]);
+                        if( iAddr[2] != 0x02){
+                            ++iErrorCount;
+                        }
+                        fZ_Accel[idxBuff] = (float)(iGetValue(buffer[4], buffer[5]));
+
+                        // Y_Gyro, address 0x0003
+                        iAddr[3] =  iGetAddr(buffer[7]);
+                        if( iAddr[3] != 0x03){
+                            ++iErrorCount;
+                        }
+                        fX_Gyro[idxBuff] = (float)(iGetValue(buffer[6], buffer[7]));
 
                         // Throw the data to the renderer
                         classChartRenderer.classChart.addSample(fX_Accel[idxBuff], 0);

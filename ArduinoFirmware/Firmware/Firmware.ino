@@ -10,6 +10,9 @@ SoftwareSerial BTSerial(10, 11); // RX | TX
 #include "I2Cdev.h"
 #include "MPU6050.h"
 
+
+MPU6050 mpu;
+
 // Arduino Wire library is required if I2Cdev I2CDEV_ARDUINO_WIRE implementation
 // is used in I2Cdev.h
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
@@ -40,8 +43,12 @@ MPU6050 accelgyro;
 // Globals
 bool blinkState = false;
 byte btTemp = 0;
-unsigned short iX_Accel;
-unsigned short iY_Accel;
+int16_t iX_Accel;
+int16_t iY_Accel;
+int16_t iZ_Accel;
+int16_t iX_Gyro;
+int16_t iY_Gyro;
+int16_t iZ_Gyro;
 unsigned char iAddress;
 unsigned long timeLast;
 unsigned int iBytesReturned;
@@ -98,26 +105,39 @@ void loop()
   // than interrupts.
   timeLast = micros();
   
-  // Get the value from the MPU-6050 accelerometer
-  iX_Accel=accelgyro.getAccelerationX();
-  iY_Accel=accelgyro.getAccelerationY();
-
+  // Get the value from the MPU-6050 accelerometer and gyro
+  mpu.getMotion6(&iX_Accel, &iY_Accel, &iZ_Accel, &iX_Gyro, &iY_Gyro, &iZ_Gyro);
   // Serial.println("Got new readings");
   
   // X_Accel, address 0x0000
-  iX_Accel = (iX_Accel >> 4);
+  iX_Accel = (iX_Accel >> 3);
   BTSerial.write((byte)iX_Accel);
   //Serial.print((byte)iX_Accel);
   btTemp = (byte)(iX_Accel>>8);
+  btTemp |= 0x00 << 5; 
   BTSerial.write(btTemp);
   //Serial.print(btTemp);
   //Serial.print("\n");
   
   // Y_Accel, address 0x0001
-  iY_Accel = (iY_Accel >> 4);
+  iY_Accel = (iY_Accel >> 3);
   BTSerial.write((byte)iY_Accel);
   btTemp = (byte)(iY_Accel>>8);
-  btTemp |= 1 << 4;
+  btTemp |= 0x01 << 5; 
+  BTSerial.write(btTemp);
+  
+  // Z_Accel, address 0x0002
+  iZ_Accel = (iZ_Accel >> 3);
+  BTSerial.write((byte)iZ_Accel);
+  btTemp = (byte)(iZ_Accel>>8);
+  btTemp |= 0x02 << 5;
+  BTSerial.write(btTemp);
+  
+  // X_Gyro, address 0x0002
+  iX_Gyro = (iX_Gyro >> 3);
+  BTSerial.write((byte)iZ_Accel);
+  btTemp = (byte)(iX_Gyro>>8);
+  btTemp |= 0x03 << 5;
   BTSerial.write(btTemp);
   
   // blink LED to indicate activity
