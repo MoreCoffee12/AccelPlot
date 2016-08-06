@@ -36,11 +36,16 @@ public class MainActivity extends Activity {
     private float fChOffset[];
     private static ToggleButton mStreamToggleButton;
     private static ToggleButton tbSaveData;
+    private static ToggleButton tbAudioOut;
 
     private FilterHelper filter = new FilterHelper();
 
     // Data writing controls
     private boolean bWriteLocal = false;
+
+    // Audio out controls
+    private boolean bAudioOut = false;
+    private AudioHelper mAudioHelper;
 
     // debug
     private static final String strTag = MainActivity.class.getSimpleName();
@@ -109,8 +114,14 @@ public class MainActivity extends Activity {
         // Flags and initialization of the BlueTooth object
         Bluetooth.samplesBuffer=new SamplesBuffer[TRACE_COUNT];
         Bluetooth.vSetWriteLocal(bWriteLocal);
+
+        // Flags for the data save button
         tbSaveData = (ToggleButton)findViewById(R.id.tbSaveData);
         tbSaveData.setEnabled(false);
+
+        // Flags and init for the audio out
+        tbAudioOut = (ToggleButton)findViewById(R.id.tbAudioOut);
+        tbAudioOut.setEnabled(false);
 
         classTraceHelper = new TraceHelper(TRACE_COUNT);
 
@@ -213,6 +224,18 @@ public class MainActivity extends Activity {
                 bWriteLocal = mStreamToggleButton.isChecked();
                 Bluetooth.vSetWriteLocal(bWriteLocal);
 //                Log.d(strTag, ":HM:                  Toggling bWriteLocal");
+
+            }
+        });
+
+        // Configure the audio out button
+        tbAudioOut = (ToggleButton)findViewById(R.id.tbAudioOut);
+        tbAudioOut.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bAudioOut = mStreamToggleButton.isChecked();
+                mAudioHelper.vSetAudioOut(bAudioOut);
+//                Log.d(strTag, ":HM:                    Toggling bAudioOut");
 
             }
         });

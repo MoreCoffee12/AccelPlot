@@ -18,10 +18,21 @@ public class AudioHelper {
 
     private float freqOfTone = 440;
 
-    private boolean bRunning = false;
+    private boolean bAudioOut = false;
 
-    private void ToggleRunning(){
-        bRunning = !bRunning;
+    /**
+     * toggle the audio out state
+     */
+    public void vToggleRunning(){
+        bAudioOut = !bAudioOut;
+    }
+
+    /**
+     * Set the audio out to true to started audio out
+     * @param bAudioOutNew  True to turn on audio out
+     */
+    public void vSetAudioOut(boolean bAudioOutNew){
+        bAudioOut = bAudioOutNew;
     }
 
     // From http://blog.workingsi.com/2012/03/android-tone-generator-app.html
@@ -78,11 +89,11 @@ public class AudioHelper {
                 AudioTrack.MODE_STREAM);
         audioTrack.write(generatedSnd, 0, numSamples*2);
         audioTrack.play();
-        while (bRunning==true){
+        while (bAudioOut ==true){
             audioTrack.write(generatedSnd, 0, numSamples*2);
         }
         audioTrack.stop();
-        bRunning = false;
+        bAudioOut = false;
 
     }
 

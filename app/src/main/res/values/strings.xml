@@ -15,6 +15,10 @@
     <string name="textoff_savedata">Save Data</string>
     <string name="texton_savedata">Stop Saving</string>
 
+    <string name="label_audioout">Audio Out</string>
+    <string name="textoff_audioout">Enable Audio</string>
+    <string name="texton_audioout">Stop Audio</string>
+
     <string name="chart_control_label">Control</string>
     <string name="chart_zoom_minus">-</string>
     <string name="chart_zoom_plus">+</string>

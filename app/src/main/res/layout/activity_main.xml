@@ -115,6 +115,24 @@
             android:textColor="@color/white"
             android:layout_below="@id/tvDataStorage"/>
 
+        <TextView
+            android:id="@+id/tvAudioOut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_audioout"
+            android:textSize="15sp"
+            android:textColor="@color/white"
+            android:layout_below="@id/tbSaveData"/>
+
+        <ToggleButton
+            android:id="@+id/tbAudioOut"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:checked="false"
+            android:textOff="@string/textoff_audioout"
+            android:textOn="@string/texton_audioout"
+            android:textColor="@color/white"
+            android:layout_below="@id/tvAudioOut"/>
 
     </RelativeLayout>
 
