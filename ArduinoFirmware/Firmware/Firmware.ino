@@ -53,6 +53,7 @@ unsigned char iAddress;
 unsigned long timeLast;
 unsigned int iBytesReturned;
 unsigned int iIdx;
+unsigned int iuTemp;
 
 // Setup, runs once
 void setup() 
@@ -110,42 +111,43 @@ void loop()
   // Serial.println("Got new readings");
   
   // X_Accel, address 0x0000
-  iX_Accel = (iX_Accel >> 3);
-  BTSerial.write((byte)iX_Accel);
-  //Serial.print((byte)iX_Accel);
-  btTemp = (byte)(iX_Accel>>8);
-  btTemp |= 0x00 << 5; 
-  BTSerial.write(btTemp);
-  //Serial.print(btTemp);
-  //Serial.print("\n");
+  WriteData (iX_Accel, 0x00);
   
   // Y_Accel, address 0x0001
-  iY_Accel = (iY_Accel >> 3);
-  BTSerial.write((byte)iY_Accel);
-  btTemp = (byte)(iY_Accel>>8);
-  btTemp |= 0x01 << 5; 
-  BTSerial.write(btTemp);
+  WriteData (iY_Accel, 0x01);
   
   // Z_Accel, address 0x0002
-  iZ_Accel = (iZ_Accel >> 3);
-  BTSerial.write((byte)iZ_Accel);
-  btTemp = (byte)(iZ_Accel>>8);
-  btTemp |= 0x02 << 5;
-  BTSerial.write(btTemp);
+  WriteData (iZ_Accel, 0x02);
   
-  // X_Gyro, address 0x0002
-  iX_Gyro = (iX_Gyro >> 3);
-  BTSerial.write((byte)iZ_Accel);
-  btTemp = (byte)(iX_Gyro>>8);
-  btTemp |= 0x03 << 5;
-  BTSerial.write(btTemp);
+  // X_Gyro, address 0x0003
+  WriteData (iX_Gyro, 0x03);
   
   // blink LED to indicate activity
   blinkState = !blinkState;
   digitalWrite(LED_PIN, blinkState);
   
   // Do nothing until the desired time has elapsed
-  delayMicroseconds(3000-(micros()-timeLast));
+  delayMicroseconds(10000000-(micros()-timeLast));
+}
+
+void WriteData (int16_t iData, unsigned int iAddr)
+{
+  Serial.print("Addr ");
+  Serial.println(iAddr);
+  Serial.println(iData);
+  iuTemp = (int)((long)iData+32767);
+  Serial.println(iuTemp);
+  iuTemp = (iuTemp >> 3);
+  Serial.print("3 bit ");
+  Serial.println(iuTemp);
+  BTSerial.write((byte)iuTemp);
+  Serial.print("Low byte ");
+  Serial.println((byte)iuTemp);
+  btTemp = (byte)(iuTemp>>8);
+  btTemp |= iAddr << 5; 
+  BTSerial.write(btTemp);
+  Serial.print("High byte ");
+  Serial.println(btTemp);
 }
 
 

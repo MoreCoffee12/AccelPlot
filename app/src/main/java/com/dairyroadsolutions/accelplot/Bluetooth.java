@@ -395,6 +395,9 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 						// at each step and set to false if any of the tests fail
 						iErrorCount = iAddr[0];
 						fX_Accel[idxBuff] = (float)(iGetValue(buffer[0], buffer[1]));
+                        Log.i(strTag, ":HM:                          X_Accel Error: " + iErrorCount);
+                        Log.i(strTag, ":HM:                        X_Accel Address: " + iAddr[0] );
+                        Log.i(strTag, ":HM:                               fX_Accel: " + fX_Accel[idxBuff] );
 
                         // Y_Accel, address 0x0001
                         iAddr[1] =  iGetAddr(buffer[3]);
@@ -402,6 +405,9 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                             ++iErrorCount;
                         }
                         fY_Accel[idxBuff] = (float)(iGetValue(buffer[2], buffer[3]));
+                        Log.i(strTag, ":HM:                          Y_Accel Error: " + iErrorCount);
+                        Log.i(strTag, ":HM:                        Y_Accel Address: " + iAddr[1] );
+                        Log.i(strTag, ":HM:                               fY_Accel: " + fY_Accel[idxBuff] );
 
                         // Z_Accel, address 0x0002
                         iAddr[2] =  iGetAddr(buffer[5]);
@@ -409,6 +415,9 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                             ++iErrorCount;
                         }
                         fZ_Accel[idxBuff] = (float)(iGetValue(buffer[4], buffer[5]));
+                        Log.i(strTag, ":HM:                          Z_Accel Error: " + iErrorCount);
+                        Log.i(strTag, ":HM:                        Z_Accel Address: " + iAddr[2] );
+                        Log.i(strTag, ":HM:                               fZ_Accel: " + fZ_Accel[idxBuff] );
 
                         // Y_Gyro, address 0x0003
                         iAddr[3] =  iGetAddr(buffer[7]);
@@ -416,41 +425,49 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                             ++iErrorCount;
                         }
                         fX_Gyro[idxBuff] = (float)(iGetValue(buffer[6], buffer[7]));
+                        Log.i(strTag, ":HM:                           X_Gyro Error: " + iErrorCount);
+                        Log.i(strTag, ":HM:                         X_Gyro Address: " + iAddr[3] );
+                        Log.i(strTag, ":HM:                                fX_Gyro: " + fX_Gyro[idxBuff] );
 
-                        // Throw the data to the renderer
-                        classChartRenderer.classChart.addSample(fX_Accel[idxBuff], 0);
-                        classChartRenderer.classChart.addSample(fY_Accel[idxBuff],1);
-//                        classChartRenderer.classChart.addSample(fRED[idxBuff],2);
-//                        classChartRenderer.classChart.addSample(fIR[idxBuff],3);
-//                        classChartRenderer.classChart.addSample(fBuffECGfilt[idxBuff],4);
-//                        classChartRenderer.classChart.addSample(fBuffECG[idxBuff],5);
-//                        classChartRenderer.classChart.addSample(fBuffECGfilt[idxBuff],6);
-//                        classChartRenderer.classChart.addSample(fBuffECG[idxBuff],7);
-//                        classChartRenderer.classChart.addSample(fBuffECGfilt[idxBuff],8);
-//                        classChartRenderer.classChart.addSample(fBuffECG[idxBuff],9);
-//                        classChartRenderer.classChart.addSample(fBuffECGfilt[idxBuff],10);
-//                        classChartRenderer.classChart.addSample(fBuffECG[idxBuff],11);
+                        if( iErrorCount == 0)
+                        {
+                            // Throw the data to the renderer
+                            classChartRenderer.classChart.addSample(fX_Accel[idxBuff], 0);
+                            classChartRenderer.classChart.addSample(fY_Accel[idxBuff], 1);
+                            classChartRenderer.classChart.addSample(fZ_Accel[idxBuff], 2);
+                            classChartRenderer.classChart.addSample(fX_Gyro[idxBuff], 3);
 
-//						Log.d(strTag, ":HM:                           Buffer index: " + idxBuff);
-//                        Log.d(strTag, ":HM:                            ECG Address: " + iAddr[0] );
-//						Log.d(strTag, ":HM:                                    ECG: " + fBuffECG[idxBuff] );
+						    Log.i(strTag, ":HM:                           Buffer index: " + idxBuff);
+                            Log.i(strTag, ":HM:                        X_Accel Address: " + iAddr[0] );
+						    Log.i(strTag, ":HM:                               fX_Accel: " + fX_Accel[idxBuff] );
 //                        Log.d(strTag, ":HM:                           iRED Address: " + iAddr[1] );
 //						Log.d(strTag, ":HM:                                   iRED: " + fRED[idxBuff] );
 //                        Log.d(strTag, ":HM:                            iIR Address: " + iAddr[2] );
 //						Log.d(strTag, ":HM:                                    iIR: " + fIR[idxBuff] );
 
-                        // Save the data off to the sd card
+                            // Save the data off to the sd card
 //						Log.d(strTag, ":HM:                            bWriteLocal: " + bWriteLocal);
-                        if( bWriteLocal==true ){
-                            if( idxBuff == (iFileSampleCount-1) ){
-                                fhelper.bFileToSD(fX_Accel, fY_Accel, fX_Accel, fX_Accel);
+                            if( bWriteLocal==true ){
+                                if( idxBuff == (iFileSampleCount-1) ){
+                                    fhelper.bFileToSD(fX_Accel, fY_Accel, fZ_Accel, fX_Gyro);
+                                }
                             }
+
+                            // Increment the data buffer index
+                            idxBuff = ++idxBuff % iFileSampleCount;
+
+                            //Log.d(strTag, ":HM: 8 bytes received, sent message.  IR: " + (buffer[0] & 0xFF + ((buffer[1] & 0xFF) << 8 )  ));
+
+                        }
+                        else
+                        {
+                            Log.i(strTag, ":HM:                       Error check failed");
+
+                            // Skip a byte
+                            dInStream.readByte();
+
                         }
 
-                        // Increment the data buffer index
-						idxBuff = ++idxBuff % iFileSampleCount;
-
-						//Log.d(strTag, ":HM: 8 bytes received, sent message.  IR: " + (buffer[0] & 0xFF + ((buffer[1] & 0xFF) << 8 )  ));
 
 					}
 
