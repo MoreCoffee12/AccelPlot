@@ -58,7 +58,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
 
     //-------------------------------------------------------------------------
-	// Health monitor data
+	// Arduino accelerometer data
     //-------------------------------------------------------------------------
 	//
 	// This is the number of samples written to each file.
@@ -78,6 +78,13 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 	//-------------------------------------------------------------------------
 	public static final FileHelper fhelper = new FileHelper();
     private static boolean bWriteLocal = true;
+
+	//-------------------------------------------------------------------------
+	// Audio output
+	//-------------------------------------------------------------------------
+	public static boolean bAudioOut = false;
+	public static AudioHelper mAudioHelper = new AudioHelper();
+
 
 
 	public static void disconnect()

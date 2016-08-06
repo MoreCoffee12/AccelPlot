@@ -44,9 +44,6 @@ public class MainActivity extends Activity {
     // Data writing controls
     private boolean bWriteLocal = false;
 
-    // Audio out controls
-    private boolean bAudioOut = false;
-    private AudioHelper mAudioHelper = new AudioHelper();
     // debug
     private static final String strTag = MainActivity.class.getSimpleName();
 
@@ -223,7 +220,6 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 bWriteLocal = mStreamToggleButton.isChecked();
                 Bluetooth.vSetWriteLocal(bWriteLocal);
-//                Log.d(strTag, ":HM:                  Toggling bWriteLocal");
 
             }
         });
@@ -233,10 +229,8 @@ public class MainActivity extends Activity {
         tbAudioOut.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                bAudioOut = tbAudioOut.isChecked();
-                Log.d(strTag, ":HM:                            bAudioOut: " + bAudioOut);
-                mAudioHelper.vSetAudioOut(bAudioOut);
-//                Log.d(strTag, ":HM:                    Toggling bAudioOut");
+                Bluetooth.bAudioOut = tbAudioOut.isChecked();
+                Bluetooth.mAudioHelper.vSetAudioOut(Bluetooth.bAudioOut);
 
             }
         });
