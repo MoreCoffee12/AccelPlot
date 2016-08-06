@@ -384,7 +384,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 				try	{
 
 					// Read from the InputStream
-					dInStream.readFully(buffer,0,8);
+					dInStream.readFully(buffer,0,16);
 
 					// Parse through the bytes and validate
 					if(  bStreamData ){

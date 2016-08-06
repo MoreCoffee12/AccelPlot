@@ -22,7 +22,7 @@ public class MainActivity extends Activity {
     private static final int SCREEN_BUFFER_COUNT = 3000;
     private static final int LINE_THICKNESS = 3;
     private static final boolean CYCLIC = true;
-    private static final float F_SCALE_FACTOR = 1.0f/4045768.0f;
+    private static final float F_SCALE_FACTOR = 1.0f/4096.0f;
 
     // Grid controls. It works best if they are even numbers
     private int iDivisionsX = 4;
