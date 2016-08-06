@@ -17,7 +17,7 @@ import android.widget.ToggleButton;
 
 public class MainActivity extends Activity {
 
-    private static final int TRACE_COUNT = 4;
+    private static final int TRACE_COUNT = 3;
     private static final int CHART_COLUMN_COUNT = 1;
     private static final int SCREEN_BUFFER_COUNT = 3000;
     private static final int LINE_THICKNESS = 3;
