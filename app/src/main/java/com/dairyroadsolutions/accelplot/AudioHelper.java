@@ -4,6 +4,7 @@ import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 
+import android.os.SystemClock;
 import android.util.Log;
 
 
@@ -21,17 +22,64 @@ public class AudioHelper {
     private short[] buffer = null;
 
     boolean bAudioOut = false;
+    boolean bRunLoop = true;
 
     // debug
     private static final String strTag = MainActivity.class.getSimpleName();
 
 
-    private void vUpdateAudio(){
-        if( bAudioOut == true ){ AudioOut(); }
-    }
+    public  Thread t;
 
+
+    /**
+     * Constructor, here we get the thread started
+     */
     public AudioHelper(){
-                
+
+
+        t = new Thread() {
+            public void run() {
+                // set process priority
+//                setPriority(Thread.MAX_PRIORITY);
+                // set the buffer size
+                int buffsize = AudioTrack.getMinBufferSize(SAMPLE_RATE,
+                        AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
+
+
+                // create an audiotrack object
+                AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
+                        SAMPLE_RATE, AudioFormat.CHANNEL_OUT_MONO,
+                        AudioFormat.ENCODING_PCM_16BIT, buffsize,
+                        AudioTrack.MODE_STREAM);
+
+                short samples[] = new short[buffsize];
+                int amp = 10000;
+                double twopi = 8.*Math.atan(1.);
+                double fr = 440.f;
+                double ph = 0.0;
+
+                // start audio
+                audioTrack.play();
+                Log.i(strTag, ":HM:                          Playing audioTrack: ");
+
+                // synthesis loop
+                while(bRunLoop){
+                    fr =  440;
+                    for(int i=0; i < buffsize; i++){
+                        samples[i] = (short) (amp*Math.sin(ph));
+                        ph += twopi*fr/SAMPLE_RATE;
+                    }
+
+                    if( bAudioOut){
+                        audioTrack.write(samples, 0, buffsize);
+                    }
+
+                }
+                audioTrack.stop();
+                audioTrack.release();
+            }
+        };
+        t.start();
     }
 
     /**
@@ -41,39 +89,8 @@ public class AudioHelper {
     public void vSetAudioOut(boolean bAudioOutNew){
 
         bAudioOut = bAudioOutNew;
-        vUpdateAudio();
 
     }
 
-    public void AudioOut() {
-        AudioTrack at;
-        int buffsize = AudioTrack.getMinBufferSize(SAMPLE_RATE,
-                AudioFormat.CHANNEL_OUT_MONO,
-                AudioFormat.ENCODING_PCM_16BIT);
-        buffer = new short[buffsize];
-        fillbuf(buffsize);
-
-        at = new AudioTrack(AudioManager.STREAM_MUSIC, SAMPLE_RATE,
-                AudioFormat.CHANNEL_OUT_MONO,
-                AudioFormat.ENCODING_PCM_16BIT, buffsize<<1,
-                AudioTrack.MODE_STATIC);
-        at.write(buffer, 0, buffsize);
-
-
-
-        at.play();
-
-    }
-
-    void fillbuf(int bufsizsamps) {
-        double omega, t;
-        double dt = 1.0 / SAMPLE_RATE;
-        t = 0.0;
-        omega = (float) (2.0 * Math.PI * freqOfTone);
-        for (int i = 0; i < bufsizsamps; i++) {
-            buffer[i] = (short) (32000.0 * Math.sin(omega * t));
-            t += dt;
-        }
-    }
 
 }
