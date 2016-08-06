@@ -36,6 +36,7 @@ public class MainActivity extends Activity {
     private float fChOffset[];
     private static ToggleButton mStreamToggleButton;
     private static ToggleButton tbSaveData;
+    private static ToggleButton mAudioOutToggleButton;
     private static ToggleButton tbAudioOut;
 
     private FilterHelper filter = new FilterHelper();
@@ -232,7 +233,8 @@ public class MainActivity extends Activity {
         tbAudioOut.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                bAudioOut = mStreamToggleButton.isChecked();
+                bAudioOut = tbAudioOut.isChecked();
+                Log.d(strTag, ":HM:                            bAudioOut: " + bAudioOut);
                 mAudioHelper.vSetAudioOut(bAudioOut);
 //                Log.d(strTag, ":HM:                    Toggling bAudioOut");
 
