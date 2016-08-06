@@ -16,10 +16,6 @@ public class AudioHelper {
 
     private final static int SAMPLE_RATE = 44100;
 
-    private final static int ONE_DURATION = 32;
-    private final static int ZERO_DURATION = 8;
-    private final static int BIT_DURATION = 64;
-    private final static int DURATION = BIT_DURATION * 32;
     private final static float freqOfTone = 440.0f;
 
     private short[] buffer = null;
@@ -31,7 +27,11 @@ public class AudioHelper {
 
 
     private void vUpdateAudio(){
-        if( bAudioOut == true ){ beep(); }
+        if( bAudioOut == true ){ AudioOut(); }
+    }
+
+    public AudioHelper(){
+                
     }
 
     /**
@@ -45,24 +45,23 @@ public class AudioHelper {
 
     }
 
-    public void beep() {
+    public void AudioOut() {
         AudioTrack at;
-        int bufsizbytes = DURATION * SAMPLE_RATE / 1000;
-        int bufsizsamps = bufsizbytes / 2;
-        buffer = new short[bufsizsamps];
-        fillbuf(bufsizsamps);
+        int buffsize = AudioTrack.getMinBufferSize(SAMPLE_RATE,
+                AudioFormat.CHANNEL_OUT_MONO,
+                AudioFormat.ENCODING_PCM_16BIT);
+        buffer = new short[buffsize];
+        fillbuf(buffsize);
 
-        try {
-            at = new AudioTrack(AudioManager.STREAM_MUSIC, SAMPLE_RATE,
-                    AudioFormat.CHANNEL_OUT_MONO,
-                    AudioFormat.ENCODING_PCM_16BIT, bufsizbytes,
-                    AudioTrack.MODE_STATIC);
-//            at.setStereoVolume(1.0f, 1.0f);
-            at.write(buffer, 0, bufsizsamps);
-            at.play();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
+        at = new AudioTrack(AudioManager.STREAM_MUSIC, SAMPLE_RATE,
+                AudioFormat.CHANNEL_OUT_MONO,
+                AudioFormat.ENCODING_PCM_16BIT, buffsize<<1,
+                AudioTrack.MODE_STATIC);
+        at.write(buffer, 0, buffsize);
+
+
+
+        at.play();
 
     }
 
