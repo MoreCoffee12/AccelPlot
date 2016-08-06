@@ -45,7 +45,6 @@ public class MainActivity extends Activity {
 
     // Audio out controls
     private boolean bAudioOut = false;
-    private AudioHelper mAudioHelper;
 
     // debug
     private static final String strTag = MainActivity.class.getSimpleName();
@@ -234,7 +233,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 bAudioOut = mStreamToggleButton.isChecked();
-                mAudioHelper.vSetAudioOut(bAudioOut);
+                AudioHelper.vSetAudioOut(bAudioOut);
 //                Log.d(strTag, ":HM:                    Toggling bAudioOut");
 
             }
@@ -258,6 +257,7 @@ public class MainActivity extends Activity {
                 case Bluetooth.SUCCESS_DISCONNECT:
                     Toast.makeText(getApplicationContext(), "Disconnected!", Toast.LENGTH_LONG).show();
                     tbSaveData.setEnabled(false);
+                    tbAudioOut.setEnabled(false);
                     break;
 
                 case Bluetooth.SUCCESS_CONNECT:
@@ -265,6 +265,7 @@ public class MainActivity extends Activity {
                     Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_LONG).show();
                     Bluetooth.connectedThread.start();
                     tbSaveData.setEnabled(true);
+                    tbAudioOut.setEnabled(true);
                     break;
             }
 
