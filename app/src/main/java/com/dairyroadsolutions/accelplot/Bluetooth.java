@@ -83,7 +83,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 	// Audio output
 	//-------------------------------------------------------------------------
 	public static boolean bAudioOut = false;
-	public static AudioHelper mAudioHelper = new AudioHelper();
+	public static AudioHelper classAudioHelper = new AudioHelper();
 
 
 
@@ -443,6 +443,9 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                             classChartRenderer.classChart.addSample(fY_Accel[idxBuff]-4095f, 1);
                             classChartRenderer.classChart.addSample(fZ_Accel[idxBuff]-4095f, 2);
 //                            classChartRenderer.classChart.addSample(fX_Gyro[idxBuff]-4095f, 3);
+
+							// Throw the data to the audio output
+                            classAudioHelper.setFreqOfTone(2000+fX_Accel[idxBuff]/2.0f);
 
 //						    Log.i(strTag, ":HM:                           Buffer index: " + idxBuff);
 //                            Log.i(strTag, ":HM:                        X_Accel Address: " + iAddr[0] );

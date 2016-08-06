@@ -17,7 +17,7 @@ public class AudioHelper {
 
     private final static int SAMPLE_RATE = 44100;
 
-    private final static float freqOfTone = 440.0f;
+    private float freqOfTone = 2000f;
 
     private short[] buffer = null;
 
@@ -27,8 +27,16 @@ public class AudioHelper {
     // debug
     private static final String strTag = MainActivity.class.getSimpleName();
 
+    // thread object
+    private  Thread t;
 
-    public  Thread t;
+    public float getFreqOfTone() {
+        return freqOfTone;
+    }
+
+    public void setFreqOfTone(float freqOfTone) {
+        this.freqOfTone = freqOfTone;
+    }
 
 
     /**
@@ -55,22 +63,20 @@ public class AudioHelper {
                 short samples[] = new short[buffsize];
                 int amp = 10000;
                 double twopi = 8.*Math.atan(1.);
-                double fr = 440.f;
                 double ph = 0.0;
 
                 // start audio
                 audioTrack.play();
-                Log.i(strTag, ":HM:                          Playing audioTrack: ");
 
                 // synthesis loop
                 while(bRunLoop){
-                    fr =  440;
-                    for(int i=0; i < buffsize; i++){
-                        samples[i] = (short) (amp*Math.sin(ph));
-                        ph += twopi*fr/SAMPLE_RATE;
-                    }
-
                     if( bAudioOut){
+
+                        for(int i=0; i < buffsize; i++){
+                            samples[i] = (short) (amp*Math.sin(ph));
+                            ph += twopi*freqOfTone/SAMPLE_RATE;
+                        }
+
                         audioTrack.write(samples, 0, buffsize);
                     }
 
