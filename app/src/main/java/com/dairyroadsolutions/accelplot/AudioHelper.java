@@ -15,7 +15,7 @@ public class AudioHelper extends Activity {
 
     private int targetSamples = 1024;
     private int sample[] = new int[targetSamples];
-    private byte generatedSnd[] = new byte[targetSamples];
+    private byte generatedSnd[] = new byte[targetSamples<<1];
     private int sampleRate = 44100;
     private int numCycles;
     private int numSamples;
@@ -92,14 +92,14 @@ public class AudioHelper extends Activity {
         // assumes the sample buffer is normalized.
         int idx = 0;
         for (double dVal : sample) {
-//            // scale loudness by frequency
-//            double amplitude = (double) (32767 * 5/(Math.log(freqOfTone)));
-//            if (amplitude > 32767) amplitude = 32767;
-//            // scale signal to amplitude
-//            short val = (short) (dVal * amplitude);
-//            // in 16 bit wav PCM, first byte is the low order byte
-//            generatedSnd[idx++] = (byte) (val & 0x00ff);
-//            generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
+            // scale loudness by frequency
+            double amplitude = (double) (32767 * 5/(Math.log(freqOfTone)));
+            if (amplitude > 32767) amplitude = 32767;
+            // scale signal to amplitude
+            short val = (short) (dVal * amplitude);
+            // in 16 bit wav PCM, first byte is the low order byte
+            generatedSnd[idx++] = (byte) (val & 0x00ff);
+            generatedSnd[idx++] = (byte) ((val & 0xff00) >>> 8);
         }
     }
 
