@@ -69,41 +69,14 @@
         android:textColor="@color/white"
         android:layout_below="@id/tvControl"/>
 
-        <LinearLayout
-            android:id="@+id/LLX"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="100"
-            android:layout_below="@id/tbStream">
-
-            <Button
-                android:id="@+id/bXminus"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="50"
-                android:text="@string/chart_zoom_minus"
-                android:textSize="12sp"
-                android:textColor="@color/white"/>
-
-            <Button
-                android:id="@+id/bXplus"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="50"
-                android:text="@string/chart_zoom_plus"
-                android:textSize="12sp"
-                android:textColor="@color/white"/>
-        </LinearLayout>
-
-        <TextView
+         <TextView
             android:id="@+id/tvDataStorage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_datastorage"
             android:textSize="15sp"
             android:textColor="@color/white"
-            android:layout_below="@id/LLX"/>
+            android:layout_below="@id/tbStream"/>
 
         <ToggleButton
             android:id="@+id/tbSaveData"
