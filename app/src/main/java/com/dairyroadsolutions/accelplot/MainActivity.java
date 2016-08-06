@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
 
     // Audio out controls
     private boolean bAudioOut = false;
-
+    private AudioHelper mAudioHelper = new AudioHelper();
     // debug
     private static final String strTag = MainActivity.class.getSimpleName();
 
@@ -233,7 +233,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 bAudioOut = mStreamToggleButton.isChecked();
-                AudioHelper.vSetAudioOut(bAudioOut);
+                mAudioHelper.vSetAudioOut(bAudioOut);
 //                Log.d(strTag, ":HM:                    Toggling bAudioOut");
 
             }

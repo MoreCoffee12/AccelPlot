@@ -18,7 +18,7 @@ public class AudioHelper {
 
     private float freqOfTone = 440;
 
-    private static boolean bAudioOut = false;
+    private boolean bAudioOut = false;
 
     /**
      * toggle the audio out state
@@ -31,7 +31,7 @@ public class AudioHelper {
      * Set the audio out to true to started audio out
      * @param bAudioOutNew  True to turn on audio out
      */
-    public static void vSetAudioOut(boolean bAudioOutNew){
+    public void vSetAudioOut(boolean bAudioOutNew){
         bAudioOut = bAudioOutNew;
     }
 
