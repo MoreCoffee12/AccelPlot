@@ -81,7 +81,7 @@ public class FileHelper {
 
         // The filename and directory strings
         String strFileName = "Trace01_" + String.format("%07d", lFileIdx) + ".dat";
-        String strDir = "/HealthPlot";
+        String strDir = "/AccelPlot";
 
         // Call the generic function
         bFileToSD(strDir, strFileName, data);
@@ -110,26 +110,28 @@ public class FileHelper {
 
         // The filename and directory strings
         strFileName = "Trace01_" + String.format("%07d", lFileIdx) + ".dat";
-        strDir = "/HealthPlot";
+        strDir = "/AccelPlot";
         bFileToSD(strDir, strFileName, data01);
 
         // The filename and directory strings
         strFileName = "Trace02_" + String.format("%07d", lFileIdx) + ".dat";
-        strDir = "/HealthPlot";
+        strDir = "/AccelPlot";
         bFileToSD(strDir, strFileName, data02);
 
         // The filename and directory strings
         strFileName = "Trace03_" + String.format("%07d", lFileIdx) + ".dat";
-        strDir = "/HealthPlot";
+        strDir = "/AccelPlot";
         bFileToSD(strDir, strFileName, data03);
 
         // The filename and directory strings
         strFileName = "Trace04_" + String.format("%07d", lFileIdx) + ".dat";
-        strDir = "/HealthPlot";
+        strDir = "/AccelPlot";
         bFileToSD(strDir, strFileName, data04);
 
         // Increment the file index
         ++lFileIdx;
+
+//        Log.d(strTag, ":HM:                          Writing data");
 
         // Everything must have gone ok
         return true;

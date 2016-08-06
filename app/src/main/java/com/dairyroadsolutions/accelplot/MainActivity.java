@@ -7,6 +7,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,6 +41,10 @@ public class MainActivity extends Activity {
 
     // Data writing controls
     private boolean bWriteLocal = false;
+
+    // debug
+    private static final String strTag = MainActivity.class.getSimpleName();
+
 
 
     // Arduino values are stored in the Bluetooth.java object
@@ -207,6 +212,8 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 bWriteLocal = mStreamToggleButton.isChecked();
                 Bluetooth.vSetWriteLocal(bWriteLocal);
+//                Log.d(strTag, ":HM:                  Toggling bWriteLocal");
+
             }
         });
     }

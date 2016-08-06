@@ -62,7 +62,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
     //-------------------------------------------------------------------------
 	//
 	// This is the number of samples written to each file.
-	public static int iFileSampleCount = 262144;
+	public static int iFileSampleCount = 2048;
     public static final float[] fX_Accel = new float[iFileSampleCount];
     public static final float[] fY_Accel = new float[iFileSampleCount];
     public static final float[] fZ_Accel = new float[iFileSampleCount];

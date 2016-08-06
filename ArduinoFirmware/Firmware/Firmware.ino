@@ -102,10 +102,7 @@ void setup()
 
 void loop() 
 {
-  // To get this to fit in an Uno the timing will have to be polling, rather
-  // than interrupts.
-  timeLast = micros();
-  
+
   // Get the value from the MPU-6050 accelerometer and gyro
   mpu.getMotion6(&iX_Accel, &iY_Accel, &iZ_Accel, &iX_Gyro, &iY_Gyro, &iZ_Gyro);
   // Serial.println("Got new readings");
@@ -122,12 +119,6 @@ void loop()
   // X_Gyro, address 0x0003
   WriteData (iX_Gyro, 0x03);
   
-  // blink LED to indicate activity
-  blinkState = !blinkState;
-  digitalWrite(LED_PIN, blinkState);
-  
-  // Do nothing until the desired time has elapsed
-  delayMicroseconds(1000-(micros()-timeLast));
 }
 
 void WriteData (int16_t iData, unsigned int iAddr)
