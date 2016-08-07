@@ -50,13 +50,13 @@ public class AudioHelper {
 
                 // set the buffer size
                 int iBuffSize = AudioTrack.getMinBufferSize(SAMPLE_RATE,
-                        AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
+                        AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT);
                 iBuffSize = iBuffSize+1024;
 
 
                 // create an audiotrack object
                 AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
-                        SAMPLE_RATE, AudioFormat.CHANNEL_OUT_MONO,
+                        SAMPLE_RATE, AudioFormat.CHANNEL_OUT_STEREO,
                         AudioFormat.ENCODING_PCM_16BIT, iBuffSize,
                         AudioTrack.MODE_STREAM);
 
@@ -72,8 +72,9 @@ public class AudioHelper {
                 while(bRunLoop){
                     if( bAudioOut){
 
-                        for(int i=0; i < iBuffSize; i++){
+                        for(int i=0; i < iBuffSize; i +=2){
                             samples[i] = (short) (amp*Math.sin(ph));
+                            samples[i+1] = (short) (amp*Math.sin(ph));
                             ph += twopi*freqOfTone/SAMPLE_RATE;
                         }
 
