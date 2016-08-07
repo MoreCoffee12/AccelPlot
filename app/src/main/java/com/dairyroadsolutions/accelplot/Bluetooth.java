@@ -445,7 +445,8 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 //                            classChartRenderer.classChart.addSample(fX_Gyro[idxBuff]-4095f, 3);
 
 							// Throw the data to the audio output
-                            classAudioHelper.setFreqOfTone(2000+fX_Accel[idxBuff]/2.0f);
+                            classAudioHelper.setFreqOfTone(1000+fX_Accel[idxBuff]/2.0f,
+									1000+fY_Accel[idxBuff]/2.0f);
 
 //						    Log.i(strTag, ":HM:                           Buffer index: " + idxBuff);
 //                            Log.i(strTag, ":HM:                        X_Accel Address: " + iAddr[0] );
@@ -471,7 +472,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                         }
                         else
                         {
-                            Log.i(strTag, ":HM:                       Error check failed");
+//                            Log.i(strTag, ":HM:                       Error check failed");
 
                             // Skip a byte
                             dInStream.readByte();
