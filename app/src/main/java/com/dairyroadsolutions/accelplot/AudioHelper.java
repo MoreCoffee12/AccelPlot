@@ -48,10 +48,6 @@ public class AudioHelper {
         t = new Thread() {
             public void run() {
 
-                // Used to adjust the effective buffer size
-                int iNumCycles;
-                int iEffBuffSize;
-
                 // set the buffer size
                 int iBuffSize = AudioTrack.getMinBufferSize(SAMPLE_RATE,
                         AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
@@ -65,7 +61,7 @@ public class AudioHelper {
                         AudioTrack.MODE_STREAM);
 
                 short samples[] = new short[iBuffSize];
-                int amp = 10000;
+                int amp = 20000;
                 double twopi = 8.*Math.atan(1.);
                 double ph = 0.0;
 
@@ -76,21 +72,12 @@ public class AudioHelper {
                 while(bRunLoop){
                     if( bAudioOut){
 
-                        // To avoid clicks, calculate effective length of samples buffer to make
-                        // the audio transition evenly
-//                        Log.d(strTag, ":HM:                           freqOfTone: " + freqOfTone);
-                        iNumCycles = (int)(freqOfTone * (float)iBuffSize/(float)SAMPLE_RATE);
-//                        Log.d(strTag, ":HM:                           iNumCycles: " + iNumCycles);
-                        iEffBuffSize = (int)(iNumCycles * (float)SAMPLE_RATE/(float)freqOfTone);
-//                        Log.d(strTag, ":HM:                         iEffBuffSize: " + iEffBuffSize);
-//                        Log.d(strTag, ":HM:                            iBuffSize: " + iBuffSize);
-
-                        for(int i=0; i < iEffBuffSize; i++){
+                        for(int i=0; i < iBuffSize; i++){
                             samples[i] = (short) (amp*Math.sin(ph));
                             ph += twopi*freqOfTone/SAMPLE_RATE;
                         }
 
-                        audioTrack.write(samples, 0, iEffBuffSize);
+                        audioTrack.write(samples, 0, iBuffSize);
                     }
 
                 }
