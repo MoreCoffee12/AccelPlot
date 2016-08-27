@@ -402,9 +402,9 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 						// at each step and set to false if any of the tests fail
 						iErrorCount = iAddr[0];
 						fX_Accel[idxBuff] = (float)(iGetValue(buffer[0], buffer[1]));
-//                        Log.i(strTag, ":HM:                          X_Accel Error: " + iErrorCount);
-//                        Log.i(strTag, ":HM:                        X_Accel Address: " + iAddr[0] );
-//                        Log.i(strTag, ":HM:                               fX_Accel: " + fX_Accel[idxBuff] );
+                        Log.i(strTag, ":HM:                          X_Accel Error: " + iErrorCount);
+                        Log.i(strTag, ":HM:                        X_Accel Address: " + iAddr[0] );
+                        Log.i(strTag, ":HM:                               fX_Accel: " + fX_Accel[idxBuff] );
 
                         // Y_Accel, address 0x0001
                         iAddr[1] =  iGetAddr(buffer[3]);
@@ -412,9 +412,9 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                             ++iErrorCount;
                         }
                         fY_Accel[idxBuff] = (float)(iGetValue(buffer[2], buffer[3]));
-//                        Log.i(strTag, ":HM:                          Y_Accel Error: " + iErrorCount);
-//                        Log.i(strTag, ":HM:                        Y_Accel Address: " + iAddr[1] );
-//                        Log.i(strTag, ":HM:                               fY_Accel: " + fY_Accel[idxBuff] );
+                        Log.i(strTag, ":HM:                          Y_Accel Error: " + iErrorCount);
+                        Log.i(strTag, ":HM:                        Y_Accel Address: " + iAddr[1] );
+                        Log.i(strTag, ":HM:                               fY_Accel: " + fY_Accel[idxBuff] );
 
                         // Z_Accel, address 0x0002
                         iAddr[2] =  iGetAddr(buffer[5]);
@@ -446,7 +446,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
 							// Throw the data to the audio output
                             classAudioHelper.setFreqOfTone(1000+fX_Accel[idxBuff]/2.0f,
-									1000+fY_Accel[idxBuff]/2.0f);
+									1000+fZ_Accel[idxBuff]/2.0f);
 
 //						    Log.i(strTag, ":HM:                           Buffer index: " + idxBuff);
 //                            Log.i(strTag, ":HM:                        X_Accel Address: " + iAddr[0] );

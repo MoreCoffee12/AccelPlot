@@ -66,7 +66,8 @@ void setup()
     #endif
     
     // Initialize bluetooth
-    BTSerial.begin(57600);
+    //BTSerial.begin(57600);
+    BTSerial.begin(112500);
     delay(50);
   
     // initialize serial communication
