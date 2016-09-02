@@ -85,9 +85,84 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 	public static boolean bAudioOut = false;
 	public static AudioHelper classAudioHelper = new AudioHelper();
 
+    private static boolean bADC1ToCh1Out = false;
+    private static boolean bADC2ToCh1Out = false;
+    private static boolean bADC3ToCh1Out = false;
+    private static boolean bADC4ToCh1Out = false;
+    private static boolean bADC1ToCh2Out = false;
+    private static boolean bADC2ToCh2Out = false;
+    private static boolean bADC3ToCh2Out = false;
+    private static boolean bADC4ToCh2Out = false;
 
 
-	public static void disconnect()
+    // Getter and setter goodness below
+    public static boolean isbADC1ToCh1Out() {
+        return bADC1ToCh1Out;
+    }
+
+    public static void setbADC1ToCh1Out(boolean bADC1ToCh1Out) {
+        Bluetooth.bADC1ToCh1Out = bADC1ToCh1Out;
+    }
+
+    public static boolean isbADC2ToCh1Out() {
+        return bADC2ToCh1Out;
+    }
+
+    public static void setbADC2ToCh1Out(boolean bADC2ToCh1Out) {
+        Bluetooth.bADC2ToCh1Out = bADC2ToCh1Out;
+    }
+
+    public static boolean isbADC3ToCh1Out() {
+        return bADC3ToCh1Out;
+    }
+
+    public static void setbADC3ToCh1Out(boolean bADC3ToCh1Out) {
+        Bluetooth.bADC3ToCh1Out = bADC3ToCh1Out;
+    }
+
+    public static boolean isbADC4ToCh1Out() {
+        return bADC4ToCh1Out;
+    }
+
+    public static void setbADC4ToCh1Out(boolean bADC4ToCh1Out) {
+        Bluetooth.bADC4ToCh1Out = bADC4ToCh1Out;
+    }
+
+    public static boolean isbADC1ToCh2Out() {
+        return bADC1ToCh2Out;
+    }
+
+    public static void setbADC1ToCh2Out(boolean bADC1ToCh2Out) {
+        Bluetooth.bADC1ToCh2Out = bADC1ToCh2Out;
+    }
+
+    public static boolean isbADC2ToCh2Out() {
+        return bADC2ToCh2Out;
+    }
+
+    public static void setbADC2ToCh2Out(boolean bADC2ToCh2Out) {
+        Bluetooth.bADC2ToCh2Out = bADC2ToCh2Out;
+    }
+
+    public static boolean isbADC3ToCh2Out() {
+        return bADC3ToCh2Out;
+    }
+
+    public static void setbADC3ToCh2Out(boolean bADC3ToCh2Out) {
+        Bluetooth.bADC3ToCh2Out = bADC3ToCh2Out;
+    }
+
+    public static boolean isbADC4ToCh2Out() {
+        return bADC4ToCh2Out;
+    }
+
+    public static void setbADC4ToCh2Out(boolean bADC4ToCh2Out) {
+        Bluetooth.bADC4ToCh2Out = bADC4ToCh2Out;
+    }
+
+
+
+    public static void disconnect()
     {
         if (connectedThread != null)
         {
@@ -402,9 +477,9 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 						// at each step and set to false if any of the tests fail
 						iErrorCount = iAddr[0];
 						fX_Accel[idxBuff] = (float)(iGetValue(buffer[0], buffer[1]));
-                        Log.i(strTag, ":HM:                          X_Accel Error: " + iErrorCount);
-                        Log.i(strTag, ":HM:                        X_Accel Address: " + iAddr[0] );
-                        Log.i(strTag, ":HM:                               fX_Accel: " + fX_Accel[idxBuff] );
+//                        Log.i(strTag, ":HM:                          X_Accel Error: " + iErrorCount);
+//                        Log.i(strTag, ":HM:                        X_Accel Address: " + iAddr[0] );
+//                        Log.i(strTag, ":HM:                               fX_Accel: " + fX_Accel[idxBuff] );
 
                         // Y_Accel, address 0x0001
                         iAddr[1] =  iGetAddr(buffer[3]);
@@ -412,9 +487,9 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                             ++iErrorCount;
                         }
                         fY_Accel[idxBuff] = (float)(iGetValue(buffer[2], buffer[3]));
-                        Log.i(strTag, ":HM:                          Y_Accel Error: " + iErrorCount);
-                        Log.i(strTag, ":HM:                        Y_Accel Address: " + iAddr[1] );
-                        Log.i(strTag, ":HM:                               fY_Accel: " + fY_Accel[idxBuff] );
+//                        Log.i(strTag, ":HM:                          Y_Accel Error: " + iErrorCount);
+//                        Log.i(strTag, ":HM:                        Y_Accel Address: " + iAddr[1] );
+//                        Log.i(strTag, ":HM:                               fY_Accel: " + fY_Accel[idxBuff] );
 
                         // Z_Accel, address 0x0002
                         iAddr[2] =  iGetAddr(buffer[5]);

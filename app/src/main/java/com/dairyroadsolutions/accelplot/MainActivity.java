@@ -111,6 +111,10 @@ public class MainActivity extends Activity {
         Bluetooth.samplesBuffer=new SamplesBuffer[TRACE_COUNT];
         Bluetooth.vSetWriteLocal(bWriteLocal);
 
+        // Flags for the data stream button
+        mStreamToggleButton = (ToggleButton)findViewById(R.id.tbStream);
+        mStreamToggleButton.setEnabled(false);
+
         // Flags for the data save button
         tbSaveData = (ToggleButton)findViewById(R.id.tbSaveData);
         tbSaveData.setEnabled(false);
@@ -172,7 +176,6 @@ public class MainActivity extends Activity {
         final ToggleButton tglbtnScroll;
 
         // Configure the stream data button
-        mStreamToggleButton = (ToggleButton)findViewById(R.id.tbStream);
         mStreamToggleButton.setOnClickListener(new OnClickListener() {
 
             @Override
@@ -251,6 +254,7 @@ public class MainActivity extends Activity {
 
                 case Bluetooth.SUCCESS_DISCONNECT:
                     Toast.makeText(getApplicationContext(), "Disconnected!", Toast.LENGTH_LONG).show();
+                    mStreamToggleButton.setEnabled(false);
                     tbSaveData.setEnabled(false);
                     tbAudioOut.setEnabled(false);
                     break;
@@ -259,6 +263,7 @@ public class MainActivity extends Activity {
                     Bluetooth.connectedThread = new Bluetooth.ConnectedThread((BluetoothSocket)msg.obj);
                     Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_LONG).show();
                     Bluetooth.connectedThread.start();
+                    mStreamToggleButton.setEnabled(true);
                     tbSaveData.setEnabled(true);
                     tbAudioOut.setEnabled(true);
                     break;
