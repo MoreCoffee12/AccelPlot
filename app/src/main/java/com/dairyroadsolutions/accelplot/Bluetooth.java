@@ -258,12 +258,12 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                                 if (device.getName().equals(pairedDevices.get(a))) {
                                     //append
                                     s = "(Paired)";
+                                    listAdapter.add(device.getName() + " " + s + " " + "\n" + device.getAddress());
                                     break;
                                 }
                             }
                         }
 
-                        listAdapter.add(device.getName() + " " + s + " " + "\n" + device.getAddress());
 
                     }catch (Exception e) {
                         Log.e(":HM:", "exception", e);
