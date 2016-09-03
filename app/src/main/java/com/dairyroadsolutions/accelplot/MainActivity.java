@@ -169,6 +169,41 @@ public class MainActivity extends Activity {
         Bluetooth.gethandler(mUpdateHandler);
     }
 
+
+    /**
+     * When streaming stops, this need to be halted as well
+     */
+    private void vStopStreamDep(){
+
+        tbSaveData.setChecked(false);
+        tbSaveData.setEnabled(false);
+        vUpdateSaveData();
+
+        tbAudioOut.setChecked(false);
+        tbAudioOut.setEnabled(false);
+        vUpdateAudioOut();
+
+    }
+
+    /**
+     * Handles process that should be affected by change in the SaveData button status
+     */
+    private void vUpdateSaveData(){
+        bWriteLocal = mStreamToggleButton.isChecked();
+        Bluetooth.vSetWriteLocal(bWriteLocal);
+    }
+
+    /**
+     * Handles process that change with the AudioOut button status
+     */
+    private void vUpdateAudioOut(){
+        Bluetooth.bAudioOut = tbAudioOut.isChecked();
+        Bluetooth.classAudioHelper.vSetAudioOut(Bluetooth.bAudioOut);
+    }
+
+    /**
+     * This initializes the button controls
+     */
     private void ButtonInit(){
 
         Button btnConnectButton;
@@ -180,9 +215,20 @@ public class MainActivity extends Activity {
 
             @Override
             public void onClick(View v) {
+
+                // This section handles the thread
                 if (Bluetooth.connectedThread != null)
                 {
                     Bluetooth.bStreamData = mStreamToggleButton.isChecked();
+                }
+
+                // This section handles the dependant buttons
+                if (mStreamToggleButton.isChecked() == true){
+                    tbSaveData.setEnabled(true);
+                    tbAudioOut.setEnabled(true);
+
+                }else{
+                    vStopStreamDep();
                 }
             }
 
@@ -210,6 +256,7 @@ public class MainActivity extends Activity {
                 mStreamToggleButton.setChecked(false);
                 Bluetooth.bStreamData = false;
                 Bluetooth.disconnect();
+                vStopStreamDep();
             }
 
 
@@ -220,9 +267,7 @@ public class MainActivity extends Activity {
         tbSaveData.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                bWriteLocal = mStreamToggleButton.isChecked();
-                Bluetooth.vSetWriteLocal(bWriteLocal);
-
+                vUpdateSaveData();
             }
         });
 
@@ -231,9 +276,7 @@ public class MainActivity extends Activity {
         tbAudioOut.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bluetooth.bAudioOut = tbAudioOut.isChecked();
-                Bluetooth.classAudioHelper.vSetAudioOut(Bluetooth.bAudioOut);
-
+                vUpdateAudioOut();
             }
         });
     }
@@ -255,8 +298,6 @@ public class MainActivity extends Activity {
                 case Bluetooth.SUCCESS_DISCONNECT:
                     Toast.makeText(getApplicationContext(), "Disconnected!", Toast.LENGTH_LONG).show();
                     mStreamToggleButton.setEnabled(false);
-                    tbSaveData.setEnabled(false);
-                    tbAudioOut.setEnabled(false);
                     break;
 
                 case Bluetooth.SUCCESS_CONNECT:
@@ -264,8 +305,6 @@ public class MainActivity extends Activity {
                     Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_LONG).show();
                     Bluetooth.connectedThread.start();
                     mStreamToggleButton.setEnabled(true);
-                    tbSaveData.setEnabled(true);
-                    tbAudioOut.setEnabled(true);
                     break;
             }
 
