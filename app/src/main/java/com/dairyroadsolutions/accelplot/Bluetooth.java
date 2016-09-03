@@ -440,6 +440,8 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 			int iErrorCount;
             int iTemp;
             double dTemp;
+			float fCh1Out;
+			float fCh2Out;
 
             // Filter coefficient arrays
             double dA[] =  new double[FilterHelper.MAXKERNELSIZE];
@@ -520,8 +522,16 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 //                            classChartRenderer.classChart.addSample(fX_Gyro[idxBuff]-4095f, 3);
 
 							// Throw the data to the audio output
-                            classAudioHelper.setFreqOfTone(1000+fX_Accel[idxBuff]/2.0f,
-									1000+fZ_Accel[idxBuff]/2.0f);
+							fCh1Out = ((bADC1ToCh1Out ? 1.0f: 0.0f) *fX_Accel[idxBuff])+
+                                ((bADC2ToCh1Out ? 1.0f: 0.0f) *fY_Accel[idxBuff])+
+                                ((bADC3ToCh1Out ? 1.0f: 0.0f) *fZ_Accel[idxBuff])+
+                                ((bADC4ToCh1Out ? 1.0f: 0.0f) *fX_Gyro[idxBuff]);
+                            fCh2Out = ((bADC1ToCh2Out ? 1.0f: 0.0f) *fX_Accel[idxBuff])+
+                                ((bADC2ToCh2Out ? 1.0f: 0.0f) *fY_Accel[idxBuff])+
+                                ((bADC3ToCh2Out ? 1.0f: 0.0f) *fZ_Accel[idxBuff])+
+                                ((bADC4ToCh2Out ? 1.0f: 0.0f) *fX_Gyro[idxBuff]);
+                            classAudioHelper.setFreqOfTone(1000.0f+fCh1Out/2.0f,
+									1000.0f+fCh2Out/2.0f);
 
 //						    Log.i(strTag, ":HM:                           Buffer index: " + idxBuff);
 //                            Log.i(strTag, ":HM:                        X_Accel Address: " + iAddr[0] );

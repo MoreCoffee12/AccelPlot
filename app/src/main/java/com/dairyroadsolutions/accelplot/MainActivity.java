@@ -123,6 +123,10 @@ public class MainActivity extends Activity {
         tbAudioOut = (ToggleButton)findViewById(R.id.tbAudioOut);
         tbAudioOut.setEnabled(false);
 
+        // Initialze audio mappings
+        Bluetooth.setbADC1ToCh1Out(true);
+        Bluetooth.setbADC2ToCh2Out(true);
+
         classTraceHelper = new TraceHelper(TRACE_COUNT);
 
         for(int i=0;i< TRACE_COUNT;i++)
