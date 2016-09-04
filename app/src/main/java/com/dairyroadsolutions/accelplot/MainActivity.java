@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -197,6 +198,23 @@ public class MainActivity extends Activity {
         Bluetooth.vSetWriteLocal(bWriteLocal);
     }
 
+    public void onRadioButtonCh1Clicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.radio_ADC1_Ch1:
+                if (checked)
+                    // Pirates are the best
+                    break;
+            case R.id.radio_ADC2_Ch1:
+                if (checked)
+                    // Ninjas rule
+                    break;
+        }
+    }
+
     /**
      * Handles process that change with the AudioOut button status
      */
@@ -283,6 +301,7 @@ public class MainActivity extends Activity {
                 vUpdateAudioOut();
             }
         });
+
     }
 
     @Override

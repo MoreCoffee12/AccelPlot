@@ -18,6 +18,10 @@
     <string name="label_audioout">Audio Out</string>
     <string name="textoff_audioout">Enable Audio</string>
     <string name="texton_audioout">Stop Audio</string>
+    <string name="radio_ADC1_Ch1">X Acc</string>
+    <string name="radio_ADC2_Ch1">Y Accel</string>
+    <string name="radio_ADC3_Ch1">Z Accel</string>
+    <string name="radio_ADC4_Ch1">X Gyro</string>
 
     <string name="chart_control_label">Control</string>
     <string name="chart_zoom_minus">-</string>

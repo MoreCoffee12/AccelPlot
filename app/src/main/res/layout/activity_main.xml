@@ -88,6 +88,30 @@
             android:textColor="@color/white"
             android:layout_below="@id/tvDataStorage"/>
 
+        
+        <RadioGroup
+            android:id="@+id/radio_ADC_to_Ch"
+            android:layout_below="@id/tbSaveData"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioButton android:id="@+id/radio_ADC1_Ch1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/radio_ADC1_Ch1"
+                android:textColor="@color/white"
+                android:buttonTint="@color/white"
+                android:onClick="onRadioButtonCh1Clicked"/>
+            <RadioButton android:id="@+id/radio_ADC2_Ch1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/radio_ADC2_Ch1"
+                android:textColor="@color/white"
+                android:buttonTint="@color/white"
+                android:onClick="onRadioButtonCh1Clicked"/>
+        </RadioGroup>
+
         <TextView
             android:id="@+id/tvAudioOut"
             android:layout_width="wrap_content"
@@ -95,7 +119,7 @@
             android:text="@string/label_audioout"
             android:textSize="15sp"
             android:textColor="@color/white"
-            android:layout_below="@id/tbSaveData"/>
+            android:layout_below="@id/radio_ADC_to_Ch"/>
 
         <ToggleButton
             android:id="@+id/tbAudioOut"
