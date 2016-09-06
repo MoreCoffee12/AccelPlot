@@ -13,6 +13,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -36,8 +37,8 @@ public class MainActivity extends Activity {
     private float fChOffset[];
     private static ToggleButton mStreamToggleButton;
     private static ToggleButton tbSaveData;
-    private static ToggleButton mAudioOutToggleButton;
     private static ToggleButton tbAudioOut;
+    private static RadioGroup rgCh1;
 
     private FilterHelper filter = new FilterHelper();
 
@@ -198,7 +199,7 @@ public class MainActivity extends Activity {
         Bluetooth.vSetWriteLocal(bWriteLocal);
     }
 
-    public void onRadioButtonCh1Clicked(View view) {
+    private void rgCh1Update(View view) {
         // Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();
 
@@ -290,6 +291,15 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 vUpdateSaveData();
+            }
+        });
+
+        // Configure the channel 1 radio buttons
+        rgCh1 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch1);
+        rgCh1.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rgCh1Update(v);
             }
         });
 

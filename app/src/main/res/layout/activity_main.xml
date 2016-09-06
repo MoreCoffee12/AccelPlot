@@ -11,8 +11,7 @@
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:layout_weight="15"
-        android:background="#FF000000"/>
+        android:layout_weight="15"/>
     
 
     <RelativeLayout
@@ -20,8 +19,7 @@
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_weight="85"
-        android:orientation="vertical"
-        android:background="#FF000000">
+        android:orientation="vertical">
 
 
         <TextView
@@ -75,7 +73,6 @@
             android:layout_height="wrap_content"
             android:text="@string/label_datastorage"
             android:textSize="15sp"
-            android:textColor="@color/white"
             android:layout_below="@id/tbStream"/>
 
         <ToggleButton
@@ -88,28 +85,24 @@
             android:textColor="@color/white"
             android:layout_below="@id/tvDataStorage"/>
 
-        
+
         <RadioGroup
-            android:id="@+id/radio_ADC_to_Ch"
+            android:id="@+id/radio_ADC_to_Ch1"
             android:layout_below="@id/tbSaveData"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <RadioButton android:id="@+id/radio_ADC1_Ch1"
+                style="@style/AppTheme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/radio_ADC1_Ch1"
-                android:textColor="@color/white"
-                android:buttonTint="@color/white"
-                android:onClick="onRadioButtonCh1Clicked"/>
+                android:text="@string/radio_ADC1_Ch1"/>
+
             <RadioButton android:id="@+id/radio_ADC2_Ch1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/radio_ADC2_Ch1"
-                android:textColor="@color/white"
-                android:buttonTint="@color/white"
-                android:onClick="onRadioButtonCh1Clicked"/>
+                android:text="@string/radio_ADC2_Ch1"/>
         </RadioGroup>
 
         <TextView
@@ -119,7 +112,7 @@
             android:text="@string/label_audioout"
             android:textSize="15sp"
             android:textColor="@color/white"
-            android:layout_below="@id/radio_ADC_to_Ch"/>
+            android:layout_below="@id/radio_ADC_to_Ch1"/>
 
         <ToggleButton
             android:id="@+id/tbAudioOut"
