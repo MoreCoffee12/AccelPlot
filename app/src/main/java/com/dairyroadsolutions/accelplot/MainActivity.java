@@ -244,6 +244,7 @@ public class MainActivity extends Activity {
      */
     private void vUpdateChMaps(){
 
+        // Pick out the radio groups
         rgCh1 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch1);
         rgCh2 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch2);
 
