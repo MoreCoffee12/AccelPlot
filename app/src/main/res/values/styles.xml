@@ -4,10 +4,13 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
 
-        <item name="colorPrimary">@color/primary_material_light</item>
+        <item name="colorPrimary">@color/primary_material_dark</item>
         <item name="android:colorBackground">@color/background_material_dark</item>
+        <item name="android:textColorPrimary">@color/abc_primary_text_material_light</item>
     </style>
 
-    <style name="Theme.Black.NoTitleBar.AppTheme" parent="android:Theme.Black.NoTitleBar" />
+    <style name="Theme.Black.NoTitleBar.AppTheme" parent="android:Theme.Black.NoTitleBar" >
+        <item name="android:colorBackground">@color/black</item>
+    </style>
 
 </resources>

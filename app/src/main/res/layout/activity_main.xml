@@ -27,16 +27,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text= "@string/bluetooth_label"
-        android:textSize="15sp"
-        android:textColor="@color/white"/>
+        android:textSize="15sp"/>
 
     <Button
         android:id="@+id/bConnect"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:text="@string/bluetooth_connect"
-        android:textSize="12sp"
-        android:textColor="@color/white"
         android:layout_below="@id/tvBluetooth"/>
 
     <Button
@@ -44,8 +41,6 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:text="@string/bluetooth_disconnect"
-        android:textSize="12sp"
-        android:textColor="@color/white"
         android:layout_below="@id/bConnect"/>
 
     <TextView
@@ -54,7 +49,6 @@
         android:layout_height="wrap_content"
         android:text="@string/chart_control_label"
         android:textSize="15sp"
-        android:textColor="@color/white"
         android:layout_below="@id/bDisconnect"/>
 
     <ToggleButton
@@ -64,7 +58,6 @@
         android:checked="false"
         android:textOff="Start Stream"
         android:textOn="Start Stream"
-        android:textColor="@color/white"
         android:layout_below="@id/tvControl"/>
 
          <TextView
@@ -82,7 +75,6 @@
             android:checked="false"
             android:textOff="@string/textoff_savedata"
             android:textOn="@string/texton_savedata"
-            android:textColor="@color/white"
             android:layout_below="@id/tvDataStorage"/>
 
 
@@ -111,7 +103,6 @@
             android:layout_height="wrap_content"
             android:text="@string/label_audioout"
             android:textSize="15sp"
-            android:textColor="@color/white"
             android:layout_below="@id/radio_ADC_to_Ch1"/>
 
         <ToggleButton
@@ -121,7 +112,6 @@
             android:checked="false"
             android:textOff="@string/textoff_audioout"
             android:textOn="@string/texton_audioout"
-            android:textColor="@color/white"
             android:layout_below="@id/tvAudioOut"/>
 
     </RelativeLayout>
