@@ -56,8 +56,8 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:checked="false"
-        android:textOff="Start Stream"
-        android:textOn="Start Stream"
+        android:textOff="@string/stream_start"
+        android:textOn="@string/stream_stop"
         android:layout_below="@id/tvControl"/>
 
          <TextView

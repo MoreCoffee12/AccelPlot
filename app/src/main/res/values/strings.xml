@@ -8,6 +8,8 @@
     <string name="bluetooth_connect">Connect</string>
     <string name="bluetooth_disconnect">Disconnect</string>
     <string name="label_control">Controls</string>
+    <string name="stream_start">Start Stream</string>
+    <string name="stream_stop">Stop Stream</string>
     <string name="scroll_x_on">Lock X</string>
     <string name="scroll_x_off">Scroll X</string>
 
