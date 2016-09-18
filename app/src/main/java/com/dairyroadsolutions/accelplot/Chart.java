@@ -92,11 +92,11 @@ public class Chart {
 	void setColors()
 	{
 
-		for( int idx = 0; idx< iTraceCount; ++idx){
-			graphColor[idx]=new GraphColor( 255-(200*( (int)((float)idx/1.0f) % 2)),
-                                            255-(255*( (int)((float)idx/2.0f) % 2)),
-                                            255*( (int)((float)idx/3.0f) % 2));
-		}
+        for( int idx = 0; idx< iTraceCount; ++idx){
+            graphColor[idx]=new GraphColor( 255-(200*( (int)((float)(idx+1)/1.0f) % 2)),
+                    255-(255*( (int)((float)(idx+1)/2.0f) % 2)),
+                    255*( (int)((float)(idx+1)/3.0f) % 2));
+        }
 
 	}
 
