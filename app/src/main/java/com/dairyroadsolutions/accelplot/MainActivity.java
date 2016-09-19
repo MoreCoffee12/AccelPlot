@@ -7,6 +7,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -127,9 +128,12 @@ public class MainActivity extends Activity {
         tbAudioOut.setEnabled(false);
 
         // Initialze audio mappings
+        rgCh1 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch1);
+        rgCh2 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch2);
         Bluetooth.setbADC1ToCh1Out(true);
         Bluetooth.setbADC2ToCh2Out(true);
         vUpdateChMaps();
+        vUpdateChMapsEnabled(false);
 
         classTraceHelper = new TraceHelper(TRACE_COUNT);
 
@@ -187,6 +191,7 @@ public class MainActivity extends Activity {
         tbSaveData.setEnabled(false);
         vUpdateSaveData();
 
+        vUpdateChMapsEnabled(false);
         tbAudioOut.setChecked(false);
         tbAudioOut.setEnabled(false);
         vUpdateAudioOut();
@@ -201,52 +206,10 @@ public class MainActivity extends Activity {
         Bluetooth.vSetWriteLocal(bWriteLocal);
     }
 
-    private void rgCh1Update(View view) {
-        // Is the button now checked?
-        boolean checked = ((RadioButton) view).isChecked();
-
-        // Check which radio button was clicked
-        switch(view.getId()) {
-            case R.id.radio_ADC1_Ch1:
-                if (checked)
-                    // Pirates are the best
-                    break;
-            case R.id.radio_ADC2_Ch1:
-                if (checked)
-                    // Ninjas rule
-                    break;
-        }
-    }
-
-    /**
-     * Update the channel 2 audio out options
-     * @param view  View with the controls
-     */
-    private void rgCh2Update(View view) {
-        // Is the button now checked?
-        boolean checked = ((RadioButton) view).isChecked();
-
-        // Check which radio button was clicked
-        switch(view.getId()) {
-            case R.id.radio_ADC1_Ch2:
-                if (checked)
-                    // Pirates are the best
-                    break;
-            case R.id.radio_ADC2_Ch2:
-                if (checked)
-                    // Ninjas rule
-                    break;
-        }
-    }
-
     /**
      * Update the radio buttons to reflect the internal state of the Bluetooth buttons.
      */
     private void vUpdateChMaps(){
-
-        // Pick out the radio groups
-        rgCh1 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch1);
-        rgCh2 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch2);
 
         // Channel 1
         if(Bluetooth.isbADC1ToCh1Out()){
@@ -270,6 +233,26 @@ public class MainActivity extends Activity {
             rgCh2.check(R.id.radio_ADC3_Ch2);
         }
         return;
+    }
+
+    /**
+     * Toggles the enabled status of the audio channel mapping buttons
+     * @param bEnabled  New enabled status value
+     */
+    private void vUpdateChMapsEnabled(boolean bEnabled){
+
+        int iRadBut = rgCh1.getChildCount();
+        RadioButton rbTemp;
+
+        for (int iBut=0; iBut<iRadBut; iBut++){
+            rbTemp = ((RadioButton) rgCh1.getChildAt(iBut));
+            rbTemp.setEnabled( bEnabled );
+        }
+
+        for (int iBut=0; iBut<iRadBut; iBut++){
+            rbTemp = ((RadioButton) rgCh2.getChildAt(iBut));
+            rbTemp.setEnabled( bEnabled );
+        }
     }
 
 
@@ -305,6 +288,7 @@ public class MainActivity extends Activity {
                 // This section handles the dependant buttons
                 if (mStreamToggleButton.isChecked() == true){
                     tbSaveData.setEnabled(true);
+                    vUpdateChMapsEnabled(true);
                     tbAudioOut.setEnabled(true);
 
                 }else{
@@ -352,20 +336,64 @@ public class MainActivity extends Activity {
         });
 
         // Configure the channel 1 radio buttons
-        rgCh1 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch1);
-        rgCh1.setOnClickListener(new OnClickListener() {
+        rgCh1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
             @Override
-            public void onClick(View v) {
-                rgCh1Update(v);
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                // Check which radio button was clicked
+                switch(checkedId) {
+                    case R.id.radio_ADC1_Ch1:
+                        Bluetooth.setbADC1ToCh1Out(true);
+                        Bluetooth.setbADC2ToCh1Out(false);
+                        Bluetooth.setbADC3ToCh1Out(false);
+//                        Log.d(strTag, ":HM:                     ADC1_Ch1 Active: ");
+                        break;
+                    case R.id.radio_ADC2_Ch1:
+                        Bluetooth.setbADC1ToCh1Out(false);
+                        Bluetooth.setbADC2ToCh1Out(true);
+                        Bluetooth.setbADC3ToCh1Out(false);
+//                        Log.d(strTag, ":HM:                     ADC2_Ch1 Active: ");
+                        break;
+                    case R.id.radio_ADC3_Ch1:
+                        Bluetooth.setbADC1ToCh1Out(false);
+                        Bluetooth.setbADC2ToCh1Out(false);
+                        Bluetooth.setbADC3ToCh1Out(true);
+//                        Log.d(strTag, ":HM:                     ADC3_Ch1 Active: ");
+                        break;
+                }
+
             }
         });
 
         // Configure the channel 2 radio buttons
-        rgCh2 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch2);
-        rgCh2.setOnClickListener(new OnClickListener() {
+        rgCh2.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
             @Override
-            public void onClick(View v) {
-                rgCh2Update(v);
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                // Check which radio button was clicked
+                switch(checkedId) {
+                    case R.id.radio_ADC1_Ch2:
+                        Bluetooth.setbADC1ToCh2Out(true);
+                        Bluetooth.setbADC2ToCh2Out(false);
+                        Bluetooth.setbADC3ToCh2Out(false);
+//                        Log.d(strTag, ":HM:                     ADC1_Ch2 Active: ");
+                        break;
+                    case R.id.radio_ADC2_Ch2:
+                        Bluetooth.setbADC1ToCh2Out(false);
+                        Bluetooth.setbADC2ToCh2Out(true);
+                        Bluetooth.setbADC3ToCh2Out(false);
+//                        Log.d(strTag, ":HM:                     ADC2_Ch2 Active: ");
+                        break;
+                    case R.id.radio_ADC3_Ch2:
+                        Bluetooth.setbADC1ToCh2Out(false);
+                        Bluetooth.setbADC2ToCh2Out(false);
+                        Bluetooth.setbADC3ToCh2Out(true);
+//                        Log.d(strTag, ":HM:                     ADC3_Ch2 Active: ");
+                        break;
+                }
+
             }
         });
 
