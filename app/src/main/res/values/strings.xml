@@ -24,6 +24,14 @@
     <string name="radio_ADC2">Y </string>
     <string name="radio_ADC3">Z </string>
     <string name="radio_ADC4">X Gyro</string>
+    <string name="radio_ADC1_Ch1">X_Ch</string>
+    <string name="radio_ADC2_Ch1">Y_Ch</string>
+    <string name="radio_ADC3_Ch1">Z_Ch</string>
+    <string name="radio_ADC4_Ch1">X Gyro_Ch1</string>
+    <string name="radio_ADC1_Ch2">X_Ch2</string>
+    <string name="radio_ADC2_Ch2">Y_Ch2</string>
+    <string name="radio_ADC3_Ch2">Z_Ch2</string>
+    <string name="radio_ADC4_Ch2">X Gyro_Ch2</string>
     <string name="radio_labelCh1">Ch1</string>
     <string name="radio_labelCh2">Ch2</string>
 

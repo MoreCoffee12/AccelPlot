@@ -2,7 +2,9 @@ package com.dairyroadsolutions.accelplot;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
@@ -50,7 +52,8 @@ public class MainActivity extends Activity {
     // debug
     private static final String strTag = MainActivity.class.getSimpleName();
 
-
+    // Application preferences
+    private static SharedPreferences sharedPref;
 
     // Arduino values are stored in the Bluetooth.java object
 
@@ -111,6 +114,9 @@ public class MainActivity extends Activity {
 
         mControlLayer.addView(mChartSurfaceView);
 
+        // User prefs
+        sharedPref = getPreferences(Context.MODE_PRIVATE);
+
         // Flags and initialization of the BlueTooth object
         Bluetooth.samplesBuffer=new SamplesBuffer[TRACE_COUNT];
         Bluetooth.vSetWriteLocal(bWriteLocal);
@@ -130,9 +136,7 @@ public class MainActivity extends Activity {
         // Initialze audio mappings
         rgCh1 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch1);
         rgCh2 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch2);
-        Bluetooth.setbADC1ToCh1Out(true);
-        Bluetooth.setbADC2ToCh2Out(true);
-        vUpdateChMaps();
+        vGetUserPrefs();
         vUpdateChMapsEnabled(false);
 
         classTraceHelper = new TraceHelper(TRACE_COUNT);
@@ -257,6 +261,39 @@ public class MainActivity extends Activity {
 
 
     /**
+     * Get the user preferences
+     */
+    private void vGetUserPrefs(){
+
+        Bluetooth.setbADC1ToCh1Out(sharedPref.getBoolean(getString(R.string.radio_ADC1_Ch1), true));
+        Bluetooth.setbADC2ToCh1Out(sharedPref.getBoolean(getString(R.string.radio_ADC2_Ch1), true));
+        Bluetooth.setbADC3ToCh1Out(sharedPref.getBoolean(getString(R.string.radio_ADC3_Ch1), true));
+
+        Bluetooth.setbADC1ToCh2Out(sharedPref.getBoolean(getString(R.string.radio_ADC1_Ch2), true));
+        Bluetooth.setbADC2ToCh2Out(sharedPref.getBoolean(getString(R.string.radio_ADC2_Ch2), true));
+        Bluetooth.setbADC3ToCh2Out(sharedPref.getBoolean(getString(R.string.radio_ADC3_Ch2), true));
+
+        vUpdateChMaps();
+
+    }
+    /**
+     * Update the user preferences
+     */
+    private void vUpdateUserPrefs(){
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(getString(R.string.radio_ADC1_Ch1), Bluetooth.isbADC1ToCh1Out());
+        editor.putBoolean(getString(R.string.radio_ADC2_Ch1), Bluetooth.isbADC2ToCh1Out());
+        editor.putBoolean(getString(R.string.radio_ADC3_Ch1), Bluetooth.isbADC3ToCh1Out());
+        editor.putBoolean(getString(R.string.radio_ADC1_Ch2), Bluetooth.isbADC1ToCh2Out());
+        editor.putBoolean(getString(R.string.radio_ADC2_Ch2), Bluetooth.isbADC2ToCh2Out());
+        editor.putBoolean(getString(R.string.radio_ADC3_Ch2), Bluetooth.isbADC3ToCh2Out());
+        editor.commit();
+
+    }
+
+
+    /**
      * Handles process that change with the AudioOut button status
      */
     private void vUpdateAudioOut(){
@@ -363,6 +400,8 @@ public class MainActivity extends Activity {
                         break;
                 }
 
+                vUpdateUserPrefs();
+
             }
         });
 
@@ -393,6 +432,8 @@ public class MainActivity extends Activity {
 //                        Log.d(strTag, ":HM:                     ADC3_Ch2 Active: ");
                         break;
                 }
+
+                vUpdateUserPrefs();
 
             }
         });
