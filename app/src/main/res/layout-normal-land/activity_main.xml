@@ -1,0 +1,227 @@
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    android:baselineAligned="false"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/Chart"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="30"/>
+
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnCount="2"
+            android:rowCount="9"
+            android:layout_weight="70">
+
+            <TextView
+                android:id="@+id/tvBluetooth"
+                android:layout_height="wrap_content"
+                android:text= "@string/bluetooth_label"
+                android:textStyle="bold"
+                android:layout_column="0"
+                android:layout_row="0"
+                android:textSize="12sp"/>
+
+            <Button
+                android:id="@+id/bConnect"
+                android:layout_height="35dp"
+                android:text="@string/bluetooth_connect"
+                android:layout_column="0"
+                android:layout_row="1"
+                android:layout_gravity="start|fill_horizontal"
+                android:textSize="12sp"/>
+
+
+            <Button
+                android:id="@+id/bDisconnect"
+                android:layout_height="35dp"
+                android:text="@string/bluetooth_disconnect"
+                android:textSize="12sp"
+                android:layout_column="0"
+                android:layout_row="2"
+                android:layout_gravity="start|fill_horizontal"
+                />
+
+
+            <TextView
+                android:id="@+id/tvControl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/chart_control_label"
+                android:textStyle="bold"
+                android:layout_column="0"
+                android:layout_row="3"
+                android:textSize="12sp"/>
+
+
+            <ToggleButton
+                android:id="@+id/tbStream"
+                android:layout_height="45dp"
+                android:checked="false"
+                android:textOff="@string/stream_start"
+                android:textOn="@string/stream_stop"
+                android:textSize="12sp"
+                android:layout_column="0"
+                android:layout_gravity="start|fill_horizontal"
+                android:layout_row="4"/>
+
+            <TextView
+                android:id="@+id/tvDataStorage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_datastorage"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:layout_column="0"
+                android:layout_row="5"/>
+
+            <ToggleButton
+                android:id="@+id/tbSaveData"
+                android:layout_height="45dp"
+                android:checked="false"
+                android:textOff="@string/textoff_savedata"
+                android:textOn="@string/texton_savedata"
+                android:textSize="12sp"
+                android:layout_gravity="start|fill_horizontal"
+                android:layout_column="0"
+                android:layout_row="6"/>
+
+            <TableLayout
+                android:id="@+id/tlADCChannels"
+                android:layout_width="match_parent"
+                android:layout_height="135dp"
+                android:stretchColumns="*"
+                android:layout_column="1"
+                android:layout_row="0"
+                android:layout_rowSpan="7">
+
+                <TableRow android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tvCh1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_labelCh1"
+                        android:textStyle="bold"
+                        android:textSize="12sp"/>
+
+                    <TextView
+                        android:id="@+id/tvCh2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/radio_labelCh2"
+                        android:textStyle="bold"
+                        android:textSize="12sp"/>
+
+                </TableRow>
+
+                <TableRow android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <RadioGroup
+                        android:id="@+id/radio_ADC_to_Ch1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <RadioButton android:id="@+id/radio_ADC1_Ch1"
+                            android:scaleX="0.8"
+                            android:scaleY="0.8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40sp"
+                            android:textSize="12sp"
+                            android:text="@string/radio_ADC1"/>
+
+                        <RadioButton android:id="@+id/radio_ADC2_Ch1"
+                            android:scaleX="0.8"
+                            android:scaleY="0.8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40sp"
+                            android:textSize="12sp"
+                            android:text="@string/radio_ADC2"/>
+
+                        <RadioButton android:id="@+id/radio_ADC3_Ch1"
+                            android:scaleX="0.8"
+                            android:scaleY="0.8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40sp"
+                            android:textSize="12sp"
+                            android:text="@string/radio_ADC3"/>
+                    </RadioGroup>
+
+                    <RadioGroup
+                        android:id="@+id/radio_ADC_to_Ch2"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <RadioButton android:id="@+id/radio_ADC1_Ch2"
+                            android:scaleX="0.8"
+                            android:scaleY="0.8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40sp"
+                            android:textSize="12sp"
+                            android:text="@string/radio_ADC1"/>
+
+                        <RadioButton android:id="@+id/radio_ADC2_Ch2"
+                            android:scaleX="0.8"
+                            android:scaleY="0.8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40sp"
+                            android:textSize="12sp"
+                            android:text="@string/radio_ADC2"/>
+
+                        <RadioButton android:id="@+id/radio_ADC3_Ch2"
+                            android:scaleX="0.8"
+                            android:scaleY="0.8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40sp"
+                            android:textSize="12sp"
+                            android:text="@string/radio_ADC3"/>
+                    </RadioGroup>
+
+                </TableRow>
+
+            </TableLayout>
+
+
+            <TextView
+                android:id="@+id/tvAudioOut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_audioout"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_column="0"
+                android:layout_row="7"/>
+
+            <ToggleButton
+                android:id="@+id/tbAudioOut"
+                android:layout_height="45dp"
+                android:checked="false"
+                android:textOff="@string/textoff_audioout"
+                android:textOn="@string/texton_audioout"
+                android:textSize="12sp"
+                android:layout_gravity="start|fill_horizontal"
+                android:layout_column="0"
+                android:layout_row="8"/>
+
+        </GridLayout>
+
+
+
+
+
+
+
+</LinearLayout >

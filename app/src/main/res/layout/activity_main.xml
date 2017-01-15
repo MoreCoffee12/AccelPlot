@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:keepScreenOn="true"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:baselineAligned="false"
     tools:context=".MainActivity" >
 
