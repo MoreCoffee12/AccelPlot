@@ -12,14 +12,14 @@
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:layout_weight="15"/>
+        android:layout_weight="30"/>
     
 
     <RelativeLayout
         android:id="@+id/LL2"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_weight="65"
+        android:layout_weight="70"
         android:orientation="vertical">
 
 
@@ -28,12 +28,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text= "@string/bluetooth_label"
+        android:textStyle="bold"
         android:textSize="12sp"/>
 
     <Button
         android:id="@+id/bConnect"
         android:layout_width="fill_parent"
-        android:layout_height="30dp"
+        android:layout_height="35dp"
         android:text="@string/bluetooth_connect"
         android:textSize="12sp"
         android:layout_below="@id/tvBluetooth"/>
@@ -41,8 +42,9 @@
     <Button
         android:id="@+id/bDisconnect"
         android:layout_width="fill_parent"
-        android:layout_height="50dp"
+        android:layout_height="35dp"
         android:text="@string/bluetooth_disconnect"
+        android:textSize="12sp"
         android:layout_below="@id/bConnect"/>
 
     <TextView
@@ -50,16 +52,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/chart_control_label"
-        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textSize="12sp"
         android:layout_below="@id/bDisconnect"/>
 
     <ToggleButton
         android:id="@+id/tbStream"
         android:layout_width="fill_parent"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:checked="false"
         android:textOff="@string/stream_start"
         android:textOn="@string/stream_stop"
+        android:textSize="12sp"
         android:layout_below="@id/tvControl"/>
 
          <TextView
@@ -67,22 +71,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_datastorage"
-            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textSize="12sp"
             android:layout_below="@id/tbStream"/>
 
         <ToggleButton
             android:id="@+id/tbSaveData"
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
+            android:layout_height="45dp"
             android:checked="false"
             android:textOff="@string/textoff_savedata"
             android:textOn="@string/texton_savedata"
+            android:textSize="12sp"
             android:layout_below="@id/tvDataStorage"/>
 
         <TableLayout
             android:id="@+id/tlADCChannels"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="135dp"
             android:stretchColumns="*"
             android:layout_below="@id/tbSaveData">
 
@@ -94,14 +100,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/radio_labelCh1"
-                    android:textSize="15sp"/>
+                    android:textStyle="bold"
+                    android:textSize="12sp"/>
 
                 <TextView
                     android:id="@+id/tvCh2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/radio_labelCh2"
-                    android:textSize="15sp"/>
+                    android:textStyle="bold"
+                    android:textSize="12sp"/>
 
             </TableRow>
 
@@ -116,18 +124,27 @@
                     android:orientation="vertical">
 
                     <RadioButton android:id="@+id/radio_ADC1_Ch1"
+                        android:scaleX="0.8"
+                        android:scaleY="0.8"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40sp"
+                        android:textSize="12sp"
                         android:text="@string/radio_ADC1"/>
 
                     <RadioButton android:id="@+id/radio_ADC2_Ch1"
+                        android:scaleX="0.8"
+                        android:scaleY="0.8"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40sp"
+                        android:textSize="12sp"
                         android:text="@string/radio_ADC2"/>
 
                     <RadioButton android:id="@+id/radio_ADC3_Ch1"
+                        android:scaleX="0.8"
+                        android:scaleY="0.8"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40sp"
+                        android:textSize="12sp"
                         android:text="@string/radio_ADC3"/>
                 </RadioGroup>
 
@@ -138,18 +155,27 @@
                     android:orientation="vertical">
 
                     <RadioButton android:id="@+id/radio_ADC1_Ch2"
+                        android:scaleX="0.8"
+                        android:scaleY="0.8"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40sp"
+                        android:textSize="12sp"
                         android:text="@string/radio_ADC1"/>
 
                     <RadioButton android:id="@+id/radio_ADC2_Ch2"
+                        android:scaleX="0.8"
+                        android:scaleY="0.8"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40sp"
+                        android:textSize="12sp"
                         android:text="@string/radio_ADC2"/>
 
                     <RadioButton android:id="@+id/radio_ADC3_Ch2"
+                        android:scaleX="0.8"
+                        android:scaleY="0.8"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40sp"
+                        android:textSize="12sp"
                         android:text="@string/radio_ADC3"/>
                 </RadioGroup>
 
@@ -163,16 +189,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_audioout"
-            android:textSize="15sp"
+            android:textSize="12sp"
+            android:textStyle="bold"
             android:layout_below="@id/tlADCChannels"/>
 
         <ToggleButton
             android:id="@+id/tbAudioOut"
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
+            android:layout_height="45dp"
             android:checked="false"
             android:textOff="@string/textoff_audioout"
             android:textOn="@string/texton_audioout"
+            android:textSize="12sp"
             android:layout_below="@id/tvAudioOut"/>
 
     </RelativeLayout>

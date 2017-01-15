@@ -59,7 +59,7 @@ public class LineScreenBuffer extends ScreenBuffer {
 			// horizontal distance. This is useful for checking vertex calculations since it
 			// doesn't require a connection to BlueTooth.
 //            fValueY = (fValueX * 0.1f)+0.5f;
-            fValueY = 0.0f + YStart;
+            fValueY = YStart;
 
             // Index into the data buffer
             iIdx = i<<2;
