@@ -228,10 +228,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 		{
 			fX_Accel[idx] = 0.0f;
 			fY_Accel[idx] = 0.0f;
-			fZ_Accel[idx] = 0.0f;
-			fX_Gyro[idx] = 0.0f;
-
-        }
+		}
 
 		listView = (ListView)findViewById(R.id.listView);
 		listView.setOnItemClickListener(this);

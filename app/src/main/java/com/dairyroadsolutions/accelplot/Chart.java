@@ -200,11 +200,7 @@ public class Chart {
 
     }
 
-    /**
-     * This is the main rendering call
-     * @param gl    gl context
-     */
-    public void draw(GL10 gl) {
+	public void draw(GL10 gl) {
 
         for(int idx=0; idx< iTraceCount; ++idx){
             mGrid[idx].draw(gl);
