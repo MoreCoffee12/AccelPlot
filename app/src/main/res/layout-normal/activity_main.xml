@@ -19,7 +19,7 @@
         android:id="@+id/LL2"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_weight="55"
+        android:layout_weight="65"
         android:orientation="vertical">
 
 
@@ -28,13 +28,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text= "@string/bluetooth_label"
-        android:textSize="15sp"/>
+        android:textSize="12sp"/>
 
     <Button
         android:id="@+id/bConnect"
         android:layout_width="fill_parent"
-        android:layout_height="50dp"
+        android:layout_height="30dp"
         android:text="@string/bluetooth_connect"
+        android:textSize="12sp"
         android:layout_below="@id/tvBluetooth"/>
 
     <Button

@@ -19,7 +19,7 @@
         android:id="@+id/LL2"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_weight="55"
+        android:layout_weight="65"
         android:orientation="vertical">
 
 
