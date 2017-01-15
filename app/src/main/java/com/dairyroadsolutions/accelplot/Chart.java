@@ -25,6 +25,8 @@ public class Chart {
     private float _fChScale[];
     private float _fOffset[];
 
+    public TraceHelper classTraceHelper;
+
 
 
     class GraphColor
@@ -121,6 +123,9 @@ public class Chart {
         // Save off the display flag
         boolCyclic = bCyclic;
 
+        // Setup the trace helper
+        classTraceHelper = new TraceHelper(iTraceCountIn);
+
         // Set grid divisions to default values
         iDivisionsX = 20;
         iDivisionsY = 20;
@@ -200,7 +205,11 @@ public class Chart {
 
     }
 
-	public void draw(GL10 gl) {
+    /**
+     * This is the main rendering call
+     * @param gl    gl context
+     */
+    public void draw(GL10 gl) {
 
         for(int idx=0; idx< iTraceCount; ++idx){
             mGrid[idx].draw(gl);
@@ -230,8 +239,9 @@ public class Chart {
 		fChartHeight = ( 2.0f / (float) iTraceCount)*(float)iChartColumnCount;
         fScreenHeight = ( 2.0f);
 
-        float fIncrement = -2.0f/(float) iTraceCount;
+        float fIncrement = classTraceHelper.getTraceIncrement();
         float fStart = 1.0f;
+        float fTraceStart = classTraceHelper.getTraceStart();
 
         // Calculate the starting points for the classChart
         float fStartX = -((fChartWidth /4.0f)*(float)iChartColumnCount);
@@ -251,13 +261,12 @@ public class Chart {
         int iColCurrent = 0;
 
         // Configure the traces
-        fStartY = fStartY+(0.25f*fIncrement);
 		for(int i=0;i< iTraceCount;i++)
 		{
 			screenBuffer[i] =  new LineScreenBuffer(iScreenBufferCount,
                     fStartX+((fChartWidth/1.9f)*(float)iColCurrent),
                     fStartY+((fChartHeight/2.0f)*(float)iColCurrent),
-                    fChartWidth, fScreenHeight, fStartY+((float)i * fIncrement));
+                    fChartWidth, fScreenHeight, fTraceStart+((float)i * fIncrement));
 
 			screenBuffer[i].setRGB(graphColor[i].R, graphColor[i].G, graphColor[i].B);
 

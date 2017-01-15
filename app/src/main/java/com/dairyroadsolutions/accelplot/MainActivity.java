@@ -35,7 +35,6 @@ public class MainActivity extends Activity {
 
     // Chart trace controls
     private GLSurfaceView mChartSurfaceView;
-    private TraceHelper classTraceHelper;
     private float fChScale[];
     private float fChOffset[];
     private static ToggleButton mStreamToggleButton;
@@ -84,8 +83,8 @@ public class MainActivity extends Activity {
      */
     public void setChOffset(){
 
-        float fIncrement = classTraceHelper.getTraceIncrement();
-        float fStart = classTraceHelper.getTraceStart();
+        float fIncrement = Bluetooth.classChartRenderer.classChart.classTraceHelper.getTraceIncrement();
+        float fStart = Bluetooth.classChartRenderer.classChart.classTraceHelper.getTraceStart();
 
         // Populate the array with the scale factors
         for( int idx = 0; idx< TRACE_COUNT; ++idx) {
@@ -138,8 +137,6 @@ public class MainActivity extends Activity {
         rgCh2 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch2);
         vGetUserPrefs();
         vUpdateChMapsEnabled(false);
-
-        classTraceHelper = new TraceHelper(TRACE_COUNT);
 
         for(int i=0;i< TRACE_COUNT;i++)
         {
