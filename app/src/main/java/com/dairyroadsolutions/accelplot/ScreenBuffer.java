@@ -30,7 +30,7 @@ abstract public class ScreenBuffer {
 
 	boolean mBufferFull = false;
 	
-	abstract void fillVertexArrayX();
+	abstract void fillVertexArrayX(float YStart);
 	abstract int getAllocation(int samplesInScreen);
 
     abstract void putSample(float sample);
@@ -46,8 +46,10 @@ abstract public class ScreenBuffer {
 	 * @param startY			    Starting location in the vertical direction
 	 * @param width				    Width of renderer
 	 * @param height 			    Heigth of renderer
+     * @param YStart                Vertical starting point for the trace
 	 */
-	ScreenBuffer(int iScreenBuffCount_In, float startX, float startY, float width, float height)
+	ScreenBuffer(int iScreenBuffCount_In, float startX, float startY, float width, float height,
+				 float YStart)
 	{
 		// Save off the number of samples in the buffer
 		iScreenBufferCount  = iScreenBuffCount_In;
@@ -62,7 +64,7 @@ abstract public class ScreenBuffer {
 		vbb.order(ByteOrder.nativeOrder());
 		fVertexBuffer = vbb.asFloatBuffer();
 
-		fillVertexArrayX();
+		fillVertexArrayX(YStart);
 	}
 	
 		
