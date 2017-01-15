@@ -251,13 +251,9 @@ public class Chart {
         int iColCurrent = 0;
 
         // Configure the traces
-        fStartY = fStartY+(0.25f*fIncrement);
 		for(int i=0;i< iTraceCount;i++)
 		{
-			screenBuffer[i] =  new LineScreenBuffer(iScreenBufferCount,
-                    fStartX+((fChartWidth/1.9f)*(float)iColCurrent),
-                    fStartY+((fChartHeight/2.0f)*(float)iColCurrent),
-                    fChartWidth, fScreenHeight, fStartY+((float)i * fIncrement));
+			screenBuffer[i] =  new LineScreenBuffer(iScreenBufferCount, fStartX+((fChartWidth/1.9f)*(float)iColCurrent), fStartY+((fChartHeight/2.0f)*(float)iColCurrent), fChartWidth, fScreenHeight);
 
 			screenBuffer[i].setRGB(graphColor[i].R, graphColor[i].G, graphColor[i].B);
 
