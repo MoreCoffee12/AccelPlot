@@ -24,8 +24,8 @@ public class LineScreenBuffer extends ScreenBuffer {
      * @param fHeight           Screen height
      */
     LineScreenBuffer(int iScreenBuffCount, float fStartX, float fStartY,
-			float fWidth, float fHeight) {
-				super(iScreenBuffCount, fStartX, fStartY, fWidth, fHeight);
+			float fWidth, float fHeight, float YStart) {
+				super(iScreenBuffCount, fStartX, fStartY, fWidth, fHeight, YStart);
 
                 this.setThickness(3.0f);
 			}
@@ -40,7 +40,7 @@ public class LineScreenBuffer extends ScreenBuffer {
      * If the data array has n elements then there are (n-1)*4 elements in
      * the vertex buffer array.
      */
-    void fillVertexArrayX()
+    void fillVertexArrayX(float YStart)
 	{
         // Locals used to generate the default vertex buffers
 		float fValueX_Last = 0.0f;
@@ -55,10 +55,11 @@ public class LineScreenBuffer extends ScreenBuffer {
             // This sets the horizontal coordinates for the data. These values do not change.
             fValueX = (fWidth*(float)(i+1))/(float)(iScreenBufferCount-1);
 
-            // Uncomment this line to calculate the new points in the curve. Useful for checking
-            // vertex calculations since it doesn't require a connection to BlueTooth.
-            fValueY = (fValueX * 0.1f)+0.5f;
-            //fValueY = 0.0f;
+            // Uncomment this line to calculate the new points in the curve as a function of the
+			// horizontal distance. This is useful for checking vertex calculations since it
+			// doesn't require a connection to BlueTooth.
+//            fValueY = (fValueX * 0.1f)+0.5f;
+            fValueY = 0.0f + YStart;
 
             // Index into the data buffer
             iIdx = i<<2;
