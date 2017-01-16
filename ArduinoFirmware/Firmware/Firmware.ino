@@ -80,9 +80,11 @@ void setup()
     // verify connection
     Serial.println("Testing device connections...");
     Serial.println(accelgyro.testConnection() ? "MPU6050 connection successful" : "MPU6050 connection failed");
-    
-    // Configure the gyro
-    accelgyro.setDLPFMode(MPU6050_DLPF_BW_256);
+
+    // Reference: http://playground.arduino.cc/Main/MPU-6050
+    // Configure the gyro and accel for a full scale range of 2 g's and
+    // a bandwidth of 98 hertz, less than half of our sampling frequency.
+    accelgyro.setDLPFMode(MPU6050_DLPF_BW_98);
     accelgyro.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);
     
     Serial.flush();

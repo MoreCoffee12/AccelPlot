@@ -132,7 +132,6 @@ public class MainActivity extends Activity {
         for( int idxText = 0; idxText<TRACE_COUNT; ++idxText){
             tvTrace[idxText] = new TextView(this);
             tvTrace[idxText].setText("");
-            tvTrace[idxText].setBackgroundColor(Color.BLACK);
             tvTrace[idxText].setPadding(10,10, 10,10);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP);
             flTemp.addView(tvTrace[idxText], params);
@@ -352,6 +351,7 @@ public class MainActivity extends Activity {
 
         for( int idxText = 0; idxText<TRACE_COUNT; ++idxText){
             tvTrace[idxText].setText(String.valueOf(iDiff));
+            tvTrace[idxText].setBackgroundColor(Color.BLACK);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP);
             params.setMargins(10,10+(iDiff*idxText),0,0);
             tvTrace[idxText].setLayoutParams(params);
