@@ -7,12 +7,20 @@
     android:baselineAligned="false"
     tools:context=".MainActivity" >
 
+    <FrameLayout
+        android:id="@+id/flChartStuff"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="30">
+
     <LinearLayout
         android:id="@+id/Chart"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_weight="30"/>
+        android:orientation="horizontal">
+        </LinearLayout>
+
+    </FrameLayout>
     
 
     <RelativeLayout

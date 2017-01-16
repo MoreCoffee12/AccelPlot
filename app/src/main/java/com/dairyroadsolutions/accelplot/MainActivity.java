@@ -39,12 +39,20 @@ public class MainActivity extends Activity {
     private static final int SCREEN_BUFFER_COUNT = 3000;
     private static final int LINE_THICKNESS = 3;
     private static final boolean CYCLIC = true;
+
+    // I truncated the accelerometer outputs from 2^14 bits to 2^11 bits to allow for the
+    // address to included in the 2-byte structure. See "Firmware.ino" for the implementation
+    // details
+    private static final float F_ACCEL_COUNTS_PER_G = 2048;
+
+    // The plot area for each trace has to be scaled to +1 to -1
     private static final float F_SCALE_FACTOR_ACC = 1.0f/4096.0f;
     private static final float F_SCALE_FACTOR_GYRO = 1.0f/1024f;
 
     // Grid controls. It works best if they are even numbers
     private static final int I_DIVISIONS_X = 20;
     private static final int I_DIVISIONS_Y = 4;
+    private static final float G_PER_DIV =2.0f*(1/F_SCALE_FACTOR_ACC)/(I_DIVISIONS_Y*F_ACCEL_COUNTS_PER_G);
     TextView[] tvTrace = new TextView[TRACE_COUNT];
 
     // Chart trace controls
@@ -132,6 +140,7 @@ public class MainActivity extends Activity {
         for( int idxText = 0; idxText<TRACE_COUNT; ++idxText){
             tvTrace[idxText] = new TextView(this);
             tvTrace[idxText].setText("");
+            tvTrace[idxText].setTextSize(10);
             tvTrace[idxText].setPadding(10,10, 10,10);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP);
             flTemp.addView(tvTrace[idxText], params);
@@ -350,7 +359,7 @@ public class MainActivity extends Activity {
 
 
         for( int idxText = 0; idxText<TRACE_COUNT; ++idxText){
-            tvTrace[idxText].setText(String.valueOf(iDiff));
+            tvTrace[idxText].setText("Ch" + String.valueOf(idxText+1) + ", " + String.valueOf(G_PER_DIV) + "g's per div");
             tvTrace[idxText].setBackgroundColor(Color.BLACK);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP);
             params.setMargins(10,10+(iDiff*idxText),0,0);

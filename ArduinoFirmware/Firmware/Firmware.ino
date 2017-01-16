@@ -146,7 +146,7 @@ ISR(TIMER0_COMPA_vect){
   
   // X_Gyro or the ADC count, address 0x0003
   //WriteData (iX_Gyro, 0x03);
-  WriteData (iADC, 0x03);
+  WriteData (iADC<<3, 0x03);
 
   // Watchdog pin
   digitalWrite(LED_PIN, !digitalRead(LED_PIN));  
@@ -156,22 +156,14 @@ ISR(TIMER0_COMPA_vect){
 // This is a helper function that structures the data and writes it.
 void WriteData (int16_t iData, unsigned int iAddr)
 {
-  //Serial.print("Addr ");
-  //Serial.println(iAddr);
-  //Serial.println(iData);
+
   iuTemp = (int)((long)iData+32767);
-  //Serial.println(iuTemp);
   iuTemp = (iuTemp >> 3);
-  //Serial.print("3 bit ");
-  //Serial.println(iuTemp);
   BTSerial.write((byte)iuTemp);
-  //Serial.print("Low byte ");
-  //Serial.println((byte)iuTemp);
   btTemp = (byte)(iuTemp>>8);
   btTemp |= iAddr << 5; 
   BTSerial.write(btTemp);
-  //Serial.print("High byte ");
-  //Serial.println(btTemp);
+
 }
 
 

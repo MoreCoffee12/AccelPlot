@@ -55,6 +55,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
     // Sampling frequency, in hertz. This is set in the Arduino code, see "Firmware.ino" and
     // "ISR Frequency Ranges.xlsx" for details
     private static final double dSamplingFrequency = 250;
+    private static final float F_OFFSET_COUNT = 4095.0f;
 
     // This implementation is not using the filter; however I thought I would leave the code in
     // case someone wants to use it.
@@ -521,11 +522,12 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
                         if( iErrorCount == 0)
                         {
-                            // Throw the data to the renderer
-                            classChartRenderer.classChart.addSample(fX_Accel[idxBuff]-4095f, 0);
-                            classChartRenderer.classChart.addSample(fY_Accel[idxBuff]-4095f, 1);
-                            classChartRenderer.classChart.addSample(fZ_Accel[idxBuff]-4095f, 2);
-                            classChartRenderer.classChart.addSample(fX_Gyro[idxBuff]-4095f, 3);
+                            // Throw the data to the renderer subtracting off the offset so we get
+                            // positive and negative traces
+                            classChartRenderer.classChart.addSample(fX_Accel[idxBuff]- F_OFFSET_COUNT, 0);
+                            classChartRenderer.classChart.addSample(fY_Accel[idxBuff]-F_OFFSET_COUNT, 1);
+                            classChartRenderer.classChart.addSample(fZ_Accel[idxBuff]-F_OFFSET_COUNT, 2);
+                            classChartRenderer.classChart.addSample(fX_Gyro[idxBuff]-F_OFFSET_COUNT, 3);
 
 							// Throw the data to the audio output
 							fCh1Out = ((bADC1ToCh1Out ? 1.0f: 0.0f) *fX_Accel[idxBuff])+
