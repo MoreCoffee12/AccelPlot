@@ -43,16 +43,18 @@ public class MainActivity extends Activity {
     // I truncated the accelerometer outputs from 2^14 bits to 2^11 bits to allow for the
     // address to included in the 2-byte structure. See "Firmware.ino" for the implementation
     // details
-    private static final float F_ACCEL_COUNTS_PER_G = 2048;
+    private static final float F_ACCEL_COUNTS_PER_G = 512;
+    private static final float F_ADC_COUNTS_PER_VOLT = 1024.0f/5.0f;
 
     // The plot area for each trace has to be scaled to +1 to -1
-    private static final float F_SCALE_FACTOR_ACC = 1.0f/4096.0f;
-    private static final float F_SCALE_FACTOR_GYRO = 1.0f/1024f;
+    private static final float F_SCALE_FACTOR_ACC = 0.50f/2048.0f;
+    private static final float F_SCALE_FACTOR_GYRO = 0.25f/1024f;
 
     // Grid controls. It works best if they are even numbers
     private static final int I_DIVISIONS_X = 20;
     private static final int I_DIVISIONS_Y = 4;
-    private static final float G_PER_DIV =2.0f*(1/F_SCALE_FACTOR_ACC)/(I_DIVISIONS_Y*F_ACCEL_COUNTS_PER_G);
+    private static final float G_PER_DIV =(0.5f/F_SCALE_FACTOR_ACC)/(I_DIVISIONS_Y*F_ACCEL_COUNTS_PER_G);
+    private static final float V_PER_DIV =(0.5f/F_SCALE_FACTOR_GYRO)/(I_DIVISIONS_Y*F_ADC_COUNTS_PER_VOLT);
     TextView[] tvTrace = new TextView[TRACE_COUNT];
     private int iLabelSize;
 
@@ -372,9 +374,13 @@ public class MainActivity extends Activity {
         FrameLayout flTemp = (FrameLayout)findViewById(R.id.flChartStuff);
         int iDiff = (int)((float)flTemp.getHeight()/(float)TRACE_COUNT);
 
-
+        // Accelerometer labels
         for( int idxText = 0; idxText<TRACE_COUNT; ++idxText){
+
             tvTrace[idxText].setText("Ch" + String.valueOf(idxText+1) + ", " + String.valueOf(G_PER_DIV) + "g's per div");
+            if(idxText == (TRACE_COUNT-1)){
+                tvTrace[idxText].setText("Ch" + String.valueOf(idxText+1) + ", " + String.valueOf(V_PER_DIV) + "volt per div");
+            }
             tvTrace[idxText].setBackgroundColor(Color.BLACK);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP);
             params.setMargins((iLabelSize/2)+1,(iLabelSize/2)+1+(iDiff*idxText),0,0);
@@ -428,8 +434,6 @@ public class MainActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                vUpdateGridLabels();
-
                 startActivity(new Intent("android.intent.action.BT1"));
 
             }
