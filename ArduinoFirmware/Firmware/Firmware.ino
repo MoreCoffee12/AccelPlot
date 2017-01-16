@@ -1,5 +1,8 @@
-// Code to acquire acceleration data and transmit it wirelessly
-// from a piston
+// Code to acquire acceleration data and/or ADC data and transmitt it via
+// Bluetooth.
+//
+// Software is distributed under the MIT License, see Firmware_License.txt
+// for more details.
 
 // Software serial port for the Bluetooth communications
 #include <SoftwareSerial.h>
@@ -24,7 +27,6 @@ MPU6050 mpu;
 // AD0 low = 0x68 (default for InvenSense evaluation board)
 // AD0 high = 0x69
 MPU6050 accelgyro;
-//MPU6050 accelgyro(0x69); // <-- use for AD0 high
 
 // uncomment "OUTPUT_READABLE_ACCELGYRO" if you want to see a tab-separated
 // list of the accel X/Y/Z and then gyro X/Y/Z values in decimal. Easy to read,
@@ -41,7 +43,6 @@ MPU6050 accelgyro;
 #define LED_PIN 13
 
 // Globals
-bool blinkState = false;
 byte btTemp = 0;
 int16_t iX_Accel;
 int16_t iY_Accel;
@@ -50,10 +51,6 @@ int16_t iX_Gyro;
 int16_t iY_Gyro;
 int16_t iZ_Gyro;
 int16_t iADC;
-unsigned char iAddress;
-unsigned long timeLast;
-unsigned int iBytesReturned;
-unsigned int iIdx;
 unsigned int iuTemp;
 
 // Setup, runs once
@@ -96,12 +93,6 @@ void setup()
     // configure the ADC input pin
     pinMode(A0, INPUT);
     
-    // Reset some of the variables associated with the MinSegBus
-    iBytesReturned = 0;
-    
-    // Update thet time
-    timeLast = micros();
-
     // Set timer0 interrupt.
     TCCR0A = 0;   // Set entire TCCR0A register to 0
     TCCR0B = 0;   // Same for TCCR0B
@@ -133,7 +124,8 @@ ISR(TIMER0_COMPA_vect){
 
   // The IC2 requires interrupts to be enabled so I've done there here. There is risk,
   // if the sampling frequency is high one interrupt can be called before another is 
-  // complete. But I need precise timing for the signal process in the remote device.
+  // complete and you get a race condition. I need precise timing for the signal 
+  // processing in the remote device so I took the risk.
   sei();
 
   // Get the value from the MPU-6050 accelerometer and gyro
@@ -153,9 +145,13 @@ ISR(TIMER0_COMPA_vect){
   // X_Gyro or the ADC count, address 0x0003
   //WriteData (iX_Gyro, 0x03);
   WriteData (iADC, 0x03);
+
+  // Watchdog pin
+  digitalWrite(LED_PIN, !digitalRead(LED_PIN));  
   
 }
 
+// This is a helper function that structures the data and writes it.
 void WriteData (int16_t iData, unsigned int iAddr)
 {
   //Serial.print("Addr ");

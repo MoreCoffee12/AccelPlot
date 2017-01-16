@@ -32,7 +32,7 @@ public class MainActivity extends Activity {
     private static final float F_SCALE_FACTOR_GYRO = 1.0f/1024f;
 
     // Grid controls. It works best if they are even numbers
-    private int iDivisionsX = 4;
+    private int iDivisionsX = 10;
     private int iDivisionsY = 10;
 
     // Chart trace controls
@@ -334,7 +334,7 @@ public class MainActivity extends Activity {
 
                 // Lock the orientation
                 vLockOrient();
-                
+
                 // This section handles the thread
                 if (Bluetooth.connectedThread != null)
                 {
@@ -499,17 +499,5 @@ public class MainActivity extends Activity {
         }
 
     };
-
-
-    /**
-     * Added this to ensure the connection to the Bluetooth
-     * device is closed.
-     */
-    protected void OnDestroy(){
-        if( Bluetooth.connectedThread != null){
-            Bluetooth.disconnect();
-        }
-    }
-
 
 }
