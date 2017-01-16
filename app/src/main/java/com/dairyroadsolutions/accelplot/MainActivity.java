@@ -9,7 +9,6 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,12 +21,13 @@ import android.widget.ToggleButton;
 
 public class MainActivity extends Activity {
 
-    private static final int TRACE_COUNT = 3;
+    private static final int TRACE_COUNT = 4;
     private static final int CHART_COLUMN_COUNT = 1;
     private static final int SCREEN_BUFFER_COUNT = 3000;
     private static final int LINE_THICKNESS = 3;
     private static final boolean CYCLIC = true;
-    private static final float F_SCALE_FACTOR = 1.0f/4096.0f;
+    private static final float F_SCALE_FACTOR_ACC = 1.0f/4096.0f;
+    private static final float F_SCALE_FACTOR_GYRO = 1.0f/1024f;
 
     // Grid controls. It works best if they are even numbers
     private int iDivisionsX = 4;
@@ -68,10 +68,13 @@ public class MainActivity extends Activity {
      */
     public void setChScale(float fScaleFactor){
 
-        // Populate the array with the scale factors
-        for( int idx = 0; idx< TRACE_COUNT; ++idx) {
+        // Populate the array with the scale factors for the accelerometer channels
+        for( int idx = 0; idx < (TRACE_COUNT-1); ++idx) {
             fChScale[idx] = fScaleFactor/(TRACE_COUNT +1.0f);
         }
+
+        // The scale factor for the gyro/ADC channel is set separately from the accels
+        fChScale[TRACE_COUNT-1]=F_SCALE_FACTOR_GYRO;
 
         // Update dependent objects
         Bluetooth.classChartRenderer.setChScale(fChScale);
@@ -149,7 +152,7 @@ public class MainActivity extends Activity {
         Bluetooth.classChartRenderer.bSetDivisionsY(iDivisionsY);
 
         fChScale = new float[TRACE_COUNT];
-        setChScale(F_SCALE_FACTOR);
+        setChScale(F_SCALE_FACTOR_ACC);
 
         fChOffset = new float[TRACE_COUNT];
         setChOffset();

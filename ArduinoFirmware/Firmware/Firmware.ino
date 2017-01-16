@@ -136,8 +136,6 @@ ISR(TIMER0_COMPA_vect){
   // complete. But I need precise timing for the signal process in the remote device.
   sei();
 
-  Serial.println("ISR");
-
   // Get the value from the MPU-6050 accelerometer and gyro
   iADC = analogRead(A0);
   mpu.getMotion6(&iX_Accel, &iY_Accel, &iZ_Accel, &iX_Gyro, &iY_Gyro, &iZ_Gyro);

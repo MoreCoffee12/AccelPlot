@@ -66,6 +66,8 @@ public class Bluetooth extends Activity implements OnItemClickListener{
     public static final float[] fX_Accel = new float[iFileSampleCount];
     public static final float[] fY_Accel = new float[iFileSampleCount];
     public static final float[] fZ_Accel = new float[iFileSampleCount];
+	//This channel can be a gyro or the ADC, depending how how the firmware is configured
+	//in the Arduino
     public static final float[] fX_Gyro = new float[iFileSampleCount];
 	public static int idxBuff = 0;
 
@@ -519,7 +521,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                             classChartRenderer.classChart.addSample(fX_Accel[idxBuff]-4095f, 0);
                             classChartRenderer.classChart.addSample(fY_Accel[idxBuff]-4095f, 1);
                             classChartRenderer.classChart.addSample(fZ_Accel[idxBuff]-4095f, 2);
-//                            classChartRenderer.classChart.addSample(fX_Gyro[idxBuff]-4095f, 3);
+                            classChartRenderer.classChart.addSample(fX_Gyro[idxBuff]-4095f, 3);
 
 							// Throw the data to the audio output
 							fCh1Out = ((bADC1ToCh1Out ? 1.0f: 0.0f) *fX_Accel[idxBuff])+
