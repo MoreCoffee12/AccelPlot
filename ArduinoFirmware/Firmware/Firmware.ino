@@ -67,14 +67,13 @@ void setup()
     #endif
     
     // Initialize bluetooth
-    //BTSerial.begin(57600);
     BTSerial.begin(112500);
     delay(50);
   
     // initialize serial communication
     // (57600 chosen because it works as well at 8MHz as it does at 16MHz, but
     // it's really up to you depending on your project)
-    Serial.begin(57600);
+    Serial.begin(112500);
     delay(50);
     
     // initialize device
@@ -102,16 +101,47 @@ void setup()
     
     // Update thet time
     timeLast = micros();
+
+    // Set timer0 interrupt.
+    TCCR0A = 0;   // Set entire TCCR0A register to 0
+    TCCR0B = 0;   // Same for TCCR0B
+
+    // See "ISR Frequency Ranges.xlsx" for details
+    OCR0A = 249;  
+    
+    // Turn on the CTC mode
+    TCCR0A |= (1 << WGM01);
+    // Set CS02, CS01 and CS00 bits for 256 prescaler
+    TCCR0B |= (1 << CS02 );
+    // Enable the timer compare interrupt
+    TIMSK0 |= ( 1 << OCIE0A );
+    
+    // enable interrupts
+    sei();
+
    
 }
 
-void loop() 
-{
+// Usually do the function, but all of the event
+// is handled in the ISR function because
+// function are time sensitive.
+void loop(void) {
+}
+
+// Fire the loop
+ISR(TIMER0_COMPA_vect){
+
+  // The IC2 requires interrupts to be enabled so I've done there here. There is risk,
+  // if the sampling frequency is high one interrupt can be called before another is 
+  // complete. But I need precise timing for the signal process in the remote device.
+  sei();
+
+  Serial.println("ISR");
 
   // Get the value from the MPU-6050 accelerometer and gyro
   iADC = analogRead(A0);
   mpu.getMotion6(&iX_Accel, &iY_Accel, &iZ_Accel, &iX_Gyro, &iY_Gyro, &iZ_Gyro);
-  // Serial.println("Got new readings");
+//  Serial.println("Got new readings");
   
   // X_Accel, address 0x0000
   WriteData (iX_Accel, 0x00);
