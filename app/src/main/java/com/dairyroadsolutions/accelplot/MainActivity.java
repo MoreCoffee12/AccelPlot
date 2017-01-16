@@ -32,8 +32,8 @@ public class MainActivity extends Activity {
     private static final float F_SCALE_FACTOR_GYRO = 1.0f/1024f;
 
     // Grid controls. It works best if they are even numbers
-    private static final int iDivisionsX = 20;
-    private static final int iDivisionsY = 4;
+    private static final int I_DIVISIONS_X = 20;
+    private static final int I_DIVISIONS_Y = 4;
 
     // Chart trace controls
     private GLSurfaceView mChartSurfaceView;
@@ -150,8 +150,8 @@ public class MainActivity extends Activity {
 
         Bluetooth.classChartRenderer = new ChartRenderer(this,SCREEN_BUFFER_COUNT,Bluetooth.samplesBuffer, TRACE_COUNT);
         Bluetooth.classChartRenderer.setCyclic(CYCLIC);
-        Bluetooth.classChartRenderer.bSetDivisionsX(iDivisionsX);
-        Bluetooth.classChartRenderer.bSetDivisionsY(iDivisionsY);
+        Bluetooth.classChartRenderer.bSetDivisionsX(I_DIVISIONS_X);
+        Bluetooth.classChartRenderer.bSetDivisionsY(I_DIVISIONS_Y);
 
         fChScale = new float[TRACE_COUNT];
         setChScale(F_SCALE_FACTOR_ACC);

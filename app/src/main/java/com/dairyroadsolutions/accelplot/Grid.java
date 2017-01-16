@@ -12,47 +12,44 @@ import java.nio.ByteOrder;
  *
  */
 public class Grid {
-	
-	float fStartX;
-	float fStartY;
-	float fWidth;
-	float fHeight;
-	
-	
-	private int iDivisionsX;
-	private int iDivisionsY;
-	
-	float[] mCoords; //Regular line coordinates
-	float[] mCoordsPrimary;//Primary line coordinates
-	float[] mCoordsMiddle;//Axes coordinates
-	
+
+    // Location of the grid on the canvas
+	private float _fStartX;
+	private float _fStartY;
+
+	// Grid divisions
+	private int _iDivisionsX;
+	private int _iDivisionsY;
+
 	private FloatBuffer mFVertexBuffer;//Regular lines vertex buffer
 	private FloatBuffer mFVertexBufferPrimary;//Primary lines vertex buffer
 	private FloatBuffer mMiddleVertexBuffer;//Axes vertex buffer
 	private FloatBuffer mFrameVertexBuffer;//Frame vertex buffer
 
 	/**
-	 *
+	 * Draw the grid in the current context
 	 * @param gl  OpenGL handle
 	 */
 	public void draw(GL10 gl) {
 
-        if( iDivisionsX>0 && iDivisionsY>0){
+        if( _iDivisionsX >0 && _iDivisionsY >0){
 
-            // grid color of dark blue
+            // Grid color of dark blue
             gl.glColor4f(0.16f, 0.16f, 0.16f, 1f);
 
 
-            gl.glLineWidth(0.1f);//Thin lines width
+            // Thin lines width
+            gl.glLineWidth(0.1f);
 
-            gl.glTranslatef(fStartX, fStartY, 0.01f);//Move below graph level
+            // Move below graph level
+            gl.glTranslatef(_fStartX, _fStartY, 0.01f);
 
             gl.glEnableClientState (GL10.GL_VERTEX_ARRAY);
             gl.glVertexPointer(2, GL10.GL_FLOAT, 0, mFVertexBuffer);//Select regular lines
-            gl.glDrawArrays(GL10.GL_LINES, 0, (iDivisionsX + iDivisionsY)*2);//Draw regular lines
+            gl.glDrawArrays(GL10.GL_LINES, 0, (_iDivisionsX + _iDivisionsY)*2);//Draw regular lines
 
-            int numberOfPrimaryPointsX = (iDivisionsX +5)/5;
-            int numberOfPrimaryPointsY = (iDivisionsY +5)/5+1;
+            int numberOfPrimaryPointsX = (_iDivisionsX +5)/5;
+            int numberOfPrimaryPointsY = (_iDivisionsY +5)/5+1;
 
             gl.glLineWidth(2f);
 
@@ -72,7 +69,7 @@ public class Grid {
             gl.glDrawArrays(GL10.GL_LINE_STRIP, 0, 5);
             gl.glDisableClientState (GL10.GL_VERTEX_ARRAY);
 
-            gl.glTranslatef(-fStartX, -fStartY, -0.01f);
+            gl.glTranslatef(-_fStartX, -_fStartY, -0.01f);
 
         }
 
@@ -90,106 +87,110 @@ public class Grid {
 	 */
 	public void setBounds(float startX, float startY, float graphWidth,
 			float graphHeight, int divisionsX, int divisionsY) {
-		fStartX = startX;
-		fStartY = startY;
-		fWidth = graphWidth;
-		fHeight = graphHeight;
-				
-		startX=startY=0;
-				
-		iDivisionsX = divisionsX;
-		iDivisionsY = divisionsY;
+
+
+        // Line coordinates
+        float[] _fCoords;
+        float[] _fCoordsPrimary;
+        float[] _fCoordsMiddle;
+
+        // Frame coordinates
+        float[] frameCoords =  new float[10];
+
+
+        // Save off the starting coordinates
+        _fStartX = startX;
+		_fStartY = startY;
+
+		// Save the number of divisions
+        _iDivisionsX = divisionsX;
+		_iDivisionsY = divisionsY;
+
+		// Regular lines
+		_fCoords = new float[(_iDivisionsX *4+ _iDivisionsY +2)*4];
 		
-		
-		//Regular lines
-		mCoords = new float[(iDivisionsX *4+ iDivisionsY +2)*4];
-		
-		for(int i=0; i< iDivisionsX;i++)
+		for(int i = 0; i< _iDivisionsX; i++)
 		{
-			mCoords[i*4] = startX+(graphWidth*i)/ iDivisionsX;
-			mCoords[i*4+1] = startY;			
-			mCoords[i*4+2] = startX+(graphWidth*i)/ iDivisionsX;
-			mCoords[i*4+3] = startY-graphHeight;
+			_fCoords[i*4] = (graphWidth*i)/ _iDivisionsX;
+			_fCoords[i*4+1] = 0.0f;
+			_fCoords[i*4+2] = (graphWidth*i)/ _iDivisionsX;
+			_fCoords[i*4+3] = -graphHeight;
 		}
 		
 		
 		//X Axis
-		mCoordsMiddle = new float[4];
+		_fCoordsMiddle = new float[4];
 		
-		mCoordsMiddle[0] = startX;
-		mCoordsMiddle[1] = startY - fHeight /2;
-		mCoordsMiddle[2] = startX + fWidth;
-		mCoordsMiddle[3] = startY - fHeight /2;
+		_fCoordsMiddle[0] = 0.0f;
+		_fCoordsMiddle[1] = graphHeight / -2;
+		_fCoordsMiddle[2] = graphWidth;
+		_fCoordsMiddle[3] = graphHeight / -2;
 		
 		
-		//Primary lines
-		int numberOfPrimaryPointsX = (iDivisionsX +5)/5;
-		int numberOfPrimaryPointsY = (iDivisionsY +5)/5+1;
-		mCoordsPrimary = new float[(numberOfPrimaryPointsX+numberOfPrimaryPointsY)*4];
+		// Primary lines
+		int numberOfPrimaryPointsX = (_iDivisionsX +5)/5;
+		int numberOfPrimaryPointsY = (_iDivisionsY +5)/5+1;
+		_fCoordsPrimary = new float[(numberOfPrimaryPointsX+numberOfPrimaryPointsY)*4];
 				
 		for(int i=0; i<numberOfPrimaryPointsX;i++)
 		{
-			mCoordsPrimary[i*4] = startX+(graphWidth*i*5)/ iDivisionsX;
-			mCoordsPrimary[i*4+1] = startY;			
-			mCoordsPrimary[i*4+2] = startX+(graphWidth*i*5)/ iDivisionsX;
-			mCoordsPrimary[i*4+3] = startY-graphHeight;
+			_fCoordsPrimary[i*4] = (graphWidth*i*5)/ _iDivisionsX;
+			_fCoordsPrimary[i*4+1] = 0.0f;
+			_fCoordsPrimary[i*4+2] = (graphWidth*i*5)/ _iDivisionsX;
+			_fCoordsPrimary[i*4+3] = -graphHeight;
 		}
 
-		
+		frameCoords[0]=0.0f;
+		frameCoords[1]=0.0f;
+		frameCoords[2]=graphWidth;
+		frameCoords[3]=0.0f;
+		frameCoords[4]=graphWidth;;
+		frameCoords[5]=-graphHeight;
+		frameCoords[6]=0.0f;
+		frameCoords[7]=-graphHeight;
+		frameCoords[8]=0.0f;
+		frameCoords[9]=0.0f;
 				
-		float[] frameCoords =  new float[10];
-		
-		frameCoords[0]=startX;
-		frameCoords[1]=startY;
-		frameCoords[2]=startX+graphWidth;
-		frameCoords[3]=startY;
-		frameCoords[4]=startX+graphWidth;;
-		frameCoords[5]=startY-graphHeight;
-		frameCoords[6]=startX;
-		frameCoords[7]=startY-graphHeight;
-		frameCoords[8]=startX;
-		frameCoords[9]=startY;
-				
-		for(int i=0; i<(iDivisionsY /2+1);i++)
+		for(int i = 0; i<(_iDivisionsY /2+1); i++)
 		{
-			mCoords[iDivisionsX *4+i*4] = startX;
-			mCoords[iDivisionsX *4+i*4+1] = startY-graphHeight/2+(graphHeight*i)/(iDivisionsY);
-			mCoords[iDivisionsX *4+i*4+2] = startX+graphWidth;
-			mCoords[iDivisionsX *4+i*4+3] = startY-graphHeight/2+(graphHeight*i)/(iDivisionsY);;
+			_fCoords[_iDivisionsX *4+i*4] = 0.0f;
+			_fCoords[_iDivisionsX *4+i*4+1] = -graphHeight/2+(graphHeight*i)/(_iDivisionsY);
+			_fCoords[_iDivisionsX *4+i*4+2] = graphWidth;
+			_fCoords[_iDivisionsX *4+i*4+3] = -graphHeight/2+(graphHeight*i)/(_iDivisionsY);;
 		}
 		
-		int secondaryOffset = (iDivisionsY /2+1)*4;
-		
-		for(int i=0; i<(iDivisionsY /2+1);i++)
+		int secondaryOffset = (_iDivisionsY /2+1)*4;
+
+		for(int i = 0; i<(_iDivisionsY /2+1); i++)
 		{
-			mCoords[secondaryOffset + iDivisionsX *4+i*4] = startX;
-			mCoords[secondaryOffset + iDivisionsX *4+i*4+1] = startY-graphHeight/2-(graphHeight*(i+1))/ iDivisionsY;
-			mCoords[secondaryOffset + iDivisionsX *4+i*4+2] = startX+graphWidth;
-			mCoords[secondaryOffset + iDivisionsX *4+i*4+3] = startY-graphHeight/2-(graphHeight*(i+1))/ iDivisionsY;;
+			_fCoords[secondaryOffset + _iDivisionsX *4+i*4] = 0.0f;
+			_fCoords[secondaryOffset + _iDivisionsX *4+i*4+1] = -graphHeight/2-(graphHeight*(i+1))/ _iDivisionsY;
+			_fCoords[secondaryOffset + _iDivisionsX *4+i*4+2] = graphWidth;
+			_fCoords[secondaryOffset + _iDivisionsX *4+i*4+3] = -graphHeight/2-(graphHeight*(i+1))/ _iDivisionsY;;
 		}
 		
 		int primaryArrayOffset= numberOfPrimaryPointsX*4;
 		
 		for(int i=0; i<(numberOfPrimaryPointsY/2+1);i++)
 		{
-			mCoordsPrimary[primaryArrayOffset+i*4] = startX;
-			mCoordsPrimary[primaryArrayOffset+i*4+1] = startY-graphHeight/2+(graphHeight*i*5)/ iDivisionsY;
-			mCoordsPrimary[primaryArrayOffset+i*4+2] = startX+graphWidth;
-			mCoordsPrimary[primaryArrayOffset+i*4+3] = startY-graphHeight/2+(graphHeight*i*5)/ iDivisionsY;
+			_fCoordsPrimary[primaryArrayOffset+i*4] = 0.0f;
+			_fCoordsPrimary[primaryArrayOffset+i*4+1] = -graphHeight/2+(graphHeight*i*5)/ _iDivisionsY;
+			_fCoordsPrimary[primaryArrayOffset+i*4+2] = graphWidth;
+			_fCoordsPrimary[primaryArrayOffset+i*4+3] = -graphHeight/2+(graphHeight*i*5)/ _iDivisionsY;
 		}
 		
 		primaryArrayOffset=(numberOfPrimaryPointsX+numberOfPrimaryPointsY/2)*4;
 		
 		for(int i=0; i<(numberOfPrimaryPointsY/2);i++)
 		{
-			mCoordsPrimary[primaryArrayOffset+i*4] = startX;
-			mCoordsPrimary[primaryArrayOffset+i*4+1] = startY-graphHeight/2-(graphHeight*i*5)/ iDivisionsY;
-			mCoordsPrimary[primaryArrayOffset+i*4+2] = startX+graphWidth;
-			mCoordsPrimary[primaryArrayOffset+i*4+3] = startY-graphHeight/2-(graphHeight*i*5)/ iDivisionsY;;
+			_fCoordsPrimary[primaryArrayOffset+i*4] = 0.0f;
+			_fCoordsPrimary[primaryArrayOffset+i*4+1] = -graphHeight/2-(graphHeight*i*5)/ _iDivisionsY;
+			_fCoordsPrimary[primaryArrayOffset+i*4+2] = graphWidth;
+			_fCoordsPrimary[primaryArrayOffset+i*4+3] = -graphHeight/2-(graphHeight*i*5)/ _iDivisionsY;;
 		}
 		
 		
-		ByteBuffer vbb = ByteBuffer.allocateDirect((iDivisionsX + iDivisionsY +2)*2 * 2 * 4);
+		ByteBuffer vbb = ByteBuffer.allocateDirect((_iDivisionsX + _iDivisionsY +2)*2 * 2 * 4);
 		vbb.order(ByteOrder.nativeOrder());
 		mFVertexBuffer = vbb.asFloatBuffer();
 		
@@ -207,17 +208,17 @@ public class Grid {
 		mMiddleVertexBuffer = vbbMiddle.asFloatBuffer();
 		
 				
-		for (int i = 0; i < (iDivisionsX + iDivisionsY)*2; i++) {
+		for (int i = 0; i < (_iDivisionsX + _iDivisionsY)*2; i++) {
 			for(int j = 0; j < 2; j++) {
-				mFVertexBuffer.put(mCoords[i*2+j]);
+				mFVertexBuffer.put(_fCoords[i*2+j]);
 			}
 		}
 		
 		int loopValue = (numberOfPrimaryPointsX+numberOfPrimaryPointsY)*2;
 		
 		for (int i = 0; i < loopValue; i++) {
-			mFVertexBufferPrimary.put(mCoordsPrimary[i*2]);
-			mFVertexBufferPrimary.put(mCoordsPrimary[i*2+1]);
+			mFVertexBufferPrimary.put(_fCoordsPrimary[i*2]);
+			mFVertexBufferPrimary.put(_fCoordsPrimary[i*2+1]);
 			}
 	
 		
@@ -228,7 +229,7 @@ public class Grid {
 		
 		for(int i=0;i<4;i++)
 		{
-			mMiddleVertexBuffer.put(mCoordsMiddle[i]);
+			mMiddleVertexBuffer.put(_fCoordsMiddle[i]);
 		}
 		
 		mFVertexBuffer.position(0);
