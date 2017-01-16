@@ -11,7 +11,7 @@
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:layout_weight="30"/>
+        android:layout_weight="25"/>
 
 
         <GridLayout
@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:columnCount="2"
             android:rowCount="9"
-            android:layout_weight="70">
+            android:layout_weight="75">
 
             <TextView
                 android:id="@+id/tvBluetooth"
