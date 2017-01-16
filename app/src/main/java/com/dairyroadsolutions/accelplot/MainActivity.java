@@ -1,5 +1,6 @@
 package com.dairyroadsolutions.accelplot;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
@@ -7,22 +8,29 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.LinearLayoutCompat;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import static java.security.AccessController.getContext;
 
 public class MainActivity extends Activity {
 
@@ -37,6 +45,7 @@ public class MainActivity extends Activity {
     // Grid controls. It works best if they are even numbers
     private static final int I_DIVISIONS_X = 20;
     private static final int I_DIVISIONS_Y = 4;
+    TextView[] tvTrace = new TextView[TRACE_COUNT];
 
     // Chart trace controls
     private GLSurfaceView glChartSurfaceView;
@@ -117,8 +126,18 @@ public class MainActivity extends Activity {
         glChartSurfaceView.setEGLConfigChooser(false);
         llControlLayer.addView(glChartSurfaceView);
 
-        // Update the grid labels
-        vUpdateGridLabels();
+        // Add the vertical axis labels
+        FrameLayout flTemp = (FrameLayout)findViewById(R.id.flChartStuff);
+
+        for( int idxText = 0; idxText<TRACE_COUNT; ++idxText){
+            tvTrace[idxText] = new TextView(this);
+            tvTrace[idxText].setText("");
+            tvTrace[idxText].setBackgroundColor(Color.BLACK);
+            tvTrace[idxText].setPadding(10,10, 10,10);
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP);
+            flTemp.addView(tvTrace[idxText], params);
+
+        }
 
         // User prefs
         sharedPref = getPreferences(Context.MODE_PRIVATE);
@@ -327,8 +346,17 @@ public class MainActivity extends Activity {
 
     private void vUpdateGridLabels(){
 
-        TextView tvXDiv = (TextView) findViewById(R.id.tvDivLabel);
-        tvXDiv.setText("X: 0.1s/div | Y:");
+        FrameLayout flTemp = (FrameLayout)findViewById(R.id.flChartStuff);
+        int iDiff = (int)((float)flTemp.getHeight()/(float)TRACE_COUNT);
+
+
+        for( int idxText = 0; idxText<TRACE_COUNT; ++idxText){
+            tvTrace[idxText].setText(String.valueOf(iDiff));
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP);
+            params.setMargins(10,10+(iDiff*idxText),0,0);
+            tvTrace[idxText].setLayoutParams(params);
+
+        }
 
     }
 
@@ -376,6 +404,8 @@ public class MainActivity extends Activity {
 
             @Override
             public void onClick(View v) {
+                vUpdateGridLabels();
+
                 startActivity(new Intent("android.intent.action.BT1"));
 
             }

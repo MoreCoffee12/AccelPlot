@@ -6,13 +6,21 @@
     android:baselineAligned="false"
     tools:context=".MainActivity" >
 
-    <LinearLayout
-        android:id="@+id/Chart"
-        android:layout_width="fill_parent"
+    <FrameLayout
+        android:id="@+id/flChartStuff"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_weight="15"/>
-    
+        android:layout_weight="15">
+
+        <LinearLayout
+            android:id="@+id/Chart"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            </LinearLayout>
+
+    </FrameLayout>
 
     <RelativeLayout
         android:id="@+id/LL2"
@@ -172,13 +180,6 @@
             android:textOff="@string/textoff_audioout"
             android:textOn="@string/texton_audioout"
             android:layout_below="@id/tvAudioOut"/>
-
-        <TextView
-            android:id="@+id/tvDivLabel"
-            android:layout_width="match_parent"
-            android:text = "DivLabels"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true" />
 
     </RelativeLayout>
 
