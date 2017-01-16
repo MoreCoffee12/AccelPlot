@@ -11,7 +11,7 @@ import java.nio.ByteOrder;
  * Draws a grid for a graph
  *
  */
-public class Grid {
+class Grid {
 
     // Location of the grid on the canvas
 	private float _fStartX;
@@ -30,7 +30,7 @@ public class Grid {
 	 * Draw the grid in the current context
 	 * @param gl  OpenGL handle
 	 */
-	public void draw(GL10 gl) {
+	void draw(GL10 gl) {
 
         if( _iDivisionsX >0 && _iDivisionsY >0){
 
@@ -85,7 +85,7 @@ public class Grid {
 	 * @param divisionsX 	Number of horizontal divisions
 	 * @param divisionsY 	Number of vertical divisions
 	 */
-	public void setBounds(float startX, float startY, float graphWidth,
+	void setBounds(float startX, float startY, float graphWidth,
 			float graphHeight, int divisionsX, int divisionsY) {
 
 
@@ -96,7 +96,6 @@ public class Grid {
 
         // Frame coordinates
         float[] frameCoords =  new float[10];
-
 
         // Save off the starting coordinates
         _fStartX = startX;
@@ -144,7 +143,7 @@ public class Grid {
 		frameCoords[1]=0.0f;
 		frameCoords[2]=graphWidth;
 		frameCoords[3]=0.0f;
-		frameCoords[4]=graphWidth;;
+		frameCoords[4]=graphWidth;
 		frameCoords[5]=-graphHeight;
 		frameCoords[6]=0.0f;
 		frameCoords[7]=-graphHeight;
@@ -156,7 +155,7 @@ public class Grid {
 			_fCoords[_iDivisionsX *4+i*4] = 0.0f;
 			_fCoords[_iDivisionsX *4+i*4+1] = -graphHeight/2+(graphHeight*i)/(_iDivisionsY);
 			_fCoords[_iDivisionsX *4+i*4+2] = graphWidth;
-			_fCoords[_iDivisionsX *4+i*4+3] = -graphHeight/2+(graphHeight*i)/(_iDivisionsY);;
+			_fCoords[_iDivisionsX *4+i*4+3] = -graphHeight/2+(graphHeight*i)/(_iDivisionsY);
 		}
 		
 		int secondaryOffset = (_iDivisionsY /2+1)*4;
@@ -166,7 +165,7 @@ public class Grid {
 			_fCoords[secondaryOffset + _iDivisionsX *4+i*4] = 0.0f;
 			_fCoords[secondaryOffset + _iDivisionsX *4+i*4+1] = -graphHeight/2-(graphHeight*(i+1))/ _iDivisionsY;
 			_fCoords[secondaryOffset + _iDivisionsX *4+i*4+2] = graphWidth;
-			_fCoords[secondaryOffset + _iDivisionsX *4+i*4+3] = -graphHeight/2-(graphHeight*(i+1))/ _iDivisionsY;;
+			_fCoords[secondaryOffset + _iDivisionsX *4+i*4+3] = -graphHeight/2-(graphHeight*(i+1))/ _iDivisionsY;
 		}
 		
 		int primaryArrayOffset= numberOfPrimaryPointsX*4;
@@ -186,7 +185,7 @@ public class Grid {
 			_fCoordsPrimary[primaryArrayOffset+i*4] = 0.0f;
 			_fCoordsPrimary[primaryArrayOffset+i*4+1] = -graphHeight/2-(graphHeight*i*5)/ _iDivisionsY;
 			_fCoordsPrimary[primaryArrayOffset+i*4+2] = graphWidth;
-			_fCoordsPrimary[primaryArrayOffset+i*4+3] = -graphHeight/2-(graphHeight*i*5)/ _iDivisionsY;;
+			_fCoordsPrimary[primaryArrayOffset+i*4+3] = -graphHeight/2-(graphHeight*i*5)/ _iDivisionsY;
 		}
 		
 		

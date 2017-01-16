@@ -11,6 +11,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,6 +19,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -36,7 +39,7 @@ public class MainActivity extends Activity {
     private static final int I_DIVISIONS_Y = 4;
 
     // Chart trace controls
-    private GLSurfaceView mChartSurfaceView;
+    private GLSurfaceView glChartSurfaceView;
     private float fChScale[];
     private float fChOffset[];
     private static ToggleButton mStreamToggleButton;
@@ -106,17 +109,16 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        LinearLayout mControlLayer;
-
         setContentView(R.layout.activity_main);
 
-        mControlLayer = (LinearLayout)findViewById(R.id.Chart);
+        // Setup the gl surface
+        LinearLayout llControlLayer = (LinearLayout)findViewById(R.id.Chart);
+        glChartSurfaceView = new GLSurfaceView(this);
+        glChartSurfaceView.setEGLConfigChooser(false);
+        llControlLayer.addView(glChartSurfaceView);
 
-        mChartSurfaceView = new GLSurfaceView(this);
-
-        mChartSurfaceView.setEGLConfigChooser(false);
-
-        mControlLayer.addView(mChartSurfaceView);
+        // Update the grid labels
+        vUpdateGridLabels();
 
         // User prefs
         sharedPref = getPreferences(Context.MODE_PRIVATE);
@@ -165,7 +167,7 @@ public class MainActivity extends Activity {
         // Number of columns of chart data
         Bluetooth.classChartRenderer.setChartColumnCount(CHART_COLUMN_COUNT);
 
-        mChartSurfaceView.setRenderer(Bluetooth.classChartRenderer);
+        glChartSurfaceView.setRenderer(Bluetooth.classChartRenderer);
 
         // Initialize the Bluetooth object
         init();
@@ -308,6 +310,11 @@ public class MainActivity extends Activity {
         Bluetooth.classAudioHelper.vSetAudioOut(Bluetooth.bAudioOut);
     }
 
+    /**
+     * This function locks the orientation. The real problem is that my code doesn't handle
+     * orientation changes while streaming data from the Bluetooth device.
+     * TODO - understand what needs to be changed to allow orientation changes while streaming.
+     */
     private void vLockOrient(){
         int currentOrientation = getResources().getConfiguration().orientation;
         if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -318,8 +325,15 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void vUpdateGridLabels(){
+
+        TextView tvXDiv = (TextView) findViewById(R.id.tvDivLabel);
+        tvXDiv.setText("X: 0.1s/div | Y:");
+
+    }
+
     /**
-     * This initializes the button controls
+     * Initialize the button controls and listeners
      */
     private void ButtonInit(){
 
@@ -347,6 +361,7 @@ public class MainActivity extends Activity {
                     tbSaveData.setEnabled(true);
                     vUpdateChMapsEnabled(true);
                     tbAudioOut.setEnabled(true);
+                    vUpdateGridLabels();
 
                 }else{
                     vStopStreamDep();

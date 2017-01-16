@@ -173,6 +173,13 @@
             android:textOn="@string/texton_audioout"
             android:layout_below="@id/tvAudioOut"/>
 
+        <TextView
+            android:id="@+id/tvDivLabel"
+            android:layout_width="match_parent"
+            android:text = "DivLabels"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true" />
+
     </RelativeLayout>
 
 
