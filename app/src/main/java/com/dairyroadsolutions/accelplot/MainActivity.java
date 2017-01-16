@@ -54,6 +54,7 @@ public class MainActivity extends Activity {
     private static final int I_DIVISIONS_Y = 4;
     private static final float G_PER_DIV =2.0f*(1/F_SCALE_FACTOR_ACC)/(I_DIVISIONS_Y*F_ACCEL_COUNTS_PER_G);
     TextView[] tvTrace = new TextView[TRACE_COUNT];
+    private int iLabelSize;
 
     // Chart trace controls
     private GLSurfaceView glChartSurfaceView;
@@ -134,14 +135,28 @@ public class MainActivity extends Activity {
         glChartSurfaceView.setEGLConfigChooser(false);
         llControlLayer.addView(glChartSurfaceView);
 
+
+        // Scale the location of the grid division labels
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        int iHeightDisp = displaymetrics.heightPixels;
+//        int width = displaymetrics.widthPixels;
+
+        // We have to scale the labels for smaller displays
+        iLabelSize = 15;
+        if( iHeightDisp < 750 ){
+            iLabelSize = (int)((float)iHeightDisp / 50.0f);
+        }
+
+
         // Add the vertical axis labels
         FrameLayout flTemp = (FrameLayout)findViewById(R.id.flChartStuff);
 
         for( int idxText = 0; idxText<TRACE_COUNT; ++idxText){
             tvTrace[idxText] = new TextView(this);
             tvTrace[idxText].setText("");
-            tvTrace[idxText].setTextSize(10);
-            tvTrace[idxText].setPadding(10,10, 10,10);
+            tvTrace[idxText].setTextSize(iLabelSize);
+            tvTrace[idxText].setPadding((iLabelSize/2)+1,(iLabelSize/2)+1, 0, 0);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP);
             flTemp.addView(tvTrace[idxText], params);
 
@@ -362,7 +377,7 @@ public class MainActivity extends Activity {
             tvTrace[idxText].setText("Ch" + String.valueOf(idxText+1) + ", " + String.valueOf(G_PER_DIV) + "g's per div");
             tvTrace[idxText].setBackgroundColor(Color.BLACK);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP);
-            params.setMargins(10,10+(iDiff*idxText),0,0);
+            params.setMargins((iLabelSize/2)+1,(iLabelSize/2)+1+(iDiff*idxText),0,0);
             tvTrace[idxText].setLayoutParams(params);
 
         }
