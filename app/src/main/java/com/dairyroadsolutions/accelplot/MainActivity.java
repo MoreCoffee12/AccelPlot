@@ -5,6 +5,8 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
@@ -181,6 +183,11 @@ public class MainActivity extends Activity {
         Bluetooth.samplesBuffer[0].TestHarness();
 
     }
+
+
+    /**
+     * Pass the message handler to the Bluetooth class
+     */
     void init() {
         Bluetooth.gethandler(mUpdateHandler);
     }
@@ -236,7 +243,7 @@ public class MainActivity extends Activity {
         if(Bluetooth.isbADC3ToCh2Out()){
             rgCh2.check(R.id.radio_ADC3_Ch2);
         }
-        return;
+
     }
 
     /**
@@ -301,6 +308,16 @@ public class MainActivity extends Activity {
         Bluetooth.classAudioHelper.vSetAudioOut(Bluetooth.bAudioOut);
     }
 
+    private void vLockOrient(){
+        int currentOrientation = getResources().getConfiguration().orientation;
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        }
+        else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+        }
+    }
+
     /**
      * This initializes the button controls
      */
@@ -308,7 +325,6 @@ public class MainActivity extends Activity {
 
         Button btnConnectButton;
         Button btnDiscconnectButton;
-        final ToggleButton tglbtnScroll;
 
         // Configure the stream data button
         mStreamToggleButton.setOnClickListener(new OnClickListener() {
@@ -316,6 +332,9 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
 
+                // Lock the orientation
+                vLockOrient();
+                
                 // This section handles the thread
                 if (Bluetooth.connectedThread != null)
                 {
@@ -323,7 +342,8 @@ public class MainActivity extends Activity {
                 }
 
                 // This section handles the dependant buttons
-                if (mStreamToggleButton.isChecked() == true){
+                if (mStreamToggleButton.isChecked()){
+
                     tbSaveData.setEnabled(true);
                     vUpdateChMapsEnabled(true);
                     tbAudioOut.setEnabled(true);
