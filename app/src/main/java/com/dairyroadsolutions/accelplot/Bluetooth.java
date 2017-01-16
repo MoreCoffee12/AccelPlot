@@ -52,8 +52,12 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 	// debug
 	private static final String strTag = MainActivity.class.getSimpleName();
 
-    // Sampling frequency, in Hertz
-    private static final double dSamplingFrequency = 1008.064516;
+    // Sampling frequency, in hertz. This is set in the Arduino code, see "Firmware.ino" and
+    // "ISR Frequency Ranges.xlsx" for details
+    private static final double dSamplingFrequency = 250;
+
+    // This implementation is not using the filter; however I thought I would leave the code in
+    // case someone wants to use it.
     public static FilterHelper DSPfilter = new FilterHelper();
 
 
@@ -62,7 +66,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
     //-------------------------------------------------------------------------
 	//
 	// This is the number of samples written to each file.
-	public static int iFileSampleCount = 2048;
+	public static int iFileSampleCount = (int)dSamplingFrequency*10;
     public static final float[] fX_Accel = new float[iFileSampleCount];
     public static final float[] fY_Accel = new float[iFileSampleCount];
     public static final float[] fZ_Accel = new float[iFileSampleCount];

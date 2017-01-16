@@ -250,7 +250,7 @@ public class Chart {
 		for(int idx=0;idx< iTraceCount; ++idx){
 
             mGrid[idx].setBounds(-ratio, fStart , fChartWidth, fChartHeight,
-                    iDivisionsX, (int)((float)iDivisionsY/(float) iTraceCount));
+                    iDivisionsX, iDivisionsY);
             fStart = fStart + fIncrement;
 
         }
