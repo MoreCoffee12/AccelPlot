@@ -49,6 +49,7 @@ int16_t iZ_Accel;
 int16_t iX_Gyro;
 int16_t iY_Gyro;
 int16_t iZ_Gyro;
+int16_t iADC;
 unsigned char iAddress;
 unsigned long timeLast;
 unsigned int iBytesReturned;
@@ -71,7 +72,7 @@ void setup()
     delay(50);
   
     // initialize serial communication
-    // (38400 chosen because it works as well at 8MHz as it does at 16MHz, but
+    // (57600 chosen because it works as well at 8MHz as it does at 16MHz, but
     // it's really up to you depending on your project)
     Serial.begin(57600);
     delay(50);
@@ -92,6 +93,9 @@ void setup()
 
     // configure Arduino LED for
     pinMode(LED_PIN, OUTPUT);
+
+    // configure the ADC input pin
+    pinMode(A0, INPUT);
     
     // Reset some of the variables associated with the MinSegBus
     iBytesReturned = 0;
@@ -105,6 +109,7 @@ void loop()
 {
 
   // Get the value from the MPU-6050 accelerometer and gyro
+  iADC = analogRead(A0);
   mpu.getMotion6(&iX_Accel, &iY_Accel, &iZ_Accel, &iX_Gyro, &iY_Gyro, &iZ_Gyro);
   // Serial.println("Got new readings");
   
@@ -117,8 +122,9 @@ void loop()
   // Z_Accel, address 0x0002
   WriteData (iZ_Accel, 0x02);
   
-  // X_Gyro, address 0x0003
-  WriteData (iX_Gyro, 0x03);
+  // X_Gyro or the ADC count, address 0x0003
+  //WriteData (iX_Gyro, 0x03);
+  WriteData (iADC, 0x03);
   
 }
 
