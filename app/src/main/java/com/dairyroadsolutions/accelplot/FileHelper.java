@@ -14,10 +14,16 @@ import java.nio.channels.FileChannel;
 import android.os.Environment;
 import android.util.Log;
 
-public class FileHelper {
+class FileHelper {
+
+    private ByteBuffer bb;
+
+    FileHelper(int iFloatBuffLength){
+        bb = ByteBuffer.allocate(iFloatBuffLength*4);
+    }
 
     // debug
-    private static final String strTag = MainActivity.class.getSimpleName();
+    private static final String _strTag = MainActivity.class.getSimpleName();
 
     // File index
     private long lFileIdx = 0;
@@ -42,10 +48,15 @@ public class FileHelper {
         try{
             FileChannel fchannel = new FileOutputStream(file).getChannel();
 
-            ByteBuffer bb = ByteBuffer.allocate(data.length<<2);
+            bb.clear();
+
             for( int idx=0; idx<data.length; ++idx){
                 bb.putFloat(data[idx]);
             }
+
+            Log.i(_strTag, ":HM:                              File Name: " + strFileName);
+            Log.i(_strTag, ":HM:                                data[0]: " + data[0]);
+
 
             // The position value is at the end of the buffer, so we need this command to move the
             // position marker to zero and reset the mark.
@@ -57,10 +68,10 @@ public class FileHelper {
             // Close the file
             fchannel.close();
 
-            //Log.d(strTag, ":HM:                    File write complete: ");
+            //Log.d(_strTag, ":HM:                    File write complete: ");
 
         } catch (Exception e) {
-            Log.d(strTag, ":HM:                   FileHelper Exception: " + e.getMessage());
+            Log.d(_strTag, ":HM:                   FileHelper Exception: " + e.getMessage());
         }
 
         // Increment the file index

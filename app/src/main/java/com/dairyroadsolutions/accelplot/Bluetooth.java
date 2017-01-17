@@ -3,7 +3,6 @@ package com.dairyroadsolutions.accelplot;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
@@ -26,6 +25,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 public class Bluetooth extends Activity implements OnItemClickListener{
 
@@ -67,7 +67,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
     //-------------------------------------------------------------------------
 	//
 	// This is the number of samples written to each file.
-	public static int iFileSampleCount = (int) D_SAMPLING_FREQUENCY *10;
+	public static int iFileSampleCount = (int) D_SAMPLING_FREQUENCY *60;
     public static final float[] fX_Accel = new float[iFileSampleCount];
     public static final float[] fY_Accel = new float[iFileSampleCount];
     public static final float[] fZ_Accel = new float[iFileSampleCount];
@@ -83,8 +83,9 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 	//-------------------------------------------------------------------------
 	// Data output
 	//-------------------------------------------------------------------------
-	public static final FileHelper fhelper = new FileHelper();
+	public static final FileHelper fhelper = new FileHelper(iFileSampleCount);
     private static boolean bWriteLocal = true;
+    private static boolean bWritePending = true;
 
 	//-------------------------------------------------------------------------
 	// Audio output
@@ -495,7 +496,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 						// The hypothesis is that the data is valid, this will be checked
 						// at each step and set to false if any of the tests fail
 						iErrorCount = iAddr[0];
-						fX_Accel[idxBuff] = (float)(iGetValue(buffer[0], buffer[1]));
+                        fX_Accel[idxBuff] = (float)(iGetValue(buffer[0], buffer[1]));
 
                         // Y_Accel, address 0x0001
                         iAddr[1] =  iGetAddr(buffer[3]);
@@ -542,8 +543,13 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
                             // Save the data off to the sd card / local directory
                             if( bWriteLocal ){
-                                if( idxBuff == (iFileSampleCount-1) ){
+                                if( idxBuff == (iFileSampleCount-1) && bWritePending){
                                     fhelper.bFileToSD(fX_Accel, fY_Accel, fZ_Accel, fX_Gyro);
+                                    Log.i(_strTag, ":HM:                   Write files, idxBuff: " + idxBuff);
+                                    Log.i(_strTag, ":HM:                             fX_Gyro[0]: " + fX_Gyro[0]);
+//                                    Log.i(_strTag, ":HM:                          X_Accel Error: " + iErrorCount);
+                                    bWritePending = false;
+
                                 }
                             }
 
@@ -554,7 +560,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                         else
                         {
 
-                            // Skip a byte
+                            // Skip a byte to see if we can get back in sync
                             dInStream.readByte();
 
                         }
