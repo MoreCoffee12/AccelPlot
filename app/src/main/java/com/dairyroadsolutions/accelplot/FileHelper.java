@@ -48,7 +48,7 @@ public class FileHelper {
             }
 
             // The position value is at the end of the buffer, so we need this command to move the
-            // position market to zero and reset the mark.
+            // position marker to zero and reset the mark.
             bb.flip();
 
             // Write the buffer to the file
