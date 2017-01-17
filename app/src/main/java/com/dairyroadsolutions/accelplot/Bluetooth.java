@@ -329,11 +329,14 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 		}
 	}
 
-	private class ConnectThread extends Thread
+    /**
+     * Thread to connect to socket
+     */
+    private class ConnectThread extends Thread
 	{
 		private final BluetoothSocket mmSocket;
 
-		public ConnectThread(BluetoothDevice device)
+		ConnectThread(BluetoothDevice device)
         {
 
 			// Use a temporary object that is later assigned to mmSocket,
@@ -352,7 +355,10 @@ public class Bluetooth extends Activity implements OnItemClickListener{
             Log.i("HealthPlot","ConnectThread constructor");
 		}
 
-		public void run()
+        /**
+         * Try to connect the socket
+         */
+        public void run()
 		{
 			// Cancel discovery because it will slow down the connection
 			btAdapter.cancelDiscovery();
@@ -365,7 +371,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 			}
             catch (IOException connectException)
             {
-                Log.e("HealthPlot","ConnectThread.run() IO Exception - failed to connect", connectException);
+                Log.e("AccelPlot","ConnectThread.run() IO Exception - failed to connect", connectException);
                 // Unable to connect; close the socket and get out
 				try
                 {
@@ -385,29 +391,31 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
 	}
 
-	static class ConnectedThread extends Thread
+    /**
+     * Connect to the Bluetooth socket
+     */
+    static class ConnectedThread extends Thread
 	{
 		private final BluetoothSocket mmSocket;
 		private final DataInputStream dInStream;
 
-		public ConnectedThread(BluetoothSocket socket)
+		ConnectedThread(BluetoothSocket socket)
 		{
 			mmSocket = socket;
 			InputStream tmpIn = null;
-			OutputStream tmpOut = null;
 
 			// Get the input and output streams, using temp objects because
 			// member streams are final
 			try
 			{
 				tmpIn = socket.getInputStream();
-				tmpOut = socket.getOutputStream();
 			}
 			catch (IOException e)
             {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+
 
 			dInStream = new DataInputStream(tmpIn);
 		}

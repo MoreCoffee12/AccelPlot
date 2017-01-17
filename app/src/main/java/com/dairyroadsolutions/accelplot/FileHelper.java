@@ -103,7 +103,7 @@ public class FileHelper {
      * @param data04    float array with the data
      * @return          true if successful
      */
-    public boolean bFileToSD(float[] data01, float[] data02, float[] data03, float[] data04){
+    boolean bFileToSD(float[] data01, float[] data02, float[] data03, float[] data04){
 
         String strFileName;
         String strDir;
@@ -127,11 +127,6 @@ public class FileHelper {
         strFileName = "Trace04_" + String.format("%07d", lFileIdx) + ".dat";
         strDir = "/AccelPlot";
         bFileToSD(strDir, strFileName, data04);
-
-        // Increment the file index
-        ++lFileIdx;
-
-//        Log.d(strTag, ":HM:                          Writing data");
 
         // Everything must have gone ok
         return true;
