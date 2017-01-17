@@ -167,6 +167,8 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         Bluetooth.bADC4ToCh2Out = bADC4ToCh2Out;
     }
 
+    public static double dGetSamplingFrequency() {return dSamplingFrequency; }
+
 
 
     public static void disconnect()

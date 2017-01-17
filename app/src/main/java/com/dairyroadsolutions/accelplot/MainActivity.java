@@ -55,7 +55,8 @@ public class MainActivity extends Activity {
     private static final int I_DIVISIONS_Y = 4;
     private static final float G_PER_DIV =(0.5f/F_SCALE_FACTOR_ACC)/(I_DIVISIONS_Y*F_ACCEL_COUNTS_PER_G);
     private static final float V_PER_DIV =(0.5f/F_SCALE_FACTOR_GYRO)/(I_DIVISIONS_Y*F_ADC_COUNTS_PER_VOLT);
-    TextView[] tvTrace = new TextView[TRACE_COUNT];
+    private float fTimePerDiv = 0;
+    TextView[] tvTrace = new TextView[TRACE_COUNT+1];
     private int iLabelSize;
 
     // Chart trace controls
@@ -154,15 +155,22 @@ public class MainActivity extends Activity {
         // Add the vertical axis labels
         FrameLayout flTemp = (FrameLayout)findViewById(R.id.flChartStuff);
 
-        for( int idxText = 0; idxText<TRACE_COUNT; ++idxText){
+        int idxText;
+        for( idxText = 0; idxText<=TRACE_COUNT; ++idxText){
             tvTrace[idxText] = new TextView(this);
-            tvTrace[idxText].setText("");
+            tvTrace[idxText].setText("-|-");
             tvTrace[idxText].setTextSize(iLabelSize);
             tvTrace[idxText].setPadding((iLabelSize/2)+1,(iLabelSize/2)+1, 0, 0);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP);
             flTemp.addView(tvTrace[idxText], params);
 
         }
+
+        // Horizontal axis labels
+        --idxText;
+        tvTrace[idxText].setPadding((iLabelSize/2)+1,(iLabelSize/2)+1, (iLabelSize/2)+1, (iLabelSize/2)+1);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, (Gravity.BOTTOM | Gravity.RIGHT) );
+        tvTrace[idxText].setLayoutParams(params);
 
         // User prefs
         sharedPref = getPreferences(Context.MODE_PRIVATE);
@@ -375,11 +383,12 @@ public class MainActivity extends Activity {
         int iDiff = (int)((float)flTemp.getHeight()/(float)TRACE_COUNT);
 
         // Accelerometer labels
-        for( int idxText = 0; idxText<TRACE_COUNT; ++idxText){
+        int idxText;
+        for( idxText = 0; idxText<TRACE_COUNT; ++idxText){
 
             tvTrace[idxText].setText("Ch" + String.valueOf(idxText+1) + ", " + String.valueOf(G_PER_DIV) + "g's per div");
             if(idxText == (TRACE_COUNT-1)){
-                tvTrace[idxText].setText("Ch" + String.valueOf(idxText+1) + ", " + String.valueOf(V_PER_DIV) + "volt per div");
+                tvTrace[idxText].setText("Ch" + String.valueOf(idxText+1) + ", " + String.valueOf(V_PER_DIV) + " volt per div");
             }
             tvTrace[idxText].setBackgroundColor(Color.BLACK);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP);
@@ -387,6 +396,10 @@ public class MainActivity extends Activity {
             tvTrace[idxText].setLayoutParams(params);
 
         }
+
+        // Horizontal label goodness
+        fTimePerDiv = SCREEN_BUFFER_COUNT / ((float)Bluetooth.dGetSamplingFrequency() * (float)I_DIVISIONS_X );
+        tvTrace[idxText].setText(String.valueOf(fTimePerDiv) + " sec. per div");
 
     }
 

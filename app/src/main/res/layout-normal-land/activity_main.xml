@@ -10,7 +10,7 @@
         android:id="@+id/flChartStuff"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="15">
+        android:layout_weight="30">
 
 
     <LinearLayout
