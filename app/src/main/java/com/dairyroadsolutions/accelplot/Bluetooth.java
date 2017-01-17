@@ -170,6 +170,8 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
     public static double dGetSamplingFrequency() {return D_SAMPLING_FREQUENCY; }
 
+    public void vSetWritePending( boolean bIn) {bWritePending = bIn;}
+
 
 
     public static void disconnect()

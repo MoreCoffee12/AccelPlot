@@ -269,6 +269,7 @@ public class MainActivity extends Activity {
     private void vUpdateSaveData(){
         bWriteLocal = mStreamToggleButton.isChecked();
         Bluetooth.vSetWriteLocal(bWriteLocal);
+        Bluetooth.vSetWriteLocal(bWriteLocal);
     }
 
     /**
