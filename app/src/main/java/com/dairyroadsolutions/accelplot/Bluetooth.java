@@ -38,7 +38,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 	public static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     protected static final int SUCCESS_DISCONNECT = 3;
     protected static final int SUCCESS_CONNECT = 2;
-	protected static final int MESSAGE_READ = 1;
+//	protected static final int MESSAGE_READ = 1;
 	public static boolean bStreamData = false;
 	ArrayAdapter<String> listAdapter;
 	ListView listView;
@@ -50,11 +50,11 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 	BroadcastReceiver receiver;
 
 	// debug
-	private static final String strTag = MainActivity.class.getSimpleName();
+	private static final String _strTag = MainActivity.class.getSimpleName();
 
     // Sampling frequency, in hertz. This is set in the Arduino code, see "Firmware.ino" and
     // "ISR Frequency Ranges.xlsx" for details
-    private static final double dSamplingFrequency = 250;
+    private static final double D_SAMPLING_FREQUENCY = 250;
     private static final float F_OFFSET_COUNT = 4095.0f;
 
     // This implementation is not using the filter; however I thought I would leave the code in
@@ -67,7 +67,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
     //-------------------------------------------------------------------------
 	//
 	// This is the number of samples written to each file.
-	public static int iFileSampleCount = (int)dSamplingFrequency*10;
+	public static int iFileSampleCount = (int) D_SAMPLING_FREQUENCY *10;
     public static final float[] fX_Accel = new float[iFileSampleCount];
     public static final float[] fY_Accel = new float[iFileSampleCount];
     public static final float[] fZ_Accel = new float[iFileSampleCount];
@@ -167,7 +167,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         Bluetooth.bADC4ToCh2Out = bADC4ToCh2Out;
     }
 
-    public static double dGetSamplingFrequency() {return dSamplingFrequency; }
+    public static double dGetSamplingFrequency() {return D_SAMPLING_FREQUENCY; }
 
 
 
@@ -258,9 +258,9 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                     try {
 
                         // Useful in debugging code
-                        //Log.d(strTag, ":HM:                   Number of devices: " + devices.size());
-                        //Log.d(strTag, ":HM:            Number of paired devices: " + pairedDevices.size());
-                        //Log.d(strTag, ":HM:                                Name: " + device.getName());
+                        //Log.d(_strTag, ":HM:                   Number of devices: " + devices.size());
+                        //Log.d(_strTag, ":HM:            Number of paired devices: " + pairedDevices.size());
+                        //Log.d(_strTag, ":HM:                                Name: " + device.getName());
 
 						if( device.getName() != null){
                             for (int a = 0; a < pairedDevices.size(); a++) {
@@ -423,7 +423,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
             int iHigh;
             iHigh = (btHigh & 0x1F);
-            return ((int)(btLow & 0xFF )+(iHigh<<8));
+            return ((btLow & 0xFF )+(iHigh<<8));
 
         }
 
@@ -438,17 +438,16 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
         }
 
-		public void run()
+        /**
+         * This is the main data acquisition loop. In its current form, it can also provide digital
+         * filtering, but it is not applied to any of the signals.
+         */
+        public void run()
 		{
 			Thread.currentThread().setPriority(MAX_PRIORITY);
             byte[] buffer = new byte[160];  // buffer store for the stream
-			int bytes; // bytes returned from read()
-			int iHigh;
-			int iLow;
 			int[] iAddr = new int[4];
 			int iErrorCount;
-            int iTemp;
-            double dTemp;
 			float fCh1Out;
 			float fCh2Out;
 
@@ -457,7 +456,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
             double dB[] =  new double[FilterHelper.MAXKERNELSIZE];
 
             // Setup the filter
-            DSPfilter.bSetSamplingFrequency(dSamplingFrequency);
+            DSPfilter.bSetSamplingFrequency(D_SAMPLING_FREQUENCY);
             DSPfilter.bSetLPCorner(20.0);
             DSPfilter.setLowPass(true);
             DSPfilter.setHighPass(false);
@@ -484,13 +483,11 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
                         // X_Accel, address 0x0000
 						iAddr[0] =  iGetAddr(buffer[1]);
+
 						// The hypothesis is that the data is valid, this will be checked
 						// at each step and set to false if any of the tests fail
 						iErrorCount = iAddr[0];
 						fX_Accel[idxBuff] = (float)(iGetValue(buffer[0], buffer[1]));
-//                        Log.i(strTag, ":HM:                          X_Accel Error: " + iErrorCount);
-//                        Log.i(strTag, ":HM:                        X_Accel Address: " + iAddr[0] );
-//                        Log.i(strTag, ":HM:                               fX_Accel: " + fX_Accel[idxBuff] );
 
                         // Y_Accel, address 0x0001
                         iAddr[1] =  iGetAddr(buffer[3]);
@@ -498,9 +495,6 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                             ++iErrorCount;
                         }
                         fY_Accel[idxBuff] = (float)(iGetValue(buffer[2], buffer[3]));
-//                        Log.i(strTag, ":HM:                          Y_Accel Error: " + iErrorCount);
-//                        Log.i(strTag, ":HM:                        Y_Accel Address: " + iAddr[1] );
-//                        Log.i(strTag, ":HM:                               fY_Accel: " + fY_Accel[idxBuff] );
 
                         // Z_Accel, address 0x0002
                         iAddr[2] =  iGetAddr(buffer[5]);
@@ -508,25 +502,19 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                             ++iErrorCount;
                         }
                         fZ_Accel[idxBuff] = (float)(iGetValue(buffer[4], buffer[5]));
-//                        Log.i(strTag, ":HM:                          Z_Accel Error: " + iErrorCount);
-//                        Log.i(strTag, ":HM:                        Z_Accel Address: " + iAddr[2] );
-//                        Log.i(strTag, ":HM:                               fZ_Accel: " + fZ_Accel[idxBuff] );
 
-                        // Y_Gyro, address 0x0003
+                        // Gyro or ADC, address 0x0003
                         iAddr[3] =  iGetAddr(buffer[7]);
                         if( iAddr[3] != 0x03){
                             ++iErrorCount;
                         }
                         fX_Gyro[idxBuff] = (float)(iGetValue(buffer[6], buffer[7]));
-//                        Log.i(strTag, ":HM:                           X_Gyro Error: " + iErrorCount);
-//                        Log.i(strTag, ":HM:                         X_Gyro Address: " + iAddr[3] );
-//                        Log.i(strTag, ":HM:                                fX_Gyro: " + fX_Gyro[idxBuff] );
 
                         if( iErrorCount == 0)
                         {
                             // Throw the data to the renderer subtracting off the offset so we get
                             // positive and negative traces
-                            classChartRenderer.classChart.addSample(fX_Accel[idxBuff]- F_OFFSET_COUNT, 0);
+                            classChartRenderer.classChart.addSample(fX_Accel[idxBuff]-F_OFFSET_COUNT, 0);
                             classChartRenderer.classChart.addSample(fY_Accel[idxBuff]-F_OFFSET_COUNT, 1);
                             classChartRenderer.classChart.addSample(fZ_Accel[idxBuff]-F_OFFSET_COUNT, 2);
                             classChartRenderer.classChart.addSample(fX_Gyro[idxBuff]-F_OFFSET_COUNT, 3);
@@ -543,17 +531,9 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                             classAudioHelper.setFreqOfTone(1000.0f+fCh1Out/2.0f,
 									1000.0f+fCh2Out/2.0f);
 
-//						    Log.i(strTag, ":HM:                           Buffer index: " + idxBuff);
-//                            Log.i(strTag, ":HM:                        X_Accel Address: " + iAddr[0] );
-//						    Log.i(strTag, ":HM:                               fX_Accel: " + fX_Accel[idxBuff] );
-//                        Log.d(strTag, ":HM:                           iRED Address: " + iAddr[1] );
-//						Log.d(strTag, ":HM:                                   iRED: " + fRED[idxBuff] );
-//                        Log.d(strTag, ":HM:                            iIR Address: " + iAddr[2] );
-//						Log.d(strTag, ":HM:                                    iIR: " + fIR[idxBuff] );
 
-                            // Save the data off to the sd card
-//						Log.d(strTag, ":HM:                            bWriteLocal: " + bWriteLocal);
-                            if( bWriteLocal==true ){
+                            // Save the data off to the sd card / local directory
+                            if( bWriteLocal ){
                                 if( idxBuff == (iFileSampleCount-1) ){
                                     fhelper.bFileToSD(fX_Accel, fY_Accel, fZ_Accel, fX_Gyro);
                                 }
@@ -562,12 +542,9 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                             // Increment the data buffer index
                             idxBuff = ++idxBuff % iFileSampleCount;
 
-                            //Log.d(strTag, ":HM: 8 bytes received, sent message.  IR: " + (buffer[0] & 0xFF + ((buffer[1] & 0xFF) << 8 )  ));
-
                         }
                         else
                         {
-//                            Log.i(strTag, ":HM:                       Error check failed");
 
                             // Skip a byte
                             dInStream.readByte();
@@ -584,35 +561,17 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 			}
 		}
 
-		/*/ Call this from the main activity to send data to the remote device
-		public void write(String income) {
+        /**
+         * all this from the main activity to shutdown the connection
+         */
+        void cancel() {
 
-			try {
-				mmOutStream.write(income.getBytes());
-				for(int i=0;i<income.getBytes().length;i++)
-				Log.v("outStream"+Integer.toString(i),Character.toString((char)(Integer.parseInt(Byte.toString(income.getBytes()[i])))));
-				try {
-					Thread.sleep(20);
-				} catch (InterruptedException e)
-                {
-					e.printStackTrace();
-				}
-			} catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-		}*/
-
-		// Call this from the main activity to shutdown the connection
-		public void cancel() {
-            //Log.d(strTag, ":HM:             Trying to close connection. " );
 			try
             {
 				mmSocket.close();
 			}
             catch (IOException e)
             {
-                Log.d(strTag, ":HM:             Failed to close connection. " );
                 e.printStackTrace();
             }
 
