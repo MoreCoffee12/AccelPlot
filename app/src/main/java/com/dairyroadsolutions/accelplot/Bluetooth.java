@@ -36,6 +36,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
 	static ConnectedThread connectedThread;
 	public static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    protected static final int FILE_WRITE_DONE = 4;
     protected static final int SUCCESS_DISCONNECT = 3;
     protected static final int SUCCESS_CONNECT = 2;
 //	protected static final int MESSAGE_READ = 1;
@@ -173,7 +174,9 @@ public class Bluetooth extends Activity implements OnItemClickListener{
     public static void vSetWritePending( boolean bIn) {bWritePending = bIn;}
 
 
-
+    /**
+     * Terminate the Bluetooth connection
+     */
     public static void disconnect()
     {
         if (connectedThread != null)
@@ -551,6 +554,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                                     Log.i(_strTag, ":HM:                             fX_Gyro[0]: " + fX_Gyro[0]);
 //                                    Log.i(_strTag, ":HM:                          X_Accel Error: " + iErrorCount);
                                     bWritePending = false;
+                                    mHandler.obtainMessage(FILE_WRITE_DONE, mmSocket).sendToTarget();
 
                                 }
                             }

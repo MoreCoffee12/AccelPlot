@@ -1,6 +1,5 @@
 package com.dairyroadsolutions.accelplot;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
@@ -13,7 +12,6 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.Menu;
@@ -24,13 +22,9 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
-import static java.security.AccessController.getContext;
 
 public class MainActivity extends Activity {
 
@@ -63,11 +57,11 @@ public class MainActivity extends Activity {
     private GLSurfaceView glChartSurfaceView;
     private float fChScale[];
     private float fChOffset[];
-    private static ToggleButton mStreamToggleButton;
-    private static ToggleButton tbSaveData;
-    private static ToggleButton tbAudioOut;
-    private static RadioGroup rgCh1;
-    private static RadioGroup rgCh2;
+    private static ToggleButton _tbStreamToggleButton;
+    private static ToggleButton _tbSaveData;
+    private static ToggleButton _tbAudioOut;
+    private static RadioGroup _rgCh1;
+    private static RadioGroup _rgCh2;
 
     private FilterHelper filter = new FilterHelper();
 
@@ -180,20 +174,20 @@ public class MainActivity extends Activity {
         Bluetooth.vSetWriteLocal(bWriteLocal);
 
         // Flags for the data stream button
-        mStreamToggleButton = (ToggleButton)findViewById(R.id.tbStream);
-        mStreamToggleButton.setEnabled(false);
+        _tbStreamToggleButton = (ToggleButton)findViewById(R.id.tbStream);
+        _tbStreamToggleButton.setEnabled(false);
 
         // Flags for the data save button
-        tbSaveData = (ToggleButton)findViewById(R.id.tbSaveData);
-        tbSaveData.setEnabled(false);
+        _tbSaveData = (ToggleButton)findViewById(R.id.tbSaveData);
+        _tbSaveData.setEnabled(false);
 
         // Flags and init for the audio out
-        tbAudioOut = (ToggleButton)findViewById(R.id.tbAudioOut);
-        tbAudioOut.setEnabled(false);
+        _tbAudioOut = (ToggleButton)findViewById(R.id.tbAudioOut);
+        _tbAudioOut.setEnabled(false);
 
         // Initialze audio mappings
-        rgCh1 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch1);
-        rgCh2 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch2);
+        _rgCh1 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch1);
+        _rgCh2 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch2);
         vGetUserPrefs();
         vUpdateChMapsEnabled(false);
 
@@ -252,13 +246,13 @@ public class MainActivity extends Activity {
      */
     private void vStopStreamDep(){
 
-        tbSaveData.setChecked(false);
-        tbSaveData.setEnabled(false);
+        _tbSaveData.setChecked(false);
+        _tbSaveData.setEnabled(false);
         vUpdateSaveData();
 
         vUpdateChMapsEnabled(false);
-        tbAudioOut.setChecked(false);
-        tbAudioOut.setEnabled(false);
+        _tbAudioOut.setChecked(false);
+        _tbAudioOut.setEnabled(false);
         vUpdateAudioOut();
 
     }
@@ -267,9 +261,9 @@ public class MainActivity extends Activity {
      * Handles process that should be affected by change in the SaveData button status
      */
     private void vUpdateSaveData(){
-        bWriteLocal = mStreamToggleButton.isChecked();
+        bWriteLocal = _tbStreamToggleButton.isChecked();
         Bluetooth.vSetWriteLocal(bWriteLocal);
-        Bluetooth.vSetWritePending(bWriteLocal);
+        Bluetooth.vSetWritePending(true);
     }
 
     /**
@@ -279,24 +273,24 @@ public class MainActivity extends Activity {
 
         // Channel 1
         if(Bluetooth.isbADC1ToCh1Out()){
-            rgCh1.check(R.id.radio_ADC1_Ch1);
+            _rgCh1.check(R.id.radio_ADC1_Ch1);
         }
         if(Bluetooth.isbADC2ToCh1Out()){
-            rgCh1.check(R.id.radio_ADC2_Ch1);
+            _rgCh1.check(R.id.radio_ADC2_Ch1);
         }
         if(Bluetooth.isbADC3ToCh1Out()){
-            rgCh1.check(R.id.radio_ADC3_Ch1);
+            _rgCh1.check(R.id.radio_ADC3_Ch1);
         }
 
         //Channel 2
         if(Bluetooth.isbADC1ToCh2Out()){
-            rgCh2.check(R.id.radio_ADC1_Ch2);
+            _rgCh2.check(R.id.radio_ADC1_Ch2);
         }
         if(Bluetooth.isbADC2ToCh2Out()){
-            rgCh2.check(R.id.radio_ADC2_Ch2);
+            _rgCh2.check(R.id.radio_ADC2_Ch2);
         }
         if(Bluetooth.isbADC3ToCh2Out()){
-            rgCh2.check(R.id.radio_ADC3_Ch2);
+            _rgCh2.check(R.id.radio_ADC3_Ch2);
         }
 
     }
@@ -307,16 +301,16 @@ public class MainActivity extends Activity {
      */
     private void vUpdateChMapsEnabled(boolean bEnabled){
 
-        int iRadBut = rgCh1.getChildCount();
+        int iRadBut = _rgCh1.getChildCount();
         RadioButton rbTemp;
 
         for (int iBut=0; iBut<iRadBut; iBut++){
-            rbTemp = ((RadioButton) rgCh1.getChildAt(iBut));
+            rbTemp = ((RadioButton) _rgCh1.getChildAt(iBut));
             rbTemp.setEnabled( bEnabled );
         }
 
         for (int iBut=0; iBut<iRadBut; iBut++){
-            rbTemp = ((RadioButton) rgCh2.getChildAt(iBut));
+            rbTemp = ((RadioButton) _rgCh2.getChildAt(iBut));
             rbTemp.setEnabled( bEnabled );
         }
     }
@@ -359,7 +353,7 @@ public class MainActivity extends Activity {
      * Handles process that change with the AudioOut button status
      */
     private void vUpdateAudioOut(){
-        Bluetooth.bAudioOut = tbAudioOut.isChecked();
+        Bluetooth.bAudioOut = _tbAudioOut.isChecked();
         Bluetooth.classAudioHelper.vSetAudioOut(Bluetooth.bAudioOut);
     }
 
@@ -413,7 +407,7 @@ public class MainActivity extends Activity {
         Button btnDiscconnectButton;
 
         // Configure the stream data button
-        mStreamToggleButton.setOnClickListener(new OnClickListener() {
+        _tbStreamToggleButton.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -424,15 +418,15 @@ public class MainActivity extends Activity {
                 // This section handles the thread
                 if (Bluetooth.connectedThread != null)
                 {
-                    Bluetooth.bStreamData = mStreamToggleButton.isChecked();
+                    Bluetooth.bStreamData = _tbStreamToggleButton.isChecked();
                 }
 
                 // This section handles the dependant buttons
-                if (mStreamToggleButton.isChecked()){
+                if (_tbStreamToggleButton.isChecked()){
 
-                    tbSaveData.setEnabled(true);
+                    _tbSaveData.setEnabled(true);
                     vUpdateChMapsEnabled(true);
-                    tbAudioOut.setEnabled(true);
+                    _tbAudioOut.setEnabled(true);
                     vUpdateGridLabels();
 
                 }else{
@@ -461,7 +455,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                mStreamToggleButton.setChecked(false);
+                _tbStreamToggleButton.setChecked(false);
                 Bluetooth.bStreamData = false;
                 Bluetooth.disconnect();
                 vStopStreamDep();
@@ -471,8 +465,8 @@ public class MainActivity extends Activity {
         });
 
         // Configure the save data button
-        tbSaveData = (ToggleButton)findViewById(R.id.tbSaveData);
-        tbSaveData.setOnClickListener(new OnClickListener() {
+        _tbSaveData = (ToggleButton)findViewById(R.id.tbSaveData);
+        _tbSaveData.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 vUpdateSaveData();
@@ -480,7 +474,7 @@ public class MainActivity extends Activity {
         });
 
         // Configure the channel 1 radio buttons
-        rgCh1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        _rgCh1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -513,7 +507,7 @@ public class MainActivity extends Activity {
         });
 
         // Configure the channel 2 radio buttons
-        rgCh2.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        _rgCh2.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -546,8 +540,8 @@ public class MainActivity extends Activity {
         });
 
         // Configure the audio out button
-        tbAudioOut = (ToggleButton)findViewById(R.id.tbAudioOut);
-        tbAudioOut.setOnClickListener(new OnClickListener() {
+        _tbAudioOut = (ToggleButton)findViewById(R.id.tbAudioOut);
+        _tbAudioOut.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 vUpdateAudioOut();
@@ -572,14 +566,18 @@ public class MainActivity extends Activity {
 
                 case Bluetooth.SUCCESS_DISCONNECT:
                     Toast.makeText(getApplicationContext(), "Disconnected!", Toast.LENGTH_LONG).show();
-                    mStreamToggleButton.setEnabled(false);
+                    _tbStreamToggleButton.setEnabled(false);
                     break;
 
                 case Bluetooth.SUCCESS_CONNECT:
                     Bluetooth.connectedThread = new Bluetooth.ConnectedThread((BluetoothSocket)msg.obj);
                     Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_LONG).show();
                     Bluetooth.connectedThread.start();
-                    mStreamToggleButton.setEnabled(true);
+                    _tbStreamToggleButton.setEnabled(true);
+                    break;
+
+                case Bluetooth.FILE_WRITE_DONE:
+                    _tbSaveData.setChecked(false);
                     break;
             }
 
