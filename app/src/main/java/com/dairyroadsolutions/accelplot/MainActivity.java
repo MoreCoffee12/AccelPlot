@@ -152,7 +152,7 @@ public class MainActivity extends Activity {
         int idxText;
         for( idxText = 0; idxText<=TRACE_COUNT; ++idxText){
             tvTrace[idxText] = new TextView(this);
-            tvTrace[idxText].setText("-|-");
+            tvTrace[idxText].setText("");
             tvTrace[idxText].setTextSize(iLabelSize);
             tvTrace[idxText].setPadding((iLabelSize/2)+1,(iLabelSize/2)+1, 0, 0);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP);
