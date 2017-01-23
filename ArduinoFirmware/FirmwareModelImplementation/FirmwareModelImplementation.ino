@@ -64,7 +64,7 @@ float ZAccel_rm_pk[BUFFSIZE];
 int idxData;
 int idxLast;
 int idxDrop;
-float fRMScale = 1 / RM_WINDOW_SIZE;
+float fRMScale = 1.0 / (float)RM_WINDOW_SIZE;
 
 // Setup, runs once
 void setup() 
@@ -120,7 +120,7 @@ void setup()
     // Initialize the index and data buffer
     idxData = 0;
     idxLast = (BUFFSIZE-1);
-    idxDrop = idxLast-RM_WINDOW_SIZE;
+    idxDrop = BUFFSIZE-RM_WINDOW_SIZE;
     for (int idx = 0; idx < BUFFSIZE ; ++idx){
       YAccel[idx] = 0;
       ZAccel[idx] = 0;
