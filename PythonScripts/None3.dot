@@ -1,0 +1,25 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
+edge [fontname=helvetica] ;
+0 [label=<Ch3_rm_pk &le; 3805.53<br/>gini = 0.6667<br/>samples = 45000<br/>value = [15000, 15000, 15000]<br/>class = Carpet1>, fillcolor="#e5813900"] ;
+1 [label=<Ch3_rm_pk &le; 2340.4937<br/>gini = 0.5<br/>samples = 29989<br/>value = [15000, 0, 14989]<br/>class = Carpet1>, fillcolor="#e5813900"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<Ch3_rm_pk &le; 2327.4834<br/>gini = 0.0681<br/>samples = 13463<br/>value = [12988, 0, 475]<br/>class = Carpet1>, fillcolor="#e58139f6"] ;
+1 -> 2 ;
+3 [label=<gini = 0.0113<br/>samples = 12017<br/>value = [11949, 0, 68]<br/>class = Carpet1>, fillcolor="#e58139fe"] ;
+2 -> 3 ;
+4 [label=<gini = 0.4045<br/>samples = 1446<br/>value = [1039, 0, 407]<br/>class = Carpet1>, fillcolor="#e581399b"] ;
+2 -> 4 ;
+5 [label=<Ch2_rm_pk &le; 4282.917<br/>gini = 0.2139<br/>samples = 16526<br/>value = [2012, 0, 14514]<br/>class = Tile1>, fillcolor="#8139e5dc"] ;
+1 -> 5 ;
+6 [label=<gini = 0.1288<br/>samples = 1156<br/>value = [1076, 0, 80]<br/>class = Carpet1>, fillcolor="#e58139ec"] ;
+5 -> 6 ;
+7 [label=<gini = 0.1144<br/>samples = 15370<br/>value = [936, 0, 14434]<br/>class = Tile1>, fillcolor="#8139e5ee"] ;
+5 -> 7 ;
+8 [label=<Ch2_rm_pk &le; 4658.7158<br/>gini = 0.0015<br/>samples = 15011<br/>value = [0, 15000, 11]<br/>class = Cobble1>, fillcolor="#39e581ff"] ;
+0 -> 8 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+9 [label=<gini = 0.0<br/>samples = 11<br/>value = [0, 0, 11]<br/>class = Tile1>, fillcolor="#8139e5ff"] ;
+8 -> 9 ;
+10 [label=<gini = 0.0<br/>samples = 15000<br/>value = [0, 15000, 0]<br/>class = Cobble1>, fillcolor="#39e581ff"] ;
+8 -> 10 ;
+}
