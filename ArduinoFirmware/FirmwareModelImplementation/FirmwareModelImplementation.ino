@@ -64,7 +64,12 @@ float ZAccel_rm_pk[BUFFSIZE];
 int idxData;
 int idxLast;
 int idxDrop;
+int idxDropMn;
+int idxDropPk;
 float fRMScale = 1.0 / (float)RM_WINDOW_SIZE;
+float fMNScale = 1.0 / (float)BUFFSIZE;
+float fPKScale = 1.0 / (float)RM_PK_WINDOW_SIZE;
+float mnY =0.0;
 
 // Setup, runs once
 void setup() 
@@ -121,6 +126,8 @@ void setup()
     idxData = 0;
     idxLast = (BUFFSIZE-1);
     idxDrop = BUFFSIZE-RM_WINDOW_SIZE;
+    idxDropMn = 1;
+    idxDropPk = BUFFSIZE-RM_PK_WINDOW_SIZE;
     for (int idx = 0; idx < BUFFSIZE ; ++idx){
       YAccel[idx] = 0;
       ZAccel[idx] = 0;
@@ -154,16 +161,26 @@ ISR(TIMER0_COMPA_vect){
   // Get the value from the MPU-6050 accelerometer and gyro
   iADC = analogRead(A0);
   mpu.getMotion6(&iX_Accel, &iY_Accel, &iZ_Accel, &iX_Gyro, &iY_Gyro, &iZ_Gyro);
-  YAccel[idxData] = iY_Accel;
-  ZAccel[idxData] = iZ_Accel;
+
+  // Scale the data to match what was done in "Firmware.ino" to allow the address
+  // to be included
+  YAccel[idxData] = (iY_Accel>>3)+4096;
+  ZAccel[idxData] = (iZ_Accel>>3)+4096;;
 
   YAccel_rm[idxData] = YAccel_rm[idxLast]-(fRMScale*(float)YAccel[idxDrop])+
       (fRMScale*(float)YAccel[idxData]);
+  ZAccel_rm[idxData] = ZAccel_rm[idxLast]-(fRMScale*(float)ZAccel[idxDrop])+
+      (fRMScale*(float)ZAccel[idxData]);
+
+  // In the python code we can take the mean over the whole 1 minute of
+  // data. Here, we just take the mean over the buffer length, it should
+  // be a close enough approximation.
+  mnY = mnY - (fMNScale*YAccel_rm[idxDropMn]) + (fMNScale*YAccel_rm[idxData]);
   Serial.print(idxData);
   Serial.print('|');
-  Serial.print(YAccel[idxData]);
+  Serial.print(YAccel_rm[idxData]);
   Serial.print('|');
-  Serial.println(YAccel_rm[idxData]);
+  Serial.println(mnY);
 
   // Watchdog pin
   digitalWrite(LED_PIN, !digitalRead(LED_PIN)); 
@@ -172,6 +189,8 @@ ISR(TIMER0_COMPA_vect){
   idxData = ++idxData % BUFFSIZE;
   idxLast = ++idxLast % BUFFSIZE;
   idxDrop = ++idxDrop % BUFFSIZE;
+  idxDropMn = ++idxDropMn % BUFFSIZE;
+  idxDropPk = ++idxDropPk % BUFFSIZE;
   
 }
 
