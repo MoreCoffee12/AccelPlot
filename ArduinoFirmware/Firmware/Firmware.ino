@@ -124,7 +124,7 @@ void loop(void) {
 // Fire the loop
 ISR(TIMER0_COMPA_vect){
 
-  // The IC2 requires interrupts to be enabled so I've done there here. There is risk,
+  // The IC2 requires interrupts to be enabled so I've done that here. There is risk,
   // if the sampling frequency is high one interrupt can be called before another is 
   // complete and you get a race condition. I need precise timing for the signal 
   // processing in the remote device so I took the risk.

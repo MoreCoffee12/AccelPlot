@@ -41,7 +41,7 @@ MPU6050 accelgyro;
 
 
 #define LED_PIN 13
-#define BUFFSIZE 64
+#define BUFFSIZE 32
 #define RM_WINDOW_SIZE 15
 #define RM_PK_WINDOW_SIZE 11
 
@@ -57,12 +57,13 @@ int16_t iADC;
 unsigned int iuTemp;
 int16_t YAccel[BUFFSIZE];
 int16_t ZAccel[BUFFSIZE];
-int16_t YAccel_rm[BUFFSIZE];
-int16_t ZAccel_rm[BUFFSIZE];
-int16_t YAccel_rm_pk[BUFFSIZE];
-int16_t ZAccel_rm_pk[BUFFSIZE];
+float YAccel_rm[BUFFSIZE];
+float ZAccel_rm[BUFFSIZE];
+float YAccel_rm_pk[BUFFSIZE];
+float ZAccel_rm_pk[BUFFSIZE];
 int idxData;
 int idxLast;
+int idxDrop;
 float fRMScale = 1 / RM_WINDOW_SIZE;
 
 // Setup, runs once
@@ -111,13 +112,15 @@ void setup()
     // Turn on the CTC mode
     TCCR0A |= (1 << WGM01);
     // Set CS02, CS01 and CS00 bits for 256 prescaler
-    TCCR0B |= (1 << CS02 );
+    //TCCR0B |= (1 << CS02 );
+    TCCR0B = _BV(CS00) | _BV(CS02);
     // Enable the timer compare interrupt
     TIMSK0 |= ( 1 << OCIE0A );
 
     // Initialize the index and data buffer
     idxData = 0;
-    idxLast = 0;
+    idxLast = (BUFFSIZE-1);
+    idxDrop = idxLast-RM_WINDOW_SIZE;
     for (int idx = 0; idx < BUFFSIZE ; ++idx){
       YAccel[idx] = 0;
       ZAccel[idx] = 0;
@@ -142,7 +145,7 @@ void loop(void) {
 // Fire the loop
 ISR(TIMER0_COMPA_vect){
 
-  // The IC2 requires interrupts to be enabled so I've done there here. There is risk,
+  // The IC2 requires interrupts to be enabled so I've done that here. There is risk,
   // if the sampling frequency is high one interrupt can be called before another is 
   // complete and you get a race condition. I need precise timing for the signal 
   // processing in the remote device so I took the risk.
@@ -154,25 +157,24 @@ ISR(TIMER0_COMPA_vect){
   YAccel[idxData] = iY_Accel;
   ZAccel[idxData] = iZ_Accel;
 
-  idxLast = mod((idxData-1), BUFFSIZE);
-  YAccel_rm[idxData] = 0;
+  YAccel_rm[idxData] = YAccel_rm[idxLast]-(fRMScale*(float)YAccel[idxDrop])+
+      (fRMScale*(float)YAccel[idxData]);
   Serial.print(idxData);
   Serial.print('|');
-  Serial.println(idxLast);
+  Serial.print(YAccel[idxData]);
+  Serial.print('|');
+  Serial.println(YAccel_rm[idxData]);
 
   // Watchdog pin
   digitalWrite(LED_PIN, !digitalRead(LED_PIN)); 
 
-  // Increment the counter
+  // Increment the counters
   idxData = ++idxData % BUFFSIZE;
+  idxLast = ++idxLast % BUFFSIZE;
+  idxDrop = ++idxDrop % BUFFSIZE;
   
 }
 
-// Our operand can be negative
-int mod(int x, int m) {
-    int r = x%m;
-    return r<0 ? r+m : r;
-}
 
 
 
