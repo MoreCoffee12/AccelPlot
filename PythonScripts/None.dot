@@ -1,29 +1,13 @@
 digraph Tree {
 node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
 edge [fontname=helvetica] ;
-0 [label=<Ch3_rm_pk &le; 3310.1675<br/>gini = 0.6667<br/>samples = 45000<br/>value = [14980, 14963, 15057]<br/>class = Tile>, fillcolor="#8139e501"] ;
-1 [label=<Ch3_rm_pk &le; 2341.8<br/>gini = 0.5225<br/>samples = 30313<br/>value = [14980, 710, 14623]<br/>class = Carpet>, fillcolor="#e5813906"] ;
+0 [label=<Ch2_vl &le; -0.0016<br/>gini = 0.6667<br/>samples = 45000<br/>value = [14980, 14963, 15057]<br/>class = Tile>, fillcolor="#8139e501"] ;
+1 [label=<gini = 0.0<br/>samples = 14265<br/>value = [0, 14265, 0]<br/>class = Cobble>, fillcolor="#39e581ff"] ;
 0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
-2 [label=<Ch1_rm_pk &le; 4380.8877<br/>gini = 0.3673<br/>samples = 16033<br/>value = [12315, 432, 3286]<br/>class = Carpet>, fillcolor="#e58139b5"] ;
-1 -> 2 ;
-3 [label=<gini = 0.5786<br/>samples = 4190<br/>value = [1605, 432, 2153]<br/>class = Tile>, fillcolor="#8139e536"] ;
+2 [label=<Ch3_vl &le; 0.5253<br/>gini = 0.5219<br/>samples = 30735<br/>value = [14980, 698, 15057]<br/>class = Tile>, fillcolor="#8139e501"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+3 [label=<gini = 0.3556<br/>samples = 19217<br/>value = [14980, 600, 3637]<br/>class = Carpet>, fillcolor="#e58139ba"] ;
 2 -> 3 ;
-4 [label=<gini = 0.173<br/>samples = 11843<br/>value = [10710, 0, 1133]<br/>class = Carpet>, fillcolor="#e58139e4"] ;
+4 [label=<gini = 0.0169<br/>samples = 11518<br/>value = [0, 98, 11420]<br/>class = Tile>, fillcolor="#8139e5fd"] ;
 2 -> 4 ;
-5 [label=<Ch1_rm_pk &le; 4686.5664<br/>gini = 0.3345<br/>samples = 14280<br/>value = [2665, 278, 11337]<br/>class = Tile>, fillcolor="#8139e5be"] ;
-1 -> 5 ;
-6 [label=<gini = 0.2767<br/>samples = 13521<br/>value = [1906, 278, 11337]<br/>class = Tile>, fillcolor="#8139e5cf"] ;
-5 -> 6 ;
-7 [label=<gini = 0.0<br/>samples = 759<br/>value = [759, 0, 0]<br/>class = Carpet>, fillcolor="#e58139ff"] ;
-5 -> 7 ;
-8 [label=<Ch3_rm_pk &le; 3781.9414<br/>gini = 0.0574<br/>samples = 14687<br/>value = [0, 14253, 434]<br/>class = Cobble>, fillcolor="#39e581f7"] ;
-0 -> 8 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
-9 [label=<Ch3_rm_pk &le; 3703.97<br/>gini = 0.4793<br/>samples = 1090<br/>value = [0, 656, 434]<br/>class = Cobble>, fillcolor="#39e58156"] ;
-8 -> 9 ;
-10 [label=<gini = 0.2768<br/>samples = 657<br/>value = [0, 548, 109]<br/>class = Cobble>, fillcolor="#39e581cc"] ;
-9 -> 10 ;
-11 [label=<gini = 0.3744<br/>samples = 433<br/>value = [0, 108, 325]<br/>class = Tile>, fillcolor="#8139e5aa"] ;
-9 -> 11 ;
-12 [label=<gini = 0.0<br/>samples = 13597<br/>value = [0, 13597, 0]<br/>class = Cobble>, fillcolor="#39e581ff"] ;
-8 -> 12 ;
 }
