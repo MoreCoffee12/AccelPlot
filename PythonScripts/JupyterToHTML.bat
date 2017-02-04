@@ -1,2 +1,2 @@
-jupyter nbconvert --to html --template basic MachineLearningArduino.ipynb MachineLearningArduino.html
+jupyter nbconvert --to html --template basic MachineLearningArduino.ipynb
 pause
