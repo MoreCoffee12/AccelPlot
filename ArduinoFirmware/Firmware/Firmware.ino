@@ -64,13 +64,13 @@ void setup()
     #endif
     
     // Initialize bluetooth
-    BTSerial.begin(112500);
+    BTSerial.begin(115200);
     delay(50);
   
     // initialize serial communication
     // (57600 chosen because it works as well at 8MHz as it does at 16MHz, but
     // it's really up to you depending on your project)
-    Serial.begin(112500);
+    Serial.begin(115200);
     delay(50);
     
     // initialize device
