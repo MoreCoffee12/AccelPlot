@@ -57,10 +57,16 @@ public class MainActivity extends Activity {
     private GLSurfaceView glChartSurfaceView;
     private float fChScale[];
     private float fChOffset[];
-    private static ToggleButton _tbStreamToggleButton;
+    private static Button _bDisconnect;
+    private static TextView _tvControl;
+    private static ToggleButton _tbStream;
+    private static TextView _tvDataStorage;
     private static ToggleButton _tbSaveData;
+    private static TextView _tvAudioOut;
     private static ToggleButton _tbAudioOut;
+    private static TextView _tvCh1;
     private static RadioGroup _rgCh1;
+    private static TextView _tvCh2;
     private static RadioGroup _rgCh2;
 
     private FilterHelper filter = new FilterHelper();
@@ -173,19 +179,37 @@ public class MainActivity extends Activity {
         Bluetooth.samplesBuffer=new SamplesBuffer[TRACE_COUNT];
         Bluetooth.vSetWriteLocal(bWriteLocal);
 
+        // Flags for the disconnet button
+        _bDisconnect = (Button)findViewById(R.id.bDisconnect);
+        _bDisconnect.setEnabled(false);
+        _bDisconnect.setVisibility(View.GONE);
+
         // Flags for the data stream button
-        _tbStreamToggleButton = (ToggleButton)findViewById(R.id.tbStream);
-        _tbStreamToggleButton.setEnabled(false);
+        _tbStream = (ToggleButton)findViewById(R.id.tbStream);
+        _tbStream.setEnabled(false);
+        _tbStream.setVisibility(View.GONE);
+        _tvControl = (TextView) findViewById(R.id.tvControl);
+        _tvControl.setVisibility(View.GONE);
 
         // Flags for the data save button
         _tbSaveData = (ToggleButton)findViewById(R.id.tbSaveData);
         _tbSaveData.setEnabled(false);
+        _tbSaveData.setVisibility(View.GONE);
+
+        _tvDataStorage = (TextView)findViewById(R.id.tvDataStorage);
+        _tvDataStorage.setVisibility(View.GONE);
 
         // Flags and init for the audio out
         _tbAudioOut = (ToggleButton)findViewById(R.id.tbAudioOut);
         _tbAudioOut.setEnabled(false);
+        _tbAudioOut.setVisibility(View.GONE);
+
+        _tvAudioOut = (TextView)findViewById(R.id.tvAudioOut);
+        _tvAudioOut.setVisibility(View.GONE);
 
         // Initialze audio mappings
+        _tvCh1 = (TextView)findViewById(R.id.tvCh1);
+        _tvCh2 = (TextView)findViewById(R.id.tvCh2);
         _rgCh1 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch1);
         _rgCh2 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch2);
         vGetUserPrefs();
@@ -248,11 +272,15 @@ public class MainActivity extends Activity {
 
         _tbSaveData.setChecked(false);
         _tbSaveData.setEnabled(false);
+        _tbSaveData.setVisibility(View.GONE);
+        _tvDataStorage.setVisibility(View.GONE);
         vUpdateSaveData();
 
         vUpdateChMapsEnabled(false);
         _tbAudioOut.setChecked(false);
         _tbAudioOut.setEnabled(false);
+        _tbAudioOut.setVisibility(View.GONE);
+        _tvAudioOut.setVisibility(View.GONE);
         vUpdateAudioOut();
 
     }
@@ -261,7 +289,7 @@ public class MainActivity extends Activity {
      * Handles process that should be affected by change in the SaveData button status
      */
     private void vUpdateSaveData(){
-        bWriteLocal = _tbStreamToggleButton.isChecked();
+        bWriteLocal = _tbStream.isChecked();
         Bluetooth.vSetWriteLocal(bWriteLocal);
         Bluetooth.vSetWritePending(true);
     }
@@ -304,15 +332,39 @@ public class MainActivity extends Activity {
         int iRadBut = _rgCh1.getChildCount();
         RadioButton rbTemp;
 
+        // This is for the buttons
         for (int iBut=0; iBut<iRadBut; iBut++){
+
+            // Channel 1 mappings
             rbTemp = ((RadioButton) _rgCh1.getChildAt(iBut));
             rbTemp.setEnabled( bEnabled );
-        }
+            if( bEnabled ){
+                rbTemp.setVisibility(View.VISIBLE);
+            }
+            else{
+                rbTemp.setVisibility(View.GONE);
+            }
 
-        for (int iBut=0; iBut<iRadBut; iBut++){
+            //Channel 2 mappings
             rbTemp = ((RadioButton) _rgCh2.getChildAt(iBut));
             rbTemp.setEnabled( bEnabled );
+            if( bEnabled ){
+                rbTemp.setVisibility(View.VISIBLE);
+            }
+            else{
+                rbTemp.setVisibility(View.GONE);
+            }
         }
+
+        // This is for the channel labels
+        if( bEnabled ){
+            _tvCh1.setVisibility(View.VISIBLE);
+            _tvCh2.setVisibility(View.VISIBLE);
+        }else{
+            _tvCh1.setVisibility(View.GONE);
+            _tvCh2.setVisibility(View.GONE);
+        }
+
     }
 
 
@@ -407,7 +459,7 @@ public class MainActivity extends Activity {
         Button btnDiscconnectButton;
 
         // Configure the stream data button
-        _tbStreamToggleButton.setOnClickListener(new OnClickListener() {
+        _tbStream.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -418,15 +470,22 @@ public class MainActivity extends Activity {
                 // This section handles the thread
                 if (Bluetooth.connectedThread != null)
                 {
-                    Bluetooth.bStreamData = _tbStreamToggleButton.isChecked();
+                    Bluetooth.bStreamData = _tbStream.isChecked();
                 }
 
                 // This section handles the dependant buttons
-                if (_tbStreamToggleButton.isChecked()){
+                if (_tbStream.isChecked()){
 
+                    _tbSaveData.setVisibility(View.VISIBLE);
                     _tbSaveData.setEnabled(true);
+                    _tvDataStorage.setVisibility(View.VISIBLE);
+
                     vUpdateChMapsEnabled(true);
+
+                    _tbAudioOut.setVisibility(View.VISIBLE);
                     _tbAudioOut.setEnabled(true);
+                    _tvAudioOut.setVisibility(View.VISIBLE);
+
                     vUpdateGridLabels();
 
                 }else{
@@ -455,7 +514,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                _tbStreamToggleButton.setChecked(false);
+                _tbStream.setChecked(false);
                 Bluetooth.bStreamData = false;
                 Bluetooth.disconnect();
                 vStopStreamDep();
@@ -566,14 +625,22 @@ public class MainActivity extends Activity {
 
                 case Bluetooth.SUCCESS_DISCONNECT:
                     Toast.makeText(getApplicationContext(), "Disconnected!", Toast.LENGTH_LONG).show();
-                    _tbStreamToggleButton.setEnabled(false);
+                    _bDisconnect.setEnabled(false);
+                    _bDisconnect.setVisibility(View.GONE);
+                    _tvControl.setVisibility(View.GONE);
+                    _tbStream.setVisibility(View.GONE);
+                    _tbStream.setEnabled(false);
                     break;
 
                 case Bluetooth.SUCCESS_CONNECT:
                     Bluetooth.connectedThread = new Bluetooth.ConnectedThread((BluetoothSocket)msg.obj);
                     Toast.makeText(getApplicationContext(), "Connected!", Toast.LENGTH_LONG).show();
                     Bluetooth.connectedThread.start();
-                    _tbStreamToggleButton.setEnabled(true);
+                    _bDisconnect.setVisibility(View.VISIBLE);
+                    _bDisconnect.setEnabled(true);
+                    _tvControl.setVisibility(View.VISIBLE);
+                    _tbStream.setVisibility(View.VISIBLE);
+                    _tbStream.setEnabled(true);
                     break;
 
                 case Bluetooth.FILE_WRITE_DONE:
