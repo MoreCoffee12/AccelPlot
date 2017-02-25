@@ -64,13 +64,13 @@ void setup()
     #endif
     
     // Initialize bluetooth
-    BTSerial.begin(112500);
+    BTSerial.begin(115200);
     delay(50);
   
     // initialize serial communication
     // (57600 chosen because it works as well at 8MHz as it does at 16MHz, but
     // it's really up to you depending on your project)
-    Serial.begin(112500);
+    Serial.begin(115200);
     delay(50);
     
     // initialize device
@@ -85,7 +85,7 @@ void setup()
     // Configure the gyro and accel for a full scale range of 2 g's and
     // a bandwidth of 98 hertz, less than half of our sampling frequency.
     accelgyro.setDLPFMode(MPU6050_DLPF_BW_256);
-    accelgyro.setFullScaleAccelRange(MPU6050_ACCEL_FS_4);
+    accelgyro.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);
     
     Serial.flush();
 
@@ -158,7 +158,7 @@ ISR(TIMER0_COMPA_vect){
 void WriteData (int16_t iData, unsigned int iAddr)
 {
 
-  iuTemp = (int)((long)iData+32767);
+  iuTemp = (unsigned int)((long)iData+32767);
   iuTemp = (iuTemp >> 3);
   BTSerial.write((byte)iuTemp);
   btTemp = (byte)(iuTemp>>8);

@@ -157,7 +157,7 @@ ISR(TIMER0_COMPA_vect){
 void WriteData (int16_t iData, unsigned int iAddr)
 {
 
-  iuTemp = (int)((long)iData+32767);
+  iuTemp = (unsigned int)((long)iData+32767);
   iuTemp = (iuTemp >> 3);
   BTSerial.write((byte)iuTemp);
   btTemp = (byte)(iuTemp>>8);
