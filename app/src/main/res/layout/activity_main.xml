@@ -63,8 +63,14 @@
     <Spinner
         android:id="@+id/spFreq"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
         android:layout_below="@id/bInst"/>
+
+    <Spinner
+        android:id="@+id/spAccRange"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/spFreq"/>
 
     <Button
         android:id="@+id/bDisconnect"

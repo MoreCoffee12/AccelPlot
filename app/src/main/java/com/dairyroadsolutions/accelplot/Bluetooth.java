@@ -42,6 +42,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 	ArrayAdapter<String> listAdapter;
 	ListView listView;
 	static BluetoothAdapter btAdapter;
+    static BluetoothDevice selectedDevice;
 	Set<BluetoothDevice> devicesArray;
 	ArrayList<String> pairedDevices;
 	ArrayList<BluetoothDevice> devices;
@@ -307,7 +308,9 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 	protected void onPause() {
 
 		super.onPause();
-		unregisterReceiver(receiver);
+        if( receiver != null){
+            unregisterReceiver(receiver);
+        }
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
@@ -327,7 +330,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 		}
 		if (listAdapter.getItem(arg2).contains("(Paired)")){
 
-			BluetoothDevice selectedDevice = devices.get(arg2);
+			selectedDevice = devices.get(arg2);
 			ConnectThread connect = new ConnectThread(selectedDevice);
 			connect.start();
 		}else {
@@ -352,7 +355,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 			// Get a BluetoothSocket to connect with the given BluetoothDevice
 			try{
 				// MY_UUID is the app's UUID string, also used by the server code
-				tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
+				tmp = device.createInsecureRfcommSocketToServiceRecord(MY_UUID);
 			}
             catch (IOException e){
                 Toast.makeText(getApplicationContext(), "Failed to create rfcomm socket", Toast.LENGTH_SHORT).show();
@@ -373,7 +376,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
             {
 				// Connect the device through the socket. This will block
 				// until it succeeds or throws an exception
-				mmSocket.connect();
+                mmSocket.connect();
 			}
             catch (IOException connectException)
             {
@@ -381,9 +384,32 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                 // Unable to connect; close the socket and get out
 				try
                 {
-                    mmSocket.close();
+                    Log.i("AccelPlot","Trying fallback connection");
+
+                    // Use a temporary object that is later assigned to mmSocket,
+                    // because mmSocket is final
+                    BluetoothSocket tmp = null;
+
+                    try{
+                        tmp =(BluetoothSocket)selectedDevice.getClass().getMethod("createRfcommSocket", new Class[] {int.class}).invoke(selectedDevice,1);
+                    }catch (Exception e) {
+                        Log.e("AccelPlot","Failed to create fallback socket", e);
+                    }
+
+                    try{
+                        tmp.connect();
+                    }
+                    catch (IOException closeException){
+                        Log.e("AccelPlot","Fallback failed", closeException);
+                        tmp.close();
+                        return;
+                    }
+                    mHandler.obtainMessage(SUCCESS_CONNECT, tmp).sendToTarget();
+                    Log.i("AccelPlot", "Successfully opened socket and sent message");
+                    return;
+
 				}
-                catch (IOException closeException)
+                catch (IOException fallbackException)
                 {
                     Toast.makeText(getApplicationContext(), "Unable to connect and close bt socket", Toast.LENGTH_SHORT).show();
                 }

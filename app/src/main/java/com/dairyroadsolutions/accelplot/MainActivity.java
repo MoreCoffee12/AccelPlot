@@ -33,6 +33,8 @@ import android.widget.ToggleButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Math.pow;
+
 public class MainActivity extends Activity {
 
     private static final int TRACE_COUNT = 4;
@@ -41,10 +43,10 @@ public class MainActivity extends Activity {
     private static final int LINE_THICKNESS = 3;
     private static final boolean CYCLIC = true;
 
-    // I truncated the accelerometer outputs from 2^14 bits to 2^11 bits to allow for the
+    // I truncated the accelerometer outputs from 2^15 bits to 2^12 bits to allow for the
     // address to included in the 2-byte structure. See "Firmware.ino" for the implementation
     // details
-    private static final float F_ACCEL_COUNTS_PER_G = 512;
+    private static float fAccelCountsPerG = 1024.0f;
     private static final float F_ADC_COUNTS_PER_VOLT = 1024.0f/5.0f;
 
     // The plot area for each trace has to be scaled to +1 to -1
@@ -54,7 +56,7 @@ public class MainActivity extends Activity {
     // Grid controls. It works best if they are even numbers
     private static final int I_DIVISIONS_X = 20;
     private static final int I_DIVISIONS_Y = 4;
-    private static final float G_PER_DIV =(0.5f/F_SCALE_FACTOR_ACC)/(I_DIVISIONS_Y*F_ACCEL_COUNTS_PER_G);
+    private static float dGPerDiv = 0.0f;
     private static final float V_PER_DIV =(0.5f/F_SCALE_FACTOR_GYRO)/(I_DIVISIONS_Y*F_ADC_COUNTS_PER_VOLT);
     private float fTimePerDiv = 0;
     TextView[] tvTrace = new TextView[TRACE_COUNT+1];
@@ -78,6 +80,7 @@ public class MainActivity extends Activity {
     private static TextView _tvArduino;
     private static Button _bInst;
     private static Spinner _spFreq;
+    private static Spinner _spAccRange;
 
     private FilterHelper filter = new FilterHelper();
 
@@ -232,14 +235,25 @@ public class MainActivity extends Activity {
         _tvArduino = (TextView)findViewById(R.id.tvArduino);
         _bInst = (Button)findViewById(R.id.bInst);
         _spFreq = (Spinner)findViewById(R.id.spFreq);
+        _spAccRange = (Spinner)findViewById(R.id.spAccRange);
         List<String> listFreq = new ArrayList<String>();
         for( int iOCRA = 1; iOCRA<256; ++iOCRA){
             listFreq.add(strListItem(dGetFreq(iOCRA), iOCRA));
         }
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>
-                (this, R.layout.freq_spinner, listFreq);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+                R.layout.freq_spinner, listFreq);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         _spFreq.setAdapter(dataAdapter);
+
+        List<String> listAccRange = new ArrayList<String>();
+        listAccRange.add("MPU6050_ACCEL_FS_2");
+        listAccRange.add("MPU6050_ACCEL_FS_4");
+        listAccRange.add("MPU6050_ACCEL_FS_8");
+        listAccRange.add("MPU6050_ACCEL_FS_16");
+        ArrayAdapter<String> accAdapter = new ArrayAdapter<String>(this,
+                R.layout.freq_spinner, listAccRange);
+        accAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        _spAccRange.setAdapter(accAdapter);
         vUpdateArduinoControls(true);
 
         // Set controls values
@@ -378,11 +392,13 @@ public class MainActivity extends Activity {
             _tvArduino.setVisibility(View.VISIBLE);
             _spFreq.setVisibility(View.VISIBLE);
             _bInst.setVisibility(View.VISIBLE);
+            _spAccRange.setVisibility(View.VISIBLE);
         }
         else{
             _tvArduino.setVisibility(View.GONE);
             _spFreq.setVisibility(View.GONE);
             _bInst.setVisibility(View.GONE);
+            _spAccRange.setVisibility(View.GONE);
         }
 
     }
@@ -445,7 +461,8 @@ public class MainActivity extends Activity {
         Bluetooth.setbADC2ToCh2Out(sharedPref.getBoolean(getString(R.string.radio_ADC2_Ch2), true));
         Bluetooth.setbADC3ToCh2Out(sharedPref.getBoolean(getString(R.string.radio_ADC3_Ch2), true));
 
-        _spFreq.setSelection(sharedPref.getInt("OCR0A", 249)-1);
+        _spFreq.setSelection(sharedPref.getInt("OCR0A", 248));
+        _spAccRange.setSelection(sharedPref.getInt("ACCFS", 0));
 
         vUpdateChMaps();
 
@@ -462,7 +479,8 @@ public class MainActivity extends Activity {
         editor.putBoolean(getString(R.string.radio_ADC1_Ch2), Bluetooth.isbADC1ToCh2Out());
         editor.putBoolean(getString(R.string.radio_ADC2_Ch2), Bluetooth.isbADC2ToCh2Out());
         editor.putBoolean(getString(R.string.radio_ADC3_Ch2), Bluetooth.isbADC3ToCh2Out());
-        editor.putInt("OCR0A",_spFreq.getSelectedItemPosition()+1);
+        editor.putInt("OCR0A",_spFreq.getSelectedItemPosition());
+        editor.putInt("ACCFS",_spAccRange.getSelectedItemPosition());
         editor.commit();
 
     }
@@ -496,11 +514,17 @@ public class MainActivity extends Activity {
         FrameLayout flTemp = (FrameLayout)findViewById(R.id.flChartStuff);
         int iDiff = (int)((float)flTemp.getHeight()/(float)TRACE_COUNT);
 
+        // Update the scaling values
+        int iOCRA = sharedPref.getInt("OCR0A", 249);
+        Bluetooth.vSetSampleFreq(dGetFreq(iOCRA));
+        fAccelCountsPerG = (float)(2048.0f/pow(2.0f, (float)(1+sharedPref.getInt("ACCFS", 0))));
+        dGPerDiv = (1.0f/F_SCALE_FACTOR_ACC)/(I_DIVISIONS_Y* fAccelCountsPerG);
+
         // Accelerometer labels
         int idxText;
         for( idxText = 0; idxText<TRACE_COUNT; ++idxText){
 
-            tvTrace[idxText].setText("Ch" + String.valueOf(idxText+1) + ", " + String.valueOf(G_PER_DIV) + "g's per div");
+            tvTrace[idxText].setText("Ch" + String.valueOf(idxText+1) + ", " + String.valueOf(dGPerDiv) + "g's per div");
             if(idxText == (TRACE_COUNT-1)){
                 tvTrace[idxText].setText("Ch" + String.valueOf(idxText+1) + ", " + String.valueOf(V_PER_DIV) + " volt per div");
             }
@@ -626,8 +650,15 @@ public class MainActivity extends Activity {
         _spFreq.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 vUpdateUserPrefs();
-                int iOCRA = sharedPref.getInt("OCR0A", 249);
-                Bluetooth.vSetSampleFreq(dGetFreq(iOCRA));
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        // Configure the Accelerometer range selection spinner
+        _spAccRange.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                vUpdateUserPrefs();
             }
             public void onNothingSelected(AdapterView<?> parent) {
             }

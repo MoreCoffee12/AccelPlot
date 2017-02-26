@@ -74,6 +74,13 @@
                 android:layout_row="4"
                 android:layout_height="37dp"/>
 
+            <Spinner
+                android:id="@+id/spAccRange"
+                android:layout_width="match_parent"
+                android:layout_column="0"
+                android:layout_row="5"
+                android:layout_height="37dp"/>
+
             <Button
                 android:id="@+id/bDisconnect"
                 android:layout_height="35dp"

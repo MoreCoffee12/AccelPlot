@@ -73,6 +73,12 @@
         android:layout_height="53dp"
         android:layout_below="@id/bInst"/>
 
+    <Spinner
+        android:id="@+id/spAccRange"
+        android:layout_width="match_parent"
+        android:layout_height="53dp"
+        android:layout_below="@id/spFreq"/>
+
     <TextView
         android:id="@+id/tvControl"
         android:layout_width="wrap_content"
