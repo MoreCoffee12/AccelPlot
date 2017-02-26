@@ -512,8 +512,8 @@ public class MainActivity extends Activity {
         }
 
         // Horizontal label goodness
-        fTimePerDiv = SCREEN_BUFFER_COUNT / ((float)Bluetooth.dGetSamplingFrequency() * (float)I_DIVISIONS_X );
-        tvTrace[idxText].setText(String.valueOf(fTimePerDiv) + " sec. per div");
+        fTimePerDiv = SCREEN_BUFFER_COUNT / ((float)Bluetooth.dGetSampleFrequency() * (float)I_DIVISIONS_X );
+        tvTrace[idxText].setText(String.format("%.1f sec. per div", fTimePerDiv));
 
     }
 
@@ -625,8 +625,9 @@ public class MainActivity extends Activity {
         // Configure the Arduino frequency selection spinner
         _spFreq.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                Object item = parent.getItemAtPosition(pos);
                 vUpdateUserPrefs();
+                int iOCRA = sharedPref.getInt("OCR0A", 249);
+                Bluetooth.vSetSampleFreq(dGetFreq(iOCRA));
             }
             public void onNothingSelected(AdapterView<?> parent) {
             }

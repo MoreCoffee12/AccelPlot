@@ -25,7 +25,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 public class Bluetooth extends Activity implements OnItemClickListener{
 
@@ -39,7 +38,6 @@ public class Bluetooth extends Activity implements OnItemClickListener{
     protected static final int FILE_WRITE_DONE = 4;
     protected static final int SUCCESS_DISCONNECT = 3;
     protected static final int SUCCESS_CONNECT = 2;
-//	protected static final int MESSAGE_READ = 1;
 	public static boolean bStreamData = false;
 	ArrayAdapter<String> listAdapter;
 	ListView listView;
@@ -55,7 +53,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
     // Sampling frequency, in hertz. This is set in the Arduino code, see "Firmware.ino" and
     // "ISR Frequency Ranges.xlsx" for details
-    private static final double D_SAMPLING_FREQUENCY = 250;
+    private static double dSampleFreq = 250.0;
     private static final float F_OFFSET_COUNT = 4095.0f;
 
     // This implementation is not using the filter; however I thought I would leave the code in
@@ -68,7 +66,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
     //-------------------------------------------------------------------------
 	//
 	// This is the number of samples written to each file.
-	public static int iFileSampleCount = (int) D_SAMPLING_FREQUENCY *60;
+	public static int iFileSampleCount = (int) dSampleFreq *60;
     public static final float[] fX_Accel = new float[iFileSampleCount];
     public static final float[] fY_Accel = new float[iFileSampleCount];
     public static final float[] fZ_Accel = new float[iFileSampleCount];
@@ -169,9 +167,11 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         Bluetooth.bADC4ToCh2Out = bADC4ToCh2Out;
     }
 
-    public static double dGetSamplingFrequency() {return D_SAMPLING_FREQUENCY; }
+    public static double dGetSampleFrequency() {return dSampleFreq; }
+    public static void vSetSampleFreq(double dFreq) {dSampleFreq = dFreq;}
 
     public static void vSetWritePending( boolean bIn) {bWritePending = bIn;}
+
 
 
     /**
@@ -358,7 +358,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                 Toast.makeText(getApplicationContext(), "Failed to create rfcomm socket", Toast.LENGTH_SHORT).show();
             }
 			mmSocket = tmp;
-            Log.i("HealthPlot","ConnectThread constructor");
+            Log.i("AccelPlot","ConnectThread constructor");
 		}
 
         /**
@@ -392,7 +392,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
 			// Do work to manage the connection (in a separate thread)
 			mHandler.obtainMessage(SUCCESS_CONNECT, mmSocket).sendToTarget();
-            Log.i("HealthPlot", "Successfully opened socket and sent message");
+            Log.i("AccelPlot", "Successfully opened socket and sent message");
 		}
 
 	}
@@ -470,7 +470,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
             double dB[] =  new double[FilterHelper.MAXKERNELSIZE];
 
             // Setup the filter
-            DSPfilter.bSetSamplingFrequency(D_SAMPLING_FREQUENCY);
+            DSPfilter.bSetSamplingFrequency(dSampleFreq);
             DSPfilter.bSetLPCorner(20.0);
             DSPfilter.setLowPass(true);
             DSPfilter.setHighPass(false);
