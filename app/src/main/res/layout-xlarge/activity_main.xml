@@ -42,7 +42,8 @@
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:text="@string/bluetooth_connect"
-        android:layout_below="@id/tvBluetooth"/>
+        android:layout_below="@id/tvBluetooth"
+        />
 
     <Button
         android:id="@+id/bDisconnect"
@@ -52,11 +53,34 @@
         android:layout_below="@id/bConnect"/>
 
     <TextView
+        android:id="@+id/tvArduino"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_Arduino"
+        android:textSize="15sp"
+        android:layout_below="@id/bDisconnect"/>
+
+    <!-- Dummy item to prevent AutoCompleteTextView from receiving focus -->
+    <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="0px"
+        android:layout_height="0px"/>
+
+    <EditText
+        android:id="@+id/etOCR0A"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:hint="Enter Timer0 Count"
+        android:textSize="15sp"
+        android:inputType="number"
+        android:layout_below="@id/tvArduino"/>
+
+    <TextView
         android:id="@+id/tvControl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/chart_control_label"
-        android:textSize="15sp"
         android:layout_below="@id/bDisconnect"/>
 
     <ToggleButton

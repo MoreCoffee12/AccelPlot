@@ -35,6 +35,8 @@
     <string name="radio_labelCh1">Ch1</string>
     <string name="radio_labelCh2">Ch2</string>
 
+    <string name="label_Arduino">Arduino</string>
+
     <string name="chart_control_label">Control</string>
     <string name="chart_zoom_minus">-</string>
     <string name="chart_zoom_plus">+</string>

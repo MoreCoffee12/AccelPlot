@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -68,6 +69,8 @@ public class MainActivity extends Activity {
     private static RadioGroup _rgCh1;
     private static TextView _tvCh2;
     private static RadioGroup _rgCh2;
+    private static TextView _tvArduino;
+    private static EditText _etOCR0A;
 
     private FilterHelper filter = new FilterHelper();
 
@@ -212,13 +215,20 @@ public class MainActivity extends Activity {
         _tvCh2 = (TextView)findViewById(R.id.tvCh2);
         _rgCh1 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch1);
         _rgCh2 = (RadioGroup)findViewById(R.id.radio_ADC_to_Ch2);
-        vGetUserPrefs();
-        vUpdateChMapsEnabled(false);
 
         for(int i=0;i< TRACE_COUNT;i++)
         {
             Bluetooth.samplesBuffer[i] = new SamplesBuffer(SCREEN_BUFFER_COUNT, true);
         }
+
+        // Arduino setup mappings
+        _tvArduino = (TextView)findViewById(R.id.tvArduino);
+        _etOCR0A = (EditText)findViewById(R.id.etOCR0A);
+        vUpdateArduinoControls(true);
+
+        // Set controls values
+        vGetUserPrefs();
+        vUpdateChMapsEnabled(false);
 
         Bluetooth.classChartRenderer = new ChartRenderer(this,SCREEN_BUFFER_COUNT,Bluetooth.samplesBuffer, TRACE_COUNT);
         Bluetooth.classChartRenderer.setCyclic(CYCLIC);
@@ -324,6 +334,23 @@ public class MainActivity extends Activity {
     }
 
     /**
+     * Toggles the controls associated with the Arduino configuration
+     * @param bEnabled  New status value
+     */
+    private void vUpdateArduinoControls(boolean bEnabled){
+
+        if( bEnabled){
+            _tvArduino.setVisibility(View.VISIBLE);
+            _etOCR0A.setVisibility(View.VISIBLE);
+        }
+        else{
+            _tvArduino.setVisibility(View.GONE);
+            _etOCR0A.setVisibility(View.GONE);
+        }
+
+    }
+
+    /**
      * Toggles the enabled status of the audio channel mapping buttons
      * @param bEnabled  New enabled status value
      */
@@ -381,6 +408,8 @@ public class MainActivity extends Activity {
         Bluetooth.setbADC2ToCh2Out(sharedPref.getBoolean(getString(R.string.radio_ADC2_Ch2), true));
         Bluetooth.setbADC3ToCh2Out(sharedPref.getBoolean(getString(R.string.radio_ADC3_Ch2), true));
 
+        _etOCR0A.setText(sharedPref.getString("OCR0A", "249"));
+
         vUpdateChMaps();
 
     }
@@ -396,6 +425,7 @@ public class MainActivity extends Activity {
         editor.putBoolean(getString(R.string.radio_ADC1_Ch2), Bluetooth.isbADC1ToCh2Out());
         editor.putBoolean(getString(R.string.radio_ADC2_Ch2), Bluetooth.isbADC2ToCh2Out());
         editor.putBoolean(getString(R.string.radio_ADC3_Ch2), Bluetooth.isbADC3ToCh2Out());
+        editor.putString("OCR0A", "249");
         editor.commit();
 
     }
@@ -630,6 +660,7 @@ public class MainActivity extends Activity {
                     _tvControl.setVisibility(View.GONE);
                     _tbStream.setVisibility(View.GONE);
                     _tbStream.setEnabled(false);
+                    vUpdateArduinoControls(true);
                     break;
 
                 case Bluetooth.SUCCESS_CONNECT:
@@ -641,6 +672,7 @@ public class MainActivity extends Activity {
                     _tvControl.setVisibility(View.VISIBLE);
                     _tbStream.setVisibility(View.VISIBLE);
                     _tbStream.setEnabled(true);
+                    vUpdateArduinoControls(false);
                     break;
 
                 case Bluetooth.FILE_WRITE_DONE:

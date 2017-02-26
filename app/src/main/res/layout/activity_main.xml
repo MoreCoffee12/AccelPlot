@@ -31,7 +31,7 @@
         android:orientation="vertical">
 
 
-        <TextView
+     <TextView
         android:id="@+id/tvBluetooth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -51,6 +51,14 @@
         android:layout_height="50dp"
         android:text="@string/bluetooth_disconnect"
         android:layout_below="@id/bConnect"/>
+
+    <TextView
+        android:id="@+id/tvArduino"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Arduino"
+        android:textSize="15sp"
+        android:layout_below="@id/bDisconnect"/>
 
     <TextView
         android:id="@+id/tvControl"
