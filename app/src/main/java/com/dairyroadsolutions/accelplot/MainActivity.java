@@ -17,6 +17,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -229,17 +230,13 @@ public class MainActivity extends Activity {
         _tvArduino = (TextView)findViewById(R.id.tvArduino);
         _spFreq = (Spinner)findViewById(R.id.spFreq);
         List<String> listFreq = new ArrayList<String>();
-        double dTemp;
         for( int iOCRA = 1; iOCRA<256; ++iOCRA){
-//            listFreq.add("243.2 Hz (256)");
-            dTemp = (62500.0/ (double)(iOCRA+1));
-            listFreq.add(String.format("%.1f Hz (%d)", dTemp, iOCRA));
+            listFreq.add(strListItem(dGetFreq(iOCRA), iOCRA));
         }
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>
                 (this, R.layout.freq_spinner, listFreq);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         _spFreq.setAdapter(dataAdapter);
-
         vUpdateArduinoControls(true);
 
         // Set controls values
@@ -350,6 +347,25 @@ public class MainActivity extends Activity {
     }
 
     /**
+     * Construct the string for the spinner control
+     * @param dFreq     Frequency, double
+     * @param iOCRA     Timer0 register value
+     * @return
+     */
+    private String strListItem(double dFreq, int iOCRA){
+        return String.format("%.1f Hz (%d)", dFreq, iOCRA);
+    }
+
+    /***
+     * Calculate the frequency from the Timer0 OCRA0 value
+     * @param iOCRA     Register value
+     * @return
+     */
+    private double dGetFreq(int iOCRA){
+        return (62500.0/ (double)(iOCRA+1));
+
+    }
+    /**
      * Toggles the controls associated with the Arduino configuration
      * @param bEnabled  New status value
      */
@@ -357,9 +373,11 @@ public class MainActivity extends Activity {
 
         if( bEnabled){
             _tvArduino.setVisibility(View.VISIBLE);
+            _spFreq.setVisibility(View.VISIBLE);
         }
         else{
             _tvArduino.setVisibility(View.GONE);
+            _spFreq.setVisibility(View.GONE);
         }
 
     }
@@ -422,7 +440,7 @@ public class MainActivity extends Activity {
         Bluetooth.setbADC2ToCh2Out(sharedPref.getBoolean(getString(R.string.radio_ADC2_Ch2), true));
         Bluetooth.setbADC3ToCh2Out(sharedPref.getBoolean(getString(R.string.radio_ADC3_Ch2), true));
 
-        //_etOCR0A.setText(sharedPref.getString("OCR0A", "249"));
+        _spFreq.setSelection(sharedPref.getInt("OCR0A", 249)-1);
 
         vUpdateChMaps();
 
@@ -439,7 +457,7 @@ public class MainActivity extends Activity {
         editor.putBoolean(getString(R.string.radio_ADC1_Ch2), Bluetooth.isbADC1ToCh2Out());
         editor.putBoolean(getString(R.string.radio_ADC2_Ch2), Bluetooth.isbADC2ToCh2Out());
         editor.putBoolean(getString(R.string.radio_ADC3_Ch2), Bluetooth.isbADC3ToCh2Out());
-        editor.putString("OCR0A", "249");
+        editor.putInt("OCR0A",_spFreq.getSelectedItemPosition()+1);
         editor.commit();
 
     }
@@ -573,6 +591,16 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 vUpdateSaveData();
+            }
+        });
+
+        // Configure the Arduino frequency selection spinner
+        _spFreq.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                Object item = parent.getItemAtPosition(pos);
+                vUpdateUserPrefs();
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
