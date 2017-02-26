@@ -80,6 +80,30 @@
         android:layout_below="@id/spFreq"/>
 
     <TextView
+        android:id="@+id/tvFile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/file_label"
+        android:textSize="15sp"
+        android:layout_below="@id/spAccRange"/>
+
+    <!-- Dummy item to prevent AutoCompleteTextView from receiving focus -->
+    <LinearLayout
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:layout_width="0px"
+        android:layout_height="0px"/>
+
+    <EditText
+        android:id="@+id/etFileSamples"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:hint="Samples to File"
+        android:textSize="15sp"
+        android:inputType="number"
+        android:layout_below="@id/tvFile"/>
+
+    <TextView
         android:id="@+id/tvControl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

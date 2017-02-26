@@ -37,6 +37,7 @@
 
     <string name="label_Arduino">Arduino</string>
     <string name="Arduino_buildit">Build It</string>
+    <string name="file_label">Samples to Save</string>
 
     <string name="chart_control_label">Control</string>
     <string name="chart_zoom_minus">-</string>

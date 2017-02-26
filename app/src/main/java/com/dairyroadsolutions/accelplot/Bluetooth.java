@@ -68,9 +68,10 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 	//
 	// This is the number of samples written to each file.
 	public static int iFileSampleCount = (int) dSampleFreq *60;
-    public static final float[] fX_Accel = new float[iFileSampleCount];
-    public static final float[] fY_Accel = new float[iFileSampleCount];
-    public static final float[] fZ_Accel = new float[iFileSampleCount];
+    public static float[] fX_Accel = new float[iFileSampleCount];
+    public static float[] fY_Accel = new float[iFileSampleCount];
+    public static float[] fZ_Accel = new float[iFileSampleCount];
+
 	//This channel can be a gyro or the ADC, depending how how the firmware is configured
 	//in the Arduino
     public static final float[] fX_Gyro = new float[iFileSampleCount];
@@ -172,6 +173,13 @@ public class Bluetooth extends Activity implements OnItemClickListener{
     public static void vSetSampleFreq(double dFreq) {dSampleFreq = dFreq;}
 
     public static void vSetWritePending( boolean bIn) {bWritePending = bIn;}
+
+    public static void vSetFileSamples(int iSamples ){
+        iFileSampleCount = iSamples;
+        fX_Accel = new float[iFileSampleCount];
+        fY_Accel = new float[iFileSampleCount];
+        fZ_Accel = new float[iFileSampleCount];
+    }
 
 
 
@@ -384,6 +392,9 @@ public class Bluetooth extends Activity implements OnItemClickListener{
                 // Unable to connect; close the socket and get out
 				try
                 {
+
+                    // This approach is described in a StackOverflow question:
+                    // http://stackoverflow.com/questions/18657427/ioexception-read-failed-socket-might-closed-bluetooth-on-android-4-3
                     Log.i("AccelPlot","Trying fallback connection");
 
                     // Use a temporary object that is later assigned to mmSocket,

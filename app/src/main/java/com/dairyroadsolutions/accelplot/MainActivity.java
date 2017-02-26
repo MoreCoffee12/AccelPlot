@@ -13,6 +13,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.Menu;
@@ -21,6 +22,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -81,6 +83,8 @@ public class MainActivity extends Activity {
     private static Button _bInst;
     private static Spinner _spFreq;
     private static Spinner _spAccRange;
+    private static TextView _tvFile;
+    private static EditText _etFileSamples;
 
     private FilterHelper filter = new FilterHelper();
 
@@ -236,6 +240,8 @@ public class MainActivity extends Activity {
         _bInst = (Button)findViewById(R.id.bInst);
         _spFreq = (Spinner)findViewById(R.id.spFreq);
         _spAccRange = (Spinner)findViewById(R.id.spAccRange);
+        _tvFile = (TextView)findViewById(R.id.tvFile);
+        _etFileSamples = (EditText)findViewById(R.id.etFileSamples);
         List<String> listFreq = new ArrayList<String>();
         for( int iOCRA = 1; iOCRA<256; ++iOCRA){
             listFreq.add(strListItem(dGetFreq(iOCRA), iOCRA));
@@ -393,12 +399,16 @@ public class MainActivity extends Activity {
             _spFreq.setVisibility(View.VISIBLE);
             _bInst.setVisibility(View.VISIBLE);
             _spAccRange.setVisibility(View.VISIBLE);
+            _tvFile.setVisibility(View.VISIBLE);
+            _etFileSamples.setVisibility(View.VISIBLE);
         }
         else{
             _tvArduino.setVisibility(View.GONE);
             _spFreq.setVisibility(View.GONE);
             _bInst.setVisibility(View.GONE);
             _spAccRange.setVisibility(View.GONE);
+            _tvFile.setVisibility(View.GONE);
+            _etFileSamples.setVisibility(View.GONE);
         }
 
     }
@@ -463,6 +473,7 @@ public class MainActivity extends Activity {
 
         _spFreq.setSelection(sharedPref.getInt("OCR0A", 248));
         _spAccRange.setSelection(sharedPref.getInt("ACCFS", 0));
+        _etFileSamples.setText(String.format("%d", sharedPref.getInt("SAMPSAVE",15000)));
 
         vUpdateChMaps();
 
@@ -481,6 +492,7 @@ public class MainActivity extends Activity {
         editor.putBoolean(getString(R.string.radio_ADC3_Ch2), Bluetooth.isbADC3ToCh2Out());
         editor.putInt("OCR0A",_spFreq.getSelectedItemPosition());
         editor.putInt("ACCFS",_spAccRange.getSelectedItemPosition());
+        editor.putInt("SAMPSAVE", Integer.parseInt(_etFileSamples.getText().toString()));
         editor.commit();
 
     }
@@ -602,6 +614,11 @@ public class MainActivity extends Activity {
 
             @Override
             public void onClick(View v) {
+
+                // Update user prefs for samples to save
+                vUpdateUserPrefs();
+                Bluetooth.vSetFileSamples(sharedPref.getInt("SAMPSAVE",15000));
+
                 startActivity(new Intent("android.intent.action.BT1"));
 
             }
@@ -779,6 +796,7 @@ public class MainActivity extends Activity {
 
                 case Bluetooth.FILE_WRITE_DONE:
                     _tbSaveData.setChecked(false);
+                    _tbSaveData.setEnabled(false);
                     break;
             }
 
