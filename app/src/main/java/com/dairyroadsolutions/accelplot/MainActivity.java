@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
@@ -75,6 +76,7 @@ public class MainActivity extends Activity {
     private static TextView _tvCh2;
     private static RadioGroup _rgCh2;
     private static TextView _tvArduino;
+    private static Button _bInst;
     private static Spinner _spFreq;
 
     private FilterHelper filter = new FilterHelper();
@@ -226,8 +228,9 @@ public class MainActivity extends Activity {
             Bluetooth.samplesBuffer[i] = new SamplesBuffer(SCREEN_BUFFER_COUNT, true);
         }
 
-        // Arduino setup mappings
+        // Arduino control mappings
         _tvArduino = (TextView)findViewById(R.id.tvArduino);
+        _bInst = (Button)findViewById(R.id.bInst);
         _spFreq = (Spinner)findViewById(R.id.spFreq);
         List<String> listFreq = new ArrayList<String>();
         for( int iOCRA = 1; iOCRA<256; ++iOCRA){
@@ -374,10 +377,12 @@ public class MainActivity extends Activity {
         if( bEnabled){
             _tvArduino.setVisibility(View.VISIBLE);
             _spFreq.setVisibility(View.VISIBLE);
+            _bInst.setVisibility(View.VISIBLE);
         }
         else{
             _tvArduino.setVisibility(View.GONE);
             _spFreq.setVisibility(View.GONE);
+            _bInst.setVisibility(View.GONE);
         }
 
     }
@@ -513,6 +518,16 @@ public class MainActivity extends Activity {
     }
 
     /**
+     * Open a URL link
+     * @param url   String with the URL link
+     */
+    private void goToUrl (String url) {
+        Uri uriUrl = Uri.parse(url);
+        Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+        startActivity(launchBrowser);
+    }
+
+    /**
      * Initialize the button controls and listeners
      */
     private void ButtonInit(){
@@ -571,8 +586,8 @@ public class MainActivity extends Activity {
         });
 
         // Configure the Bluetooth disconnect button
-        btnDiscconnectButton = (Button)findViewById(R.id.bDisconnect);
-        btnDiscconnectButton.setOnClickListener(new OnClickListener() {
+        _bDisconnect = (Button)findViewById(R.id.bDisconnect);
+        _bDisconnect.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -592,6 +607,19 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 vUpdateSaveData();
             }
+        });
+
+        // Configure the Build It button to link to Instructables
+        _bInst.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+            goToUrl("https://www.instructables.com/id/Realtime-MPU-6050A0-Data-Logging-With-Arduino-and-");
+
+            }
+
+
         });
 
         // Configure the Arduino frequency selection spinner

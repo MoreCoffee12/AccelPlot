@@ -45,26 +45,33 @@
         android:text="@string/bluetooth_connect"
         android:layout_below="@id/tvBluetooth"/>
 
-    <Button
-        android:id="@+id/bDisconnect"
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:text="@string/bluetooth_disconnect"
-        android:layout_below="@id/bConnect"/>
-
     <TextView
         android:id="@+id/tvArduino"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="ArduinoMeNew"
         android:textSize="15sp"
-        android:layout_below="@id/bDisconnect"/>
+        android:layout_below="@id/bConnect"/>
+
+    <Button
+        android:id="@+id/bInst"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:text="@string/Arduino_buildit"
+        android:layout_below="@id/tvArduino"/>
 
     <Spinner
         android:id="@+id/spFreq"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:layout_below="@id/tvArduino"/>
+        android:layout_below="@id/bInst"/>
+
+    <Button
+        android:id="@+id/bDisconnect"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:text="@string/bluetooth_disconnect"
+        android:layout_below="@id/bConnect"/>
 
     <TextView
         android:id="@+id/tvControl"

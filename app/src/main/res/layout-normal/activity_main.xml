@@ -53,14 +53,21 @@
         android:layout_height="wrap_content"
         android:text="@string/label_Arduino"
         android:textSize="12sp"
-        android:layout_below="@id/bDisconnect"/>
+        android:layout_below="@id/bConnect"/>
+
+    <Button
+        android:id="@+id/bInst"
+        android:layout_width="fill_parent"
+        android:layout_height="35dp"
+        android:text="@string/Arduino_buildit"
+        android:layout_below="@id/tvArduino"/>
 
     <Spinner
         android:id="@+id/spFreq"
         android:layout_width="match_parent"
         android:textSize="12sp"
-        android:layout_height="35dp"
-        android:layout_below="@id/tvArduino"/>
+        android:layout_height="37dp"
+        android:layout_below="@id/bInst"/>
 
     <Button
         android:id="@+id/bDisconnect"
