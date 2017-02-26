@@ -17,15 +17,19 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends Activity {
 
@@ -70,7 +74,7 @@ public class MainActivity extends Activity {
     private static TextView _tvCh2;
     private static RadioGroup _rgCh2;
     private static TextView _tvArduino;
-    private static EditText _etOCR0A;
+    private static Spinner _spFreq;
 
     private FilterHelper filter = new FilterHelper();
 
@@ -223,7 +227,19 @@ public class MainActivity extends Activity {
 
         // Arduino setup mappings
         _tvArduino = (TextView)findViewById(R.id.tvArduino);
-        _etOCR0A = (EditText)findViewById(R.id.etOCR0A);
+        _spFreq = (Spinner)findViewById(R.id.spFreq);
+        List<String> listFreq = new ArrayList<String>();
+        double dTemp;
+        for( int iOCRA = 1; iOCRA<256; ++iOCRA){
+//            listFreq.add("243.2 Hz (256)");
+            dTemp = (62500.0/ (double)(iOCRA+1));
+            listFreq.add(String.format("%.1f Hz (%d)", dTemp, iOCRA));
+        }
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>
+                (this, R.layout.freq_spinner, listFreq);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        _spFreq.setAdapter(dataAdapter);
+
         vUpdateArduinoControls(true);
 
         // Set controls values
@@ -341,11 +357,9 @@ public class MainActivity extends Activity {
 
         if( bEnabled){
             _tvArduino.setVisibility(View.VISIBLE);
-            _etOCR0A.setVisibility(View.VISIBLE);
         }
         else{
             _tvArduino.setVisibility(View.GONE);
-            _etOCR0A.setVisibility(View.GONE);
         }
 
     }
@@ -408,7 +422,7 @@ public class MainActivity extends Activity {
         Bluetooth.setbADC2ToCh2Out(sharedPref.getBoolean(getString(R.string.radio_ADC2_Ch2), true));
         Bluetooth.setbADC3ToCh2Out(sharedPref.getBoolean(getString(R.string.radio_ADC3_Ch2), true));
 
-        _etOCR0A.setText(sharedPref.getString("OCR0A", "249"));
+        //_etOCR0A.setText(sharedPref.getString("OCR0A", "249"));
 
         vUpdateChMaps();
 

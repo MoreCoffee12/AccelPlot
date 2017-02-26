@@ -56,9 +56,15 @@
         android:id="@+id/tvArduino"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Arduino"
+        android:text="ArduinoMeNew"
         android:textSize="15sp"
         android:layout_below="@id/bDisconnect"/>
+
+    <Spinner
+        android:id="@+id/spFreq"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_below="@id/tvArduino"/>
 
     <TextView
         android:id="@+id/tvControl"

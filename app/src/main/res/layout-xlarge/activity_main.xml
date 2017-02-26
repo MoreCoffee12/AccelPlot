@@ -60,20 +60,10 @@
         android:textSize="15sp"
         android:layout_below="@id/bDisconnect"/>
 
-    <!-- Dummy item to prevent AutoCompleteTextView from receiving focus -->
-    <LinearLayout
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:layout_width="0px"
-        android:layout_height="0px"/>
-
-    <EditText
-        android:id="@+id/etOCR0A"
-        android:layout_width="wrap_content"
+    <Spinner
+        android:id="@+id/spFreq"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:hint="Enter Timer0 Count"
-        android:textSize="15sp"
-        android:inputType="number"
         android:layout_below="@id/tvArduino"/>
 
     <TextView
