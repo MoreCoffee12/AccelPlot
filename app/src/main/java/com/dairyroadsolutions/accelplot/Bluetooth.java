@@ -74,7 +74,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
 	//This channel can be a gyro or the ADC, depending how how the firmware is configured
 	//in the Arduino
-    public static final float[] fX_Gyro = new float[iFileSampleCount];
+    public static float[] fX_Gyro = new float[iFileSampleCount];
 	public static int idxBuff = 0;
 
 	// Output buffer
@@ -179,6 +179,9 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         fX_Accel = new float[iFileSampleCount];
         fY_Accel = new float[iFileSampleCount];
         fZ_Accel = new float[iFileSampleCount];
+        fX_Gyro = new float[iFileSampleCount];
+        idxBuff=0;
+        fhelper.vSetSamples(iSamples);
     }
 
 

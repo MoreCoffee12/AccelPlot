@@ -19,7 +19,7 @@ class FileHelper {
     private ByteBuffer bb;
 
     FileHelper(int iFloatBuffLength){
-        bb = ByteBuffer.allocate(iFloatBuffLength*4);
+        vSetSamples( iFloatBuffLength );
     }
 
     // debug
@@ -27,6 +27,10 @@ class FileHelper {
 
     // File index
     private long lFileIdx = 0;
+
+    public void vSetSamples( int iFloatBuffLength ){
+        bb = ByteBuffer.allocate(iFloatBuffLength*4);
+    }
 
 
 
