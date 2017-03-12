@@ -1,7 +1,6 @@
-<snippet>
-  <content><![CDATA[
-# ${1:Project Name}
-TODO: Write a project description
+# Accel Plot
+This is an Android application that reads data from an Arduino and HC-05/HC-06 Bluetooth module, plots it, and saves it to the device. The hardware build is described in more detail in an [Instructables project](https://www.instructables.com/id/Realtime-MPU-6050A0-Data-Logging-With-Arduino-and-/)
+
 ## Installation
 TODO: Describe the installation process
 ## Usage
@@ -18,6 +17,3 @@ TODO: Write history
 TODO: Write credits
 ## License
 TODO: Write license
-]]></content>
-  <tabTrigger>readme</tabTrigger>
-</snippet>
