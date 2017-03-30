@@ -58,6 +58,7 @@ class FileHelper {
                 bb.putFloat(data[idx]);
             }
 
+            Log.i(_strTag, ":HM:                              Directory: " + dir.getPath());
             Log.i(_strTag, ":HM:                              File Name: " + strFileName);
             Log.i(_strTag, ":HM:                                data[0]: " + data[0]);
 
