@@ -13,6 +13,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -242,6 +243,7 @@ public class MainActivity extends Activity {
         _spAccRange = (Spinner)findViewById(R.id.spAccRange);
         _tvFile = (TextView)findViewById(R.id.tvFile);
         _etFileSamples = (EditText)findViewById(R.id.etFileSamples);
+        _etFileSamples.setFilters(new InputFilter[]{ new InputFilterMinMax("1","7200000")});
         List<String> listFreq = new ArrayList<String>();
         for( int iOCRA = 1; iOCRA<256; ++iOCRA){
             listFreq.add(strListItem(dGetFreq(iOCRA), iOCRA));
