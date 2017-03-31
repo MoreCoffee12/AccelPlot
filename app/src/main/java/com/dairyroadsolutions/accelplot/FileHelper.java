@@ -44,7 +44,7 @@ class FileHelper {
      */
     public boolean bFileToSD(String strDir, String strFileName, float[] data){
 
-        File sdCard = Environment.getExternalStorageDirectory();
+        File sdCard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
         File dir = new File (sdCard.getAbsolutePath() + strDir);
         dir.mkdirs();
         File file = new File(dir, strFileName);
