@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
@@ -44,7 +45,13 @@ class FileHelper {
      */
     public boolean bFileToSD(String strDir, String strFileName, float[] data){
 
-        File sdCard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+        File sdCard;
+
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
+            sdCard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+        }else{
+            sdCard = Environment.getExternalStorageDirectory();
+        }
         File dir = new File (sdCard.getAbsolutePath() + strDir);
         dir.mkdirs();
         File file = new File(dir, strFileName);
