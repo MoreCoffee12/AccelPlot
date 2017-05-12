@@ -1,5 +1,5 @@
 // Code to acquire acceleration data and/or ADC data and transmitt it via
-// Bluetooth.
+// Bluetooth. Data acquistion runs at 125 Hz
 //
 // Software is distributed under the MIT License, see Firmware_License.txt
 // for more details.
@@ -40,7 +40,7 @@ MPU6050 accelgyro;
 #define OUTPUT_BINARY_ACCELGYRO
 
 
-#define LED_PIN 13
+#define LED_PIN 9
 
 // Globals
 byte btTemp = 0;
@@ -83,8 +83,8 @@ void setup()
 
     // Reference: http://playground.arduino.cc/Main/MPU-6050
     // Configure the gyro and accel for a full scale range of 2 g's and
-    // a bandwidth of 98 hertz, less than half of our sampling frequency.
-    accelgyro.setDLPFMode(MPU6050_DLPF_BW_98);
+    // a bandwidth of 42 hertz, less than half of our sampling frequency.
+    accelgyro.setDLPFMode(MPU6050_DLPF_BW_42);
     accelgyro.setFullScaleAccelRange(MPU6050_ACCEL_FS_2);
     
     Serial.flush();
@@ -100,12 +100,12 @@ void setup()
     TCCR0B = 0;   // Same for TCCR0B
 
     // See "ISR Frequency Ranges.xlsx" for details
-    OCR0A = 249;  
+    OCR0A = 124;  
     
     // Turn on the CTC mode
     TCCR0A |= (1 << WGM01);
-    // Set CS02, CS01 and CS00 bits for 256 prescaler
-    TCCR0B |= (1 << CS02 );
+    // Set CS02, CS01 and CS00 bits for 1024 prescaler
+    TCCR0B |= (1 << CS02 )|(1 << CS00);
     // Enable the timer compare interrupt
     TIMSK0 |= ( 1 << OCIE0A );
     
@@ -121,7 +121,7 @@ void setup()
 void loop(void) {
 }
 
-// Fire the loop
+// Fire up the loop
 ISR(TIMER0_COMPA_vect){
 
   // The IC2 requires interrupts to be enabled so I've done that here. There is risk,
