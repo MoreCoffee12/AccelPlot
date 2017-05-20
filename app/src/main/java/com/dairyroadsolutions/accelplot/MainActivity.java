@@ -246,7 +246,7 @@ public class MainActivity extends Activity {
         _etFileSamples.setFilters(new InputFilter[]{ new InputFilterMinMax("1","7200000")});
         List<String> listFreq = new ArrayList<String>();
         for( int iOCRA = 1; iOCRA<256; ++iOCRA){
-            listFreq.add(strListItem(dGetFreq(iOCRA), iOCRA));
+            listFreq.add(strListItem(dGetFreq(256, iOCRA), iOCRA));
         }
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
                 R.layout.freq_spinner, listFreq);
@@ -383,13 +383,15 @@ public class MainActivity extends Activity {
 
     /***
      * Calculate the frequency from the Timer0 OCRA0 value
+     * @param iPre      Prescalar value
      * @param iOCRA     Register value
      * @return
      */
-    private double dGetFreq(int iOCRA){
-        return (62500.0/ (double)(iOCRA+1));
+    private double dGetFreq(int iPre, int iOCRA){
+        return ( (16000000.0 / iPre)/ (double)(iOCRA+1));
 
     }
+
     /**
      * Toggles the controls associated with the Arduino configuration
      * @param bEnabled  New status value
@@ -530,7 +532,7 @@ public class MainActivity extends Activity {
 
         // Update the scaling values
         int iOCRA = sharedPref.getInt("OCR0A", 249);
-        Bluetooth.vSetSampleFreq(dGetFreq(iOCRA));
+        Bluetooth.vSetSampleFreq(dGetFreq(256, iOCRA));
         fAccelCountsPerG = (float)(2048.0f/pow(2.0f, (float)(1+sharedPref.getInt("ACCFS", 0))));
         dGPerDiv = (1.0f/F_SCALE_FACTOR_ACC)/(I_DIVISIONS_Y* fAccelCountsPerG);
 
