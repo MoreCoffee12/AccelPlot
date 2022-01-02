@@ -1,13 +1,13 @@
 digraph Tree {
-node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
-edge [fontname=helvetica] ;
-0 [label=<Ch2_vl &le; -0.0016<br/>gini = 0.6667<br/>samples = 45000<br/>value = [14980, 14963, 15057]<br/>class = Tile>, fillcolor="#8139e501"] ;
-1 [label=<gini = 0.0<br/>samples = 14265<br/>value = [0, 14265, 0]<br/>class = Cobble>, fillcolor="#39e581ff"] ;
+node [shape=box, style="filled, rounded", color="black", fontname="helvetica"] ;
+edge [fontname="helvetica"] ;
+0 [label=<Ch2_vl &le; -0.002<br/>gini = 0.667<br/>samples = 45000<br/>value = [14980, 14963, 15057]<br/>class = Tile>, fillcolor="#fffeff"] ;
+1 [label=<gini = 0.0<br/>samples = 14265<br/>value = [0, 14265, 0]<br/>class = Cobble>, fillcolor="#39e581"] ;
 0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
-2 [label=<Ch3_vl &le; 0.5253<br/>gini = 0.5219<br/>samples = 30735<br/>value = [14980, 698, 15057]<br/>class = Tile>, fillcolor="#8139e501"] ;
+2 [label=<Ch3_vl &le; 0.525<br/>gini = 0.522<br/>samples = 30735<br/>value = [14980, 698, 15057]<br/>class = Tile>, fillcolor="#fefeff"] ;
 0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
-3 [label=<gini = 0.3556<br/>samples = 19217<br/>value = [14980, 600, 3637]<br/>class = Carpet>, fillcolor="#e58139ba"] ;
+3 [label=<gini = 0.356<br/>samples = 19217<br/>value = [14980, 600, 3637]<br/>class = Carpet>, fillcolor="#eca36f"] ;
 2 -> 3 ;
-4 [label=<gini = 0.0169<br/>samples = 11518<br/>value = [0, 98, 11420]<br/>class = Tile>, fillcolor="#8139e5fd"] ;
+4 [label=<gini = 0.017<br/>samples = 11518<br/>value = [0, 98, 11420]<br/>class = Tile>, fillcolor="#823be5"] ;
 2 -> 4 ;
 }
