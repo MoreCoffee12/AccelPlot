@@ -136,7 +136,7 @@ public class Chart {
         // Set the colors array
 		setColors();
 
-        // Default is one columnn
+        // Default is one column
         iChartColumnCount = 1;
 		
 		// Save the sample buffers
