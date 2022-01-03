@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.InputFilter;
-import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.Menu;
@@ -50,7 +49,7 @@ public class MainActivity extends Activity {
     // address to included in the 2-byte structure. See "Firmware.ino" for the implementation
     // details
     private static float fAccelCountsPerG = 1024.0f;
-    private static final float F_ADC_COUNTS_PER_VOLT = 1024.0f/5.0f;
+    private static final float F_ADC_COUNTS_PER_VOLT = fAccelCountsPerG/5.0f;
 
     // The plot area for each trace has to be scaled to +1 to -1
     private static final float F_SCALE_FACTOR_ACC = 0.50f/2048.0f;
@@ -59,16 +58,13 @@ public class MainActivity extends Activity {
     // Grid controls. It works best if they are even numbers
     private static final int I_DIVISIONS_X = 20;
     private static final int I_DIVISIONS_Y = 4;
-    private static float dGPerDiv = 0.0f;
     private static final float V_PER_DIV =(0.5f/F_SCALE_FACTOR_GYRO)/(I_DIVISIONS_Y*F_ADC_COUNTS_PER_VOLT);
-    private float fTimePerDiv = 0;
     TextView[] tvTrace = new TextView[TRACE_COUNT+1];
     private int iLabelSize;
 
     // Chart trace controls
-    private GLSurfaceView glChartSurfaceView;
-    private float fChScale[];
-    private float fChOffset[];
+    private float[] fChScale;
+    private float[] fChOffset;
     private Button _bDisconnect;
     private TextView _tvControl;
     private ToggleButton _tbStream;
@@ -87,7 +83,7 @@ public class MainActivity extends Activity {
     private TextView _tvFile;
     private EditText _etFileSamples;
 
-    private FilterHelper filter = new FilterHelper();
+    private final FilterHelper filter = new FilterHelper();
 
     // Data writing controls
     private boolean bWriteLocal = false;
@@ -117,7 +113,7 @@ public class MainActivity extends Activity {
             fChScale[idx] = fScaleFactor/(TRACE_COUNT +1.0f);
         }
 
-        // The scale factor for the gyro/ADC channel is set separately from the accels
+        // The scale factor for the gyro/ADC channel is set separately from the accelerometers
         fChScale[TRACE_COUNT-1]=F_SCALE_FACTOR_GYRO;
 
         // Update dependent objects
@@ -147,6 +143,9 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Local variables
+        GLSurfaceView glChartSurfaceView;
 
         setContentView(R.layout.activity_main);
 
@@ -197,7 +196,7 @@ public class MainActivity extends Activity {
         Bluetooth.samplesBuffer=new SamplesBuffer[TRACE_COUNT];
         Bluetooth.vSetWriteLocal(bWriteLocal);
 
-        // Flags for the disconnet button
+        // Flags for the disconnect button
         _bDisconnect = (Button)findViewById(R.id.bDisconnect);
         _bDisconnect.setEnabled(false);
         _bDisconnect.setVisibility(View.GONE);
@@ -525,7 +524,14 @@ public class MainActivity extends Activity {
         }
     }
 
+    /**
+     * Update plot grid labels
+     */
     private void vUpdateGridLabels(){
+
+        // Local variables
+        float dGPerDiv;
+        float fTimePerDiv;
 
         FrameLayout flTemp = (FrameLayout)findViewById(R.id.flChartStuff);
         int iDiff = (int)((float)flTemp.getHeight()/(float)TRACE_COUNT);
