@@ -34,6 +34,7 @@ import android.widget.ToggleButton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static java.lang.Math.pow;
 
@@ -186,7 +187,7 @@ public class MainActivity extends Activity {
         // Horizontal axis labels
         --idxText;
         tvTrace[idxText].setPadding((iLabelSize/2)+1,(iLabelSize/2)+1, (iLabelSize/2)+1, (iLabelSize/2)+1);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, (Gravity.BOTTOM | Gravity.RIGHT) );
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, (Gravity.BOTTOM | Gravity.END) );
         tvTrace[idxText].setLayoutParams(params);
 
         // User prefs
@@ -243,21 +244,21 @@ public class MainActivity extends Activity {
         _tvFile = (TextView)findViewById(R.id.tvFile);
         _etFileSamples = (EditText)findViewById(R.id.etFileSamples);
         _etFileSamples.setFilters(new InputFilter[]{ new InputFilterMinMax("1","7200000")});
-        List<String> listFreq = new ArrayList<String>();
+        List<String> listFreq = new ArrayList<>();
         for( int iOCRA = 1; iOCRA<256; ++iOCRA){
             listFreq.add(strListItem(dGetFreq(256, iOCRA), iOCRA));
         }
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this,
                 R.layout.freq_spinner, listFreq);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         _spFreq.setAdapter(dataAdapter);
 
-        List<String> listAccRange = new ArrayList<String>();
+        List<String> listAccRange = new ArrayList<>();
         listAccRange.add("MPU6050_ACCEL_FS_2");
         listAccRange.add("MPU6050_ACCEL_FS_4");
         listAccRange.add("MPU6050_ACCEL_FS_8");
         listAccRange.add("MPU6050_ACCEL_FS_16");
-        ArrayAdapter<String> accAdapter = new ArrayAdapter<String>(this,
+        ArrayAdapter<String> accAdapter = new ArrayAdapter<>(this,
                 R.layout.freq_spinner, listAccRange);
         accAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         _spAccRange.setAdapter(accAdapter);
@@ -374,17 +375,17 @@ public class MainActivity extends Activity {
      * Construct the string for the spinner control
      * @param dFreq     Frequency, double
      * @param iOCRA     Timer0 register value
-     * @return
+     * @return String formatted for list
      */
     private String strListItem(double dFreq, int iOCRA){
-        return String.format("%.1f Hz (%d)", dFreq, iOCRA);
+        return String.format(Locale.US, "%.1f Hz (%d)", dFreq, iOCRA);
     }
 
     /***
      * Calculate the frequency from the Timer0 OCRA0 value
-     * @param iPre      Prescalar value
+     * @param iPre      Pre-scalar value
      * @param iOCRA     Register value
-     * @return
+     * @return REturns the frequency as a double
      */
     private double dGetFreq(int iPre, int iOCRA){
         return ( (16000000.0 / iPre)/ (double)(iOCRA+1));
