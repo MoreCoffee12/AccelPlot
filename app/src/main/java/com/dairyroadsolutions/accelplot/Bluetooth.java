@@ -224,7 +224,6 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
 	}
 
-
 	private void startDiscovery()
     {
 		// TODO Auto-generated method stub
@@ -257,62 +256,63 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 			fY_Accel[idx] = 0.0f;
 		}
 
+        Log.d(_strTag, ":HM:                   Init");
+
 		listView = (ListView)findViewById(R.id.listView);
 		listView.setOnItemClickListener(this);
 		listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,0);
 		listView.setAdapter(listAdapter);
-		btAdapter = BluetoothAdapter.getDefaultAdapter();
-		pairedDevices = new ArrayList<String>();
-		filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-		devices = new ArrayList<BluetoothDevice>();	
-		receiver = new BroadcastReceiver(){
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				String action = intent.getAction();
-				if (BluetoothDevice.ACTION_FOUND.equals(action)){
-					BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-					devices.add(device);
-					String s = "";
-                    try {
 
-                        // Useful in debugging code
-                        //Log.d(_strTag, ":HM:                   Number of devices: " + devices.size());
-                        //Log.d(_strTag, ":HM:            Number of paired devices: " + pairedDevices.size());
-                        //Log.d(_strTag, ":HM:                                Name: " + device.getName());
+		// Get the Bluetooth adapter
+        btAdapter = BluetoothAdapter.getDefaultAdapter();
+        Log.d(_strTag, ":HM:                   btAdapter" + btAdapter.getName());
+        Log.d(_strTag, ":HM:                   btAdapter Enabled: " + btAdapter.isEnabled());
 
-						if( device.getName() != null){
-                            for (int a = 0; a < pairedDevices.size(); a++) {
-                                if (device.getName().equals(pairedDevices.get(a))) {
-                                    //append
-                                    s = "(Paired)";
-                                    listAdapter.add(device.getName() + " " + s + " " + "\n" + device.getAddress());
-                                    break;
-                                }
-                            }
-                        }
+        // Enable Bluetooth
+        int REQUEST_ENABLE_BT = 0;
+        if (!btAdapter.isEnabled()) {
+            // Create system request to enable Bluetooth
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            // Queue the request to pop up the Bluetooth enable/disable dialog
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
 
+        // Standby for device found, Bluetooth may still be disabled at this point
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 
-                    }catch (Exception e) {
-                        Log.e(":HM:", "exception", e);
-                    }
+        // Set lists for device id and name
+        pairedDevices = new ArrayList<String>();
+		devices = new ArrayList<BluetoothDevice>();
 
-				}
-				else if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action))
-				{
-					if (btAdapter.getState() == BluetoothAdapter.STATE_OFF)
-					{
-						turnOnBT();
-					}
-				}
-			}
+		// Get paired devices.
+        Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
+
+		// Pull up the list of paired devices
+        if (pairedDevices.size() > 0 ) {
+
+            // Found paired devices
+            Log.d(_strTag, ":HM:                   Found paired devices");
+            for (BluetoothDevice device : pairedDevices){
+
+                devices.add(device);
+                listAdapter.add(device.getName() + " " + "\n" + device.getAddress());
+
+                // Document the paired devices found
+                Log.d(_strTag, ":HM:                   Paired device: " + device.getName() );
+
+            }
+
+            // Summarize the devices
+            Log.d(_strTag, ":HM:                   Number of devices: " + devices.size());
+            Log.d(_strTag, ":HM:            Number of paired devices: " + pairedDevices.size());
 
 		};
 
 		registerReceiver(receiver, filter);
-		IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-		registerReceiver(receiver, filter);
-		filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-		registerReceiver(receiver, filter);
+        IntentFilter filterFinal = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        registerReceiver(receiver, filterFinal);
+        filterFinal = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+		registerReceiver(receiver, filterFinal);
 	}
 
 	@Override

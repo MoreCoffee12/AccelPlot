@@ -12,9 +12,11 @@ import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.InputFilter;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -385,7 +387,7 @@ public class MainActivity extends Activity {
      * Calculate the frequency from the Timer0 OCRA0 value
      * @param iPre      Pre-scalar value
      * @param iOCRA     Register value
-     * @return REturns the frequency as a double
+     * @return Returns the frequency as a double
      */
     private double dGetFreq(int iPre, int iOCRA){
         return ( (16000000.0 / iPre)/ (double)(iOCRA+1));
@@ -477,7 +479,7 @@ public class MainActivity extends Activity {
 
         _spFreq.setSelection(sharedPref.getInt("OCR0A", 248));
         _spAccRange.setSelection(sharedPref.getInt("ACCFS", 0));
-        _etFileSamples.setText(String.format("%d", sharedPref.getInt("SAMPSAVE",15000)));
+        _etFileSamples.setText(String.format(Locale.US,"%d", sharedPref.getInt("SAMPSAVE",15000)));
 
         vUpdateChMaps();
 
@@ -497,7 +499,7 @@ public class MainActivity extends Activity {
         editor.putInt("OCR0A",_spFreq.getSelectedItemPosition());
         editor.putInt("ACCFS",_spAccRange.getSelectedItemPosition());
         editor.putInt("SAMPSAVE", Integer.parseInt(_etFileSamples.getText().toString()));
-        editor.commit();
+        editor.apply();
 
     }
 
@@ -547,9 +549,9 @@ public class MainActivity extends Activity {
         int idxText;
         for( idxText = 0; idxText<TRACE_COUNT; ++idxText){
 
-            tvTrace[idxText].setText("Ch" + String.valueOf(idxText+1) + ", " + String.valueOf(dGPerDiv) + "g's per div");
+            tvTrace[idxText].setText("Ch" + (idxText + 1) + ", " + dGPerDiv + "g's per div");
             if(idxText == (TRACE_COUNT-1)){
-                tvTrace[idxText].setText("Ch" + String.valueOf(idxText+1) + ", " + String.valueOf(V_PER_DIV) + " volt per div");
+                tvTrace[idxText].setText("Ch" + (idxText + 1) + ", " + V_PER_DIV + " volt per div");
             }
             tvTrace[idxText].setBackgroundColor(Color.BLACK);
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP);
@@ -560,7 +562,7 @@ public class MainActivity extends Activity {
 
         // Horizontal label goodness
         fTimePerDiv = SCREEN_BUFFER_COUNT / ((float)Bluetooth.dGetSampleFrequency() * (float)I_DIVISIONS_X );
-        tvTrace[idxText].setText(String.format("%.1f sec. per div", fTimePerDiv));
+        tvTrace[idxText].setText(String.format(Locale.US,"%.1f sec. per div", fTimePerDiv));
 
     }
 
@@ -580,99 +582,66 @@ public class MainActivity extends Activity {
     private void ButtonInit(){
 
         Button btnConnectButton;
-        Button btnDiscconnectButton;
 
         // Configure the stream data button
-        _tbStream.setOnClickListener(new OnClickListener() {
+        _tbStream.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
+            // Lock the orientation
+            vLockOrient();
 
-                // Lock the orientation
-                vLockOrient();
-
-                // This section handles the thread
-                if (Bluetooth.connectedThread != null)
-                {
-                    Bluetooth.bStreamData = _tbStream.isChecked();
-                }
-
-                // This section handles the dependant buttons
-                if (_tbStream.isChecked()){
-
-                    _tbSaveData.setVisibility(View.VISIBLE);
-                    _tbSaveData.setEnabled(true);
-                    _tvDataStorage.setVisibility(View.VISIBLE);
-
-                    vUpdateChMapsEnabled(true);
-
-                    _tbAudioOut.setVisibility(View.VISIBLE);
-                    _tbAudioOut.setEnabled(true);
-                    _tvAudioOut.setVisibility(View.VISIBLE);
-
-                    vUpdateGridLabels();
-
-                }else{
-                    vStopStreamDep();
-                }
+            // This section handles the thread
+            if (Bluetooth.connectedThread != null)
+            {
+                Bluetooth.bStreamData = _tbStream.isChecked();
             }
 
+            // This section handles the dependant buttons
+            if (_tbStream.isChecked()){
+
+                _tbSaveData.setVisibility(View.VISIBLE);
+                _tbSaveData.setEnabled(true);
+                _tvDataStorage.setVisibility(View.VISIBLE);
+
+                vUpdateChMapsEnabled(true);
+
+                _tbAudioOut.setVisibility(View.VISIBLE);
+                _tbAudioOut.setEnabled(true);
+                _tvAudioOut.setVisibility(View.VISIBLE);
+
+                vUpdateGridLabels();
+
+            }else{
+                vStopStreamDep();
+            }
         });
 
         // Configure the Bluetooth connect button
         btnConnectButton = (Button)findViewById(R.id.bConnect);
-        btnConnectButton.setOnClickListener(new OnClickListener() {
+        btnConnectButton.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
+            // Update user prefs for samples to save
+            vUpdateUserPrefs();
+            Bluetooth.vSetFileSamples(sharedPref.getInt("SAMPSAVE",15000));
 
-                // Update user prefs for samples to save
-                vUpdateUserPrefs();
-                Bluetooth.vSetFileSamples(sharedPref.getInt("SAMPSAVE",15000));
-
-                startActivity(new Intent("android.intent.action.BT1"));
-
-            }
-
+            startActivity(new Intent("android.intent.action.BT1"));
 
         });
 
         // Configure the Bluetooth disconnect button
         _bDisconnect = (Button)findViewById(R.id.bDisconnect);
-        _bDisconnect.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                _tbStream.setChecked(false);
-                Bluetooth.bStreamData = false;
-                Bluetooth.disconnect();
-                vStopStreamDep();
-            }
-
-
+        _bDisconnect.setOnClickListener(v -> {
+            _tbStream.setChecked(false);
+            Bluetooth.bStreamData = false;
+            Bluetooth.disconnect();
+            vStopStreamDep();
         });
 
         // Configure the save data button
         _tbSaveData = (ToggleButton)findViewById(R.id.tbSaveData);
-        _tbSaveData.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                vUpdateSaveData();
-            }
-        });
+        _tbSaveData.setOnClickListener(v -> vUpdateSaveData());
 
         // Configure the Build It button to link to Instructables
-        _bInst.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-            goToUrl("https://www.instructables.com/id/Realtime-MPU-6050A0-Data-Logging-With-Arduino-and-");
-
-            }
-
-
-        });
+        _bInst.setOnClickListener(v -> goToUrl("https://www.instructables.com/id/Realtime-MPU-6050A0-Data-Logging-With-Arduino-and-"));
 
         // Configure the Arduino frequency selection spinner
         _spFreq.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -693,69 +662,61 @@ public class MainActivity extends Activity {
         });
 
         // Configure the channel 1 radio buttons
-        _rgCh1.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        _rgCh1.setOnCheckedChangeListener((group, checkedId) -> {
 
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-
-                // Check which radio button was clicked
-                switch(checkedId) {
-                    case R.id.radio_ADC1_Ch1:
-                        Bluetooth.setbADC1ToCh1Out(true);
-                        Bluetooth.setbADC2ToCh1Out(false);
-                        Bluetooth.setbADC3ToCh1Out(false);
-//                        Log.d(strTag, ":HM:                     ADC1_Ch1 Active: ");
-                        break;
-                    case R.id.radio_ADC2_Ch1:
-                        Bluetooth.setbADC1ToCh1Out(false);
-                        Bluetooth.setbADC2ToCh1Out(true);
-                        Bluetooth.setbADC3ToCh1Out(false);
+            // Check which radio button was clicked
+            switch(checkedId) {
+                case R.id.radio_ADC1_Ch1:
+                    Bluetooth.setbADC1ToCh1Out(true);
+                    Bluetooth.setbADC2ToCh1Out(false);
+                    Bluetooth.setbADC3ToCh1Out(false);
+                        Log.d(strTag, ":HM:                     ADC1_Ch1 Active: ");
+                    break;
+                case R.id.radio_ADC2_Ch1:
+                    Bluetooth.setbADC1ToCh1Out(false);
+                    Bluetooth.setbADC2ToCh1Out(true);
+                    Bluetooth.setbADC3ToCh1Out(false);
 //                        Log.d(strTag, ":HM:                     ADC2_Ch1 Active: ");
-                        break;
-                    case R.id.radio_ADC3_Ch1:
-                        Bluetooth.setbADC1ToCh1Out(false);
-                        Bluetooth.setbADC2ToCh1Out(false);
-                        Bluetooth.setbADC3ToCh1Out(true);
+                    break;
+                case R.id.radio_ADC3_Ch1:
+                    Bluetooth.setbADC1ToCh1Out(false);
+                    Bluetooth.setbADC2ToCh1Out(false);
+                    Bluetooth.setbADC3ToCh1Out(true);
 //                        Log.d(strTag, ":HM:                     ADC3_Ch1 Active: ");
-                        break;
-                }
-
-                vUpdateUserPrefs();
-
+                    break;
             }
+
+            vUpdateUserPrefs();
+
         });
 
         // Configure the channel 2 radio buttons
-        _rgCh2.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        _rgCh2.setOnCheckedChangeListener((group, checkedId) -> {
 
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-
-                // Check which radio button was clicked
-                switch(checkedId) {
-                    case R.id.radio_ADC1_Ch2:
-                        Bluetooth.setbADC1ToCh2Out(true);
-                        Bluetooth.setbADC2ToCh2Out(false);
-                        Bluetooth.setbADC3ToCh2Out(false);
+            // Check which radio button was clicked
+            switch(checkedId) {
+                case R.id.radio_ADC1_Ch2:
+                    Bluetooth.setbADC1ToCh2Out(true);
+                    Bluetooth.setbADC2ToCh2Out(false);
+                    Bluetooth.setbADC3ToCh2Out(false);
 //                        Log.d(strTag, ":HM:                     ADC1_Ch2 Active: ");
-                        break;
-                    case R.id.radio_ADC2_Ch2:
-                        Bluetooth.setbADC1ToCh2Out(false);
-                        Bluetooth.setbADC2ToCh2Out(true);
-                        Bluetooth.setbADC3ToCh2Out(false);
+                    break;
+                case R.id.radio_ADC2_Ch2:
+                    Bluetooth.setbADC1ToCh2Out(false);
+                    Bluetooth.setbADC2ToCh2Out(true);
+                    Bluetooth.setbADC3ToCh2Out(false);
 //                        Log.d(strTag, ":HM:                     ADC2_Ch2 Active: ");
-                        break;
-                    case R.id.radio_ADC3_Ch2:
-                        Bluetooth.setbADC1ToCh2Out(false);
-                        Bluetooth.setbADC2ToCh2Out(false);
-                        Bluetooth.setbADC3ToCh2Out(true);
+                    break;
+                case R.id.radio_ADC3_Ch2:
+                    Bluetooth.setbADC1ToCh2Out(false);
+                    Bluetooth.setbADC2ToCh2Out(false);
+                    Bluetooth.setbADC3ToCh2Out(true);
 //                        Log.d(strTag, ":HM:                     ADC3_Ch2 Active: ");
-                        break;
-                }
-
-                vUpdateUserPrefs();
-
+                    break;
             }
+
+            vUpdateUserPrefs();
+
         });
 
         // Configure the audio out button
@@ -776,7 +737,7 @@ public class MainActivity extends Activity {
         return true;
     }
 
-    Handler mUpdateHandler = new Handler()
+    Handler mUpdateHandler = new Handler(Looper.getMainLooper())
     {
         @Override
         public void handleMessage(Message msg) {
