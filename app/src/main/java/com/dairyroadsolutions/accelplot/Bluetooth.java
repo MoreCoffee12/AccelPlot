@@ -278,7 +278,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
         }
 
         // Standby for device found, Bluetooth may still be disabled at this point
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 
         // Set lists for device id and name
         pairedDevices = new ArrayList<String>();
@@ -309,10 +309,10 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 		};
 
 		registerReceiver(receiver, filter);
-        IntentFilter filterFinal = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        registerReceiver(receiver, filterFinal);
-        filterFinal = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-		registerReceiver(receiver, filterFinal);
+        filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        registerReceiver(receiver, filter);
+        filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+		registerReceiver(receiver, filter);
 	}
 
 	@Override
@@ -339,14 +339,11 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 		if (btAdapter.isDiscovering()){
 			btAdapter.cancelDiscovery();
 		}
-		if (listAdapter.getItem(arg2).contains("(Paired)")){
 
-			selectedDevice = devices.get(arg2);
-			ConnectThread connect = new ConnectThread(selectedDevice);
-			connect.start();
-		}else {
-			Toast.makeText(getApplicationContext(), "device is not paired", Toast.LENGTH_LONG).show();
-		}
+		// Instantiate the connection thread
+        selectedDevice = devices.get(arg2);
+        ConnectThread connect = new ConnectThread(selectedDevice);
+        connect.start();
 	}
 
     /**
