@@ -13,7 +13,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -78,7 +77,7 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 	public static int idxBuff = 0;
 
 	// Output buffer
-    public static SamplesBuffer samplesBuffer[];
+    public static SamplesBuffer[] samplesBuffer;
     public static ChartRenderer classChartRenderer;
 
 	//-------------------------------------------------------------------------

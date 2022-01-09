@@ -7,7 +7,6 @@ import android.content.Context;
 public class ChartRenderer extends AbstractRenderer {
 
 	public Chart classChart;
-	public Context mContext;
 	private int iScreenBufferCount = 0;
 	private boolean _mCyclic = true;
 
@@ -57,9 +56,6 @@ public class ChartRenderer extends AbstractRenderer {
 
 		// Save off the screen buffer count
 		iScreenBufferCount = iScreenBuffCount;
-
-        // Save off the context to this object
-		mContext = context;
 
         // Call the constructor for the new classChart
 		classChart = new Chart(context,iScreenBufferCount, samplesBuffer, TraceCount, _mCyclic);
