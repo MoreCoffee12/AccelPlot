@@ -65,8 +65,11 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 	// Arduino accelerometer data
     //-------------------------------------------------------------------------
 	//
-	// This is the number of samples written to each file.
-	public static int iFileSampleCount = (int) dSampleFreq *60;
+	// This is the number of samples written to each file. The numeric value equals
+    // the number of seconds of data to store.
+	public static int iFileSampleCount = (int) dSampleFreq * 1;
+
+	// Storage arrays for the accelerometer data
     public static float[] fX_Accel = new float[iFileSampleCount];
     public static float[] fY_Accel = new float[iFileSampleCount];
     public static float[] fZ_Accel = new float[iFileSampleCount];
@@ -74,6 +77,8 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 	//This channel can be a gyro or the ADC, depending how how the firmware is configured
 	//in the Arduino
     public static float[] fX_Gyro = new float[iFileSampleCount];
+
+    //This describes the location for the next sample to be written in the storage arrays
 	public static int idxBuff = 0;
 
 	// Output buffer
@@ -173,6 +178,12 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
     public static void vSetWritePending( boolean bIn) {bWritePending = bIn;}
 
+    /**
+     * Initialize the storage arrays and samples. This also sets the
+     * idxBuff pointer back zero.
+     * *
+     * @param iSamples Number of samples in each array.
+     */
     public static void vSetFileSamples(int iSamples ){
         iFileSampleCount = iSamples;
         fX_Accel = new float[iFileSampleCount];
@@ -584,12 +595,12 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
                             // Save the data off to the sd card / local directory
                             if( bWriteLocal ){
-                                Log.i(_strTag, ":HM:                          Begin Writing: ");
+                                Log.d(_strTag, ":HM:                          Begin Writing: ");
                                 if( idxBuff == (iFileSampleCount-1) && bWritePending){
-                                    fhelper.bFileToSD(fX_Accel, fY_Accel, fZ_Accel, fX_Gyro);
-                                    Log.i(_strTag, ":HM:                   Write files, idxBuff: " + idxBuff);
-                                    Log.i(_strTag, ":HM:                             fX_Gyro[0]: " + fX_Gyro[0]);
+                                    Log.d(_strTag, ":HM:                   Write files, idxBuff: " + idxBuff);
+                                    Log.d(_strTag, ":HM:                             fX_Gyro[0]: " + fX_Gyro[0]);
 //                                    Log.i(_strTag, ":HM:                          X_Accel Error: " + iErrorCount);
+                                    fhelper.bFileToSD(fX_Accel, fY_Accel, fZ_Accel, fX_Gyro);
                                     bWritePending = false;
                                     mHandler.obtainMessage(FILE_WRITE_DONE, mmSocket).sendToTarget();
 

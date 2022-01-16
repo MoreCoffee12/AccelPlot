@@ -53,7 +53,21 @@ class FileHelper {
             sdCard = Environment.getExternalStorageDirectory();
         }
         File dir = new File (sdCard.getAbsolutePath() + strDir);
-        dir.mkdirs();
+
+        // Attempt to make the directory
+        try{
+
+            // mkdir returns 0 if the creation succeeded, otherwise is -1
+            if(dir.mkdirs()) {
+                Log.d(_strTag, ":HM:             Directory creation success: ");
+            }else{
+                Log.d(_strTag, ":HM:              Directory creation failed: ");
+            };
+
+        }catch (Exception e){
+            Log.d(_strTag, ":HM:      *Error* Directory creation failed: ");
+            e.printStackTrace();
+        }
         File file = new File(dir, strFileName);
 
         try{
@@ -133,7 +147,9 @@ class FileHelper {
 
         // The filename and directory strings
         strFileName = "Trace01_" + String.format("%07d", lFileIdx) + ".dat";
+        Log.d(_strTag, ":HM:                 Write Trace01 Filename: " + strFileName);
         strDir = "/AccelPlot";
+        Log.d(_strTag, ":HM:                Write Trace01 Directory: " + strDir);
         bFileToSD(strDir, strFileName, data01);
 
         // The filename and directory strings
