@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import android.app.Activity;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
@@ -99,29 +100,6 @@ class FileHelper {
         } catch (Exception e) {
             Log.d(_strTag, ":HM:                   FileHelper Exception: " + e.getMessage());
         }
-
-        // Increment the file index
-        ++lFileIdx;
-
-        // Everything must have gone ok
-        return true;
-
-    }
-
-    /**
-     * This function writes a single array to the external storage directory using default
-     * directory and file name values;
-     * @param data      float array with the data
-     * @return          true if successful
-     */
-    public boolean bFileToSD(float[] data){
-
-        // The filename and directory strings
-        String strFileName = "Trace01_" + String.format("%07d", lFileIdx) + ".dat";
-        String strDir = "/AccelPlot";
-
-        // Call the generic function
-        bFileToSD(strDir, strFileName, data);
 
         // Increment the file index
         ++lFileIdx;
