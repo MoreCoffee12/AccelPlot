@@ -1,18 +1,12 @@
 package com.dairyroadsolutions.accelplot;
 
-/**
- * Created by Brian on 1/24/2016.
- *
- * This helper provides methods to write data to the sd card on the device.
- */
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.util.Locale;
 
-import android.app.Activity;
-import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
@@ -42,43 +36,54 @@ class FileHelper {
      * @param strDir        String with directory name. Must include leading "/"
      * @param strFileName   String with the filename
      * @param data          float array with the data
-     * @return              true if successful
+     * @return              true if successful. false for the unexpected
      */
     public boolean bFileToSD(String strDir, String strFileName, float[] data){
 
-        File sdCard;
+        // TODO: Exception handling in the case no SD card exist.
 
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
-            sdCard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-        }else{
-            sdCard = Environment.getExternalStorageDirectory();
-        }
+        // Local variable that stores path to SD card
+        File sdCard;
+        boolean bSuccess = true;
+        int iBytes;
+
+        // Pull the directory. I chose to put this in the directory for user-created documents.
+        sdCard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+
+        // Assembly the absolute path to the directory
         File dir = new File (sdCard.getAbsolutePath() + strDir);
 
-        // Attempt to make the directory
-        try{
+        // Does the directory exist?
+        if ( !dir.isDirectory()) {
 
-            // mkdir returns 0 if the creation succeeded, otherwise is -1
-            if(dir.mkdirs()) {
-                Log.d(_strTag, ":HM:             Directory creation success: ");
-            }else{
+            // Attempt to make the directory
+            try {
+                Files.createDirectory(dir.toPath());
+            } catch (java.io.IOException e) {
                 Log.d(_strTag, ":HM:              Directory creation failed: ");
-            };
-
-        }catch (Exception e){
-            Log.d(_strTag, ":HM:      *Error* Directory creation failed: ");
-            e.printStackTrace();
+                e.printStackTrace();
+                bSuccess = false;
+            }
         }
+        // Create the file
         File file = new File(dir, strFileName);
 
         try{
-            FileChannel fchannel = new FileOutputStream(file).getChannel();
 
+            // Open a channel to begin writing
+            FileChannel filechannel = null;
+            try{
+                filechannel = new FileOutputStream(file).getChannel();
+            }catch (NullPointerException e) {
+                e.printStackTrace();
+                Log.i(_strTag, ":HM:                      getChannel failed: ");
+            }
+
+            // Clear and reset the buffer
             bb.clear();
 
-            for( int idx=0; idx<data.length; ++idx){
-                bb.putFloat(data[idx]);
-            }
+            // Assemble data for the file write
+            for(int idx = 0; idx<data.length; ++idx) bb.putFloat(data[idx]);
 
             Log.i(_strTag, ":HM:                              Directory: " + dir.getPath());
             Log.i(_strTag, ":HM:                              File Name: " + strFileName);
@@ -90,10 +95,15 @@ class FileHelper {
             bb.flip();
 
             // Write the buffer to the file
-            fchannel.write(bb);
+            assert filechannel != null;
+            iBytes = filechannel.write(bb);
+            Log.d(_strTag, ":HM:                          Bytes written: " + iBytes);
+            if (iBytes<1){
+                bSuccess = false;
+            }
 
             // Close the file
-            fchannel.close();
+            filechannel.close();
 
             //Log.d(_strTag, ":HM:                    File write complete: ");
 
@@ -105,7 +115,7 @@ class FileHelper {
         ++lFileIdx;
 
         // Everything must have gone ok
-        return true;
+        return !bSuccess;
 
     }
 
@@ -120,33 +130,50 @@ class FileHelper {
      */
     boolean bFileToSD(float[] data01, float[] data02, float[] data03, float[] data04){
 
+        // Local variables
         String strFileName;
         String strDir;
+        boolean bSuccess = true;
 
-        // The filename and directory strings
-        strFileName = "Trace01_" + String.format("%07d", lFileIdx) + ".dat";
+        // TODO: bFileToSD has proof-of-concept code. It needs to be refactored so that code is
+        //  not copy-pasted everywhere.
+
+        // The filename and directory strings for the first trace
+        strFileName = "Trace01_" + String.format(Locale.US, "%07d", lFileIdx) + ".dat";
         Log.d(_strTag, ":HM:                 Write Trace01 Filename: " + strFileName);
         strDir = "/AccelPlot";
         Log.d(_strTag, ":HM:                Write Trace01 Directory: " + strDir);
-        bFileToSD(strDir, strFileName, data01);
+        if (bFileToSD(strDir, strFileName, data01)){
+            Log.d(_strTag, ":HM:                        Failed to write: " + strFileName);
+            bSuccess = false;
+        }
 
-        // The filename and directory strings
-        strFileName = "Trace02_" + String.format("%07d", lFileIdx) + ".dat";
+        // The filename and directory strings for the second trace
+        strFileName = "Trace02_" + String.format(Locale.US,"%07d", lFileIdx) + ".dat";
         strDir = "/AccelPlot";
-        bFileToSD(strDir, strFileName, data02);
+        if (bFileToSD(strDir, strFileName, data02)){
+            Log.d(_strTag, ":HM:                        Failed to write: " + strFileName);
+            bSuccess = false;
+        }
 
-        // The filename and directory strings
-        strFileName = "Trace03_" + String.format("%07d", lFileIdx) + ".dat";
+        // The filename and directory strings for the third trace
+        strFileName = "Trace03_" + String.format(Locale.US,"%07d", lFileIdx) + ".dat";
         strDir = "/AccelPlot";
-        bFileToSD(strDir, strFileName, data03);
+        if (bFileToSD(strDir, strFileName, data03)){
+            Log.d(_strTag, ":HM:                        Failed to write: " + strFileName);
+            bSuccess = false;
+        }
 
-        // The filename and directory strings
-        strFileName = "Trace04_" + String.format("%07d", lFileIdx) + ".dat";
+        // The filename and directory strings for the fourth trace
+        strFileName = "Trace04_" + String.format(Locale.US,"%07d", lFileIdx) + ".dat";
         strDir = "/AccelPlot";
-        bFileToSD(strDir, strFileName, data04);
+        if (bFileToSD(strDir, strFileName, data04)){
+            Log.d(_strTag, ":HM:                        Failed to write: " + strFileName);
+            bSuccess = false;
+        }
 
         // Everything must have gone ok
-        return true;
+        return bSuccess;
 
     }
 

@@ -595,7 +595,6 @@ public class Bluetooth extends Activity implements OnItemClickListener{
 
                             // Save the data off to the sd card / local directory
                             if( bWriteLocal ){
-                                Log.d(_strTag, ":HM:                          Begin Writing: ");
                                 if( idxBuff == (iFileSampleCount-1) && bWritePending){
                                     Log.d(_strTag, ":HM:                   Write files, idxBuff: " + idxBuff);
                                     Log.d(_strTag, ":HM:                             fX_Gyro[0]: " + fX_Gyro[0]);
