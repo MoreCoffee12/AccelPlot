@@ -1,14 +1,15 @@
 package com.dairyroadsolutions.accelplot;
 
+import android.content.Context;
+import android.os.Environment;
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.util.Locale;
-
-import android.os.Environment;
-import android.util.Log;
 
 class FileHelper {
 
@@ -48,7 +49,7 @@ class FileHelper {
         int iBytes;
 
         // Pull the directory. I chose to put this in the directory for user-created documents.
-        sdCard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+        sdCard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 
         // Assembly the absolute path to the directory
         File dir = new File (sdCard.getAbsolutePath() + strDir);
