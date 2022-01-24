@@ -49,7 +49,7 @@ class FileHelper {
         int iBytes;
 
         // Pull the directory. I chose to put this in the directory for user-created documents.
-        sdCard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        sdCard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
 
         // Assembly the absolute path to the directory
         File dir = new File (sdCard.getAbsolutePath() + strDir);
