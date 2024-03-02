@@ -1,6 +1,5 @@
 package com.dairyroadsolutions.accelplot;
 
-import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
@@ -62,29 +61,23 @@ class FileHelper {
                 Files.createDirectory(dir.toPath());
             } catch (java.io.IOException e) {
                 Log.d(_strTag, ":HM:              Directory creation failed: ");
-                e.printStackTrace();
+                //e.printStackTrace();
                 bSuccess = false;
             }
         }
         // Create the file
         File file = new File(dir, strFileName);
 
-        try{
-
-            // Open a channel to begin writing
-            FileChannel filechannel = null;
-            try{
-                filechannel = new FileOutputStream(file).getChannel();
-            }catch (NullPointerException e) {
-                e.printStackTrace();
-                Log.i(_strTag, ":HM:                      getChannel failed: ");
-            }
+        // Open a channel to begin writing
+        // Refactored to try-with to improve error handling and reduce leaks
+        try(FileOutputStream fos = new FileOutputStream(file);
+            FileChannel fileChannel = fos.getChannel()){
 
             // Clear and reset the buffer
             bb.clear();
 
             // Assemble data for the file write
-            for(int idx = 0; idx<data.length; ++idx) bb.putFloat(data[idx]);
+            for (float datum : data) bb.putFloat(datum);
 
             Log.i(_strTag, ":HM:                              Directory: " + dir.getPath());
             Log.i(_strTag, ":HM:                              File Name: " + strFileName);
@@ -96,21 +89,23 @@ class FileHelper {
             bb.flip();
 
             // Write the buffer to the file
-            assert filechannel != null;
-            iBytes = filechannel.write(bb);
+            iBytes = fileChannel.write(bb);
             Log.d(_strTag, ":HM:                          Bytes written: " + iBytes);
             if (iBytes<1){
                 bSuccess = false;
             }
 
-            // Close the file
-            filechannel.close();
-
             //Log.d(_strTag, ":HM:                    File write complete: ");
 
-        } catch (Exception e) {
-            Log.d(_strTag, ":HM:                   FileHelper Exception: " + e.getMessage());
+        }catch (NullPointerException e) {
+            // e.printStackTrace();
+            Log.i(_strTag, ":HM:               getChannel Null Exception: ");
+        }catch (Exception e) {
+            Log.d(_strTag, ":HM:         FileHelper.getChannel Exception: " + e.getMessage());
         }
+
+
+
 
         // Increment the file index
         ++lFileIdx;
@@ -127,14 +122,12 @@ class FileHelper {
      * @param data02    float array with the data
      * @param data03    float array with the data
      * @param data04    float array with the data
-     * @return          true if successful
      */
-    boolean bFileToSD(float[] data01, float[] data02, float[] data03, float[] data04){
+    void bFileToSD(float[] data01, float[] data02, float[] data03, float[] data04){
 
         // Local variables
         String strFileName;
         String strDir;
-        boolean bSuccess = true;
 
         // TODO: bFileToSD has proof-of-concept code. It needs to be refactored so that code is
         //  not copy-pasted everywhere.
@@ -146,7 +139,6 @@ class FileHelper {
         Log.d(_strTag, ":HM:                Write Trace01 Directory: " + strDir);
         if (bFileToSD(strDir, strFileName, data01)){
             Log.d(_strTag, ":HM:                        Failed to write: " + strFileName);
-            bSuccess = false;
         }
 
         // The filename and directory strings for the second trace
@@ -154,7 +146,6 @@ class FileHelper {
         strDir = "/AccelPlot";
         if (bFileToSD(strDir, strFileName, data02)){
             Log.d(_strTag, ":HM:                        Failed to write: " + strFileName);
-            bSuccess = false;
         }
 
         // The filename and directory strings for the third trace
@@ -162,7 +153,6 @@ class FileHelper {
         strDir = "/AccelPlot";
         if (bFileToSD(strDir, strFileName, data03)){
             Log.d(_strTag, ":HM:                        Failed to write: " + strFileName);
-            bSuccess = false;
         }
 
         // The filename and directory strings for the fourth trace
@@ -170,11 +160,8 @@ class FileHelper {
         strDir = "/AccelPlot";
         if (bFileToSD(strDir, strFileName, data04)){
             Log.d(_strTag, ":HM:                        Failed to write: " + strFileName);
-            bSuccess = false;
         }
 
-        // Everything must have gone ok
-        return bSuccess;
 
     }
 
